@@ -234,6 +234,101 @@
 }
 
 /* ============================================
+   Payment CTA (PayRam + USDT fallback)
+   ============================================ */
+
+.dash-list-item-stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-sm);
+}
+
+.dash-list-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pay-cta {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-sm);
+}
+
+.pay-cta-amount {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.pay-cta-amount span {
+  color: var(--text-tertiary);
+}
+
+.pay-cta-actions {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.pay-cta-status {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-xs);
+}
+
+.pay-cta-status-error {
+  color: #F87171;
+}
+
+.usdt-panel {
+  margin-top: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.usdt-panel p {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-xs);
+}
+
+.usdt-address-row {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.usdt-address-row input {
+  flex: 1;
+  padding: 0.5rem 0.7rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.usdt-qr {
+  display: block;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.usdt-note {
+  font-size: 0.78rem !important;
+  color: var(--text-tertiary) !important;
+  margin-bottom: 0 !important;
+}
+
+.usdt-note a {
+  color: var(--accent);
+}
+
+/* ============================================
    Referrals tab
    ============================================ */
 
