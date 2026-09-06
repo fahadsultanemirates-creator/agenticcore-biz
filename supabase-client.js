@@ -1,11 +1,10 @@
 // AgenticCore Biz — Supabase client configuration
-//
-// Not wired to a live project yet: the dashboard schema and auth flow are
-// being proven out first on AgenticCore Agency. These are placeholder
-// values so the login/signup pages render without crashing; swap in a real
-// project URL and publishable key once the Biz dashboard is ready to go live.
+// This uses the publishable key (Supabase's current name for what was
+// previously called the "anon key") -- safe for browser use. Security is
+// enforced by Row Level Security policies on the database, not by keeping
+// this key secret.
 
-const SUPABASE_URL = 'https://your-project.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_placeholder_not_wired';
+const SUPABASE_URL = 'https://bvpdvtsshivkzhcmszkd.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_wqO09sQ75cF_gsjjDvU5Ng_O2Mypo-h';
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
