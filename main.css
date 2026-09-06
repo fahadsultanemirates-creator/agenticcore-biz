@@ -148,7 +148,7 @@ img, svg {
   color: var(--text-primary);
 }
 
-.nav-logo svg {
+.nav-logo img {
   width: 28px;
   height: 28px;
 }
