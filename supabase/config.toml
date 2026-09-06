@@ -1,0 +1,9 @@
+# AgenticCore Biz — Supabase project config.
+#
+# payram-webhook is called directly by PayRam with no Supabase user
+# session, so it can't be gated behind JWT verification like a normal
+# authenticated function call -- it authenticates the request itself via
+# an HMAC signature (see supabase/functions/payram-webhook/index.ts).
+
+[functions.payram-webhook]
+verify_jwt = false
