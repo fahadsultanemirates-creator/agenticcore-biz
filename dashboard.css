@@ -232,3 +232,21 @@
   color: var(--accent);
   margin-bottom: var(--space-sm);
 }
+
+/* ============================================
+   Referrals tab
+   ============================================ */
+
+.referral-share-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.referral-explainer {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-top: var(--space-sm);
+}

@@ -23,6 +23,7 @@ function renderHeader(profile) {
 
   const referralLink = `${window.location.origin}/signup.html?ref=${profile.referral_code}`;
   document.getElementById('referralLinkInput').value = referralLink;
+  document.getElementById('referralLinkInputTab').value = referralLink;
 
   const bpCard = document.getElementById('bpCard');
   if (profile.is_business_pool) {
@@ -91,6 +92,40 @@ async function renderProjectsPanel(userId) {
   }
 }
 
+function pointsHistoryLabel(row) {
+  if (row.referral_tier === 1) return 'Direct referral — 20% earned';
+  if (row.referral_tier === 2) return 'Level 2 referral — 10% earned';
+  if (row.referral_tier === 3) return 'Level 3 referral — 5% earned';
+  return 'Your own task — 10% back';
+}
+
+async function renderPointsHistory(userId) {
+  const list = document.getElementById('pointsHistoryList');
+
+  const { data: transactions, error } = await supabaseClient
+    .from('points_transactions')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Failed to load points history', error);
+    return;
+  }
+
+  if (transactions.length) {
+    list.innerHTML = transactions.map((t) => `
+      <div class="dash-list-item">
+        <div>
+          <strong>+${Number(t.amount).toFixed(2)} pts</strong>
+          <p>${pointsHistoryLabel(t)}</p>
+        </div>
+        <span class="dash-status-pill">${new Date(t.created_at).toLocaleDateString()}</span>
+      </div>
+    `).join('');
+  }
+}
+
 async function renderBillingPanel(userId) {
   const billingList = document.getElementById('billingList');
 
@@ -140,10 +175,14 @@ async function renderBillingPanel(userId) {
   initTabs();
   renderProjectsPanel(session.user.id);
   renderBillingPanel(session.user.id);
+  renderPointsHistory(session.user.id);
 
-  document.getElementById('copyReferralBtn').addEventListener('click', () => {
-    const input = document.getElementById('referralLinkInput');
+  function copyReferralLink(inputId) {
+    const input = document.getElementById(inputId);
     input.select();
     navigator.clipboard.writeText(input.value);
-  });
+  }
+
+  document.getElementById('copyReferralBtn').addEventListener('click', () => copyReferralLink('referralLinkInput'));
+  document.getElementById('copyReferralBtnTab').addEventListener('click', () => copyReferralLink('referralLinkInputTab'));
 })();
