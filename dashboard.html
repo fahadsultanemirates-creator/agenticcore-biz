@@ -45,6 +45,7 @@
       <button class="dash-tab active" data-tab="projects">My Projects</button>
       <button class="dash-tab" data-tab="new-request">New Request</button>
       <button class="dash-tab" data-tab="billing">Billing</button>
+      <button class="dash-tab" data-tab="referrals">Referrals</button>
     </div>
 
     <div class="dash-panel active" data-panel="projects">
@@ -69,6 +70,21 @@
       <h3>Billing history</h3>
       <div id="billingList" class="dash-list">
         <p class="dash-empty">No billing history yet.</p>
+      </div>
+    </div>
+
+    <div class="dash-panel" data-panel="referrals">
+      <div class="referral-share-card">
+        <span class="dash-header-label">Share your link</span>
+        <div class="referral-link-row">
+          <input type="text" id="referralLinkInputTab" readonly>
+          <button class="btn btn-secondary btn-sm" id="copyReferralBtnTab">Copy</button>
+        </div>
+        <p class="referral-explainer">You earn 20% of a direct referral's task value in Points, 10% from someone they refer, and 5% from the level after that — each on their first 3 completed tasks. If you were referred yourself, you also earn 10% of your own task value back, on your first 3.</p>
+      </div>
+      <h3>Points history</h3>
+      <div id="pointsHistoryList" class="dash-list">
+        <p class="dash-empty">No Points earned yet.</p>
       </div>
     </div>
 
