@@ -329,6 +329,25 @@
 }
 
 /* ============================================
+   Delivery lifecycle (revision / approve)
+   ============================================ */
+
+.delivery-actions {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.delivery-status {
+  font-size: 0.82rem;
+  color: #F87171;
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
    Referrals tab
    ============================================ */
 

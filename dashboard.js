@@ -114,14 +114,91 @@ async function renderProjectsPanel(userId) {
     console.error('Failed to load projects', projectsError);
   } else if (projects.length) {
     projectsList.innerHTML = projects.map((p) => `
-      <div class="dash-list-item">
-        <div>
-          <strong>${p.project_name}</strong>
+      <div class="dash-list-item dash-list-item-stacked" data-project-id="${p.id}">
+        <div class="dash-list-item-row">
+          <div>
+            <strong>${p.project_name}</strong>
+            <p>${p.revisions_used} / 2 free revisions used</p>
+          </div>
+          <span class="dash-status-pill">${statusLabel(p.status)}</span>
         </div>
-        <span class="dash-status-pill">${statusLabel(p.status)}</span>
+        ${deliveryActionsHtml(p)}
       </div>
     `).join('');
+    attachDeliveryHandlers(projectsList, userId);
   }
+}
+
+function deliveryActionsHtml(p) {
+  if (p.status !== 'delivered') return '';
+
+  const revisionAction = p.revisions_used < 2
+    ? `<button class="btn btn-secondary btn-sm" data-action="request-revision">Request Revision</button>`
+    : `<p class="dash-empty">No free revisions remaining — further changes are billed separately.</p>`;
+
+  return `
+    <div class="delivery-actions">
+      ${revisionAction}
+      <button class="btn btn-primary btn-sm" data-action="approve-delivery">Approve &amp; Pay Remaining</button>
+    </div>
+    <p class="delivery-status" hidden></p>
+  `;
+}
+
+function attachDeliveryHandlers(container, userId) {
+  container.addEventListener('click', async (e) => {
+    const revisionBtn = e.target.closest('[data-action="request-revision"]');
+    const approveBtn = e.target.closest('[data-action="approve-delivery"]');
+    if (!revisionBtn && !approveBtn) return;
+
+    const card = e.target.closest('[data-project-id]');
+    const projectId = card.dataset.projectId;
+    const statusEl = card.querySelector('.delivery-status');
+
+    if (revisionBtn) {
+      await handleRequestRevision(projectId, userId, revisionBtn, statusEl);
+    } else if (approveBtn) {
+      if (!confirm('Approve this delivery? This will start the final payment (70% of the agreed price).')) return;
+      await handleApproveDelivery(projectId, userId, approveBtn, statusEl);
+    }
+  });
+}
+
+async function handleRequestRevision(projectId, userId, btn, statusEl) {
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = 'Submitting…';
+
+  const { error } = await supabaseClient.rpc('request_project_revision', { p_project_id: projectId });
+
+  if (error) {
+    btn.disabled = false;
+    btn.textContent = originalText;
+    statusEl.textContent = 'Could not request a revision: ' + error.message;
+    statusEl.hidden = false;
+    return;
+  }
+
+  renderProjectsPanel(userId);
+}
+
+async function handleApproveDelivery(projectId, userId, btn, statusEl) {
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = 'Submitting…';
+
+  const { error } = await supabaseClient.rpc('approve_project_delivery', { p_project_id: projectId });
+
+  if (error) {
+    btn.disabled = false;
+    btn.textContent = originalText;
+    statusEl.textContent = 'Could not approve delivery: ' + error.message;
+    statusEl.hidden = false;
+    return;
+  }
+
+  renderProjectsPanel(userId);
+  renderBillingPanel(userId);
 }
 
 function attachPaymentHandlers(container) {
