@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — AgenticCore Biz</title>
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<nav class="dash-nav">
+  <div class="container dash-nav-inner">
+    <a href="dashboard.html" class="nav-logo">
+      <img src="logo.png" alt="AgenticCore">
+      AgenticCore Biz
+    </a>
+    <div class="dash-nav-user">
+      <span id="userEmail"></span>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn">Log out</button>
+    </div>
+  </div>
+</nav>
+
+<main class="dash-main">
+  <div class="container">
+
+    <div class="dash-header">
+      <div class="dash-header-card">
+        <span class="dash-header-label">AgenticCore Points</span>
+        <span class="dash-header-value" id="pointsBalance">—</span>
+      </div>
+      <div class="dash-header-card dash-header-card-wide">
+        <span class="dash-header-label">Your referral link</span>
+        <div class="referral-link-row">
+          <input type="text" id="referralLinkInput" readonly>
+          <button class="btn btn-secondary btn-sm" id="copyReferralBtn">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bp-card" id="bpCard"></div>
+
+    <div class="dash-tabs" id="dashTabs">
+      <button class="dash-tab active" data-tab="projects">My Projects</button>
+      <button class="dash-tab" data-tab="new-request">New Request</button>
+      <button class="dash-tab" data-tab="billing">Billing</button>
+    </div>
+
+    <div class="dash-panel active" data-panel="projects">
+      <h3>Pending requests</h3>
+      <div id="requestsList" class="dash-list">
+        <p class="dash-empty">No pending requests yet.</p>
+      </div>
+      <h3>My Projects</h3>
+      <div id="projectsList" class="dash-list">
+        <p class="dash-empty">No projects yet.</p>
+      </div>
+    </div>
+
+    <div class="dash-panel" data-panel="new-request">
+      <div class="dash-empty-state">
+        <h3>New Request is almost ready</h3>
+        <p>We're finishing the request flow — check back soon to submit your first plan.</p>
+      </div>
+    </div>
+
+    <div class="dash-panel" data-panel="billing">
+      <h3>Billing history</h3>
+      <div id="billingList" class="dash-list">
+        <p class="dash-empty">No billing history yet.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-client.js"></script>
+<script src="auth.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+/* ============================================
+   Dashboard shell
+   ============================================ */
+
+.dash-nav {
+  border-bottom: 1px solid var(--border-subtle);
+  padding: var(--space-sm) 0;
+}
+
+.dash-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dash-nav-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.dash-main {
+  padding: var(--space-xl) 0 var(--space-2xl);
+}
+
+/* ============================================
+   Header cards: points + referral link
+   ============================================ */
+
+.dash-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.dash-header-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+.dash-header-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.dash-header-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.referral-link-row {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.referral-link-row input {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 700px) {
+  .dash-header {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   Business Pool banner
+   ============================================ */
+
+.bp-card {
+  background: linear-gradient(160deg, var(--bg-panel), var(--bg-primary));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.bp-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.bp-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: var(--space-sm);
+}
+
+.bp-card p.bp-unlocked {
+  color: var(--text-primary);
+  margin-bottom: 0;
+}
+
+.bp-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+.bp-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+/* ============================================
+   Tabs
+   ============================================ */
+
+.dash-tabs {
+  display: flex;
+  gap: var(--space-xs);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-lg);
+}
+
+.dash-tab {
+  padding: 0.75rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.dash-tab:hover {
+  color: var(--text-primary);
+}
+
+.dash-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.dash-panel {
+  display: none;
+}
+
+.dash-panel.active {
+  display: block;
+}
+
+.dash-panel h3 {
+  font-size: 1.1rem;
+  margin: var(--space-lg) 0 var(--space-sm);
+}
+
+.dash-panel h3:first-child {
+  margin-top: 0;
+}
+
+/* ============================================
+   Lists
+   ============================================ */
+
+.dash-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dash-empty {
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+}
+
+.dash-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.dash-list-item strong {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.dash-list-item p {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.dash-status-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.12);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.dash-empty-state {
+  text-align: center;
+  padding: var(--space-2xl) var(--space-md);
+  color: var(--text-secondary);
+}
+
+.dash-empty-state h3 {
+  color: var(--accent);
+  margin-bottom: var(--space-sm);
+}
