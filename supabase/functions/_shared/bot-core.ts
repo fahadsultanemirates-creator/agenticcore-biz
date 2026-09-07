@@ -52,13 +52,14 @@ export interface HandleMessageParams {
   // language_code, or the browser's navigator.language) -- not a
   // default, just an extra hint appended to the system prompt.
   languageHint?: string;
-  // Public @username of the Telegram manager bot (no leading @), used
-  // to build the https://t.me/<username>?start=<token> handoff link.
-  // Without it, a discovery handoff still creates its record and (for
-  // telegram/forge) still notifies the owner, but handoffUrl comes back
-  // undefined -- callers should treat that as "no link to show yet"
-  // rather than an error.
-  telegramBotUsername?: string;
+  // Manager bot's own token + the account owner's Telegram user id --
+  // when both are present, a completed discovery handoff proactively
+  // DMs the owner with the gathered summary via this bot, regardless of
+  // which channel (widget/forge/telegram) the conversation came from.
+  // Without either, the handoff is still recorded and handoffUrl is
+  // still returned, there's just no proactive notification.
+  telegramBotToken?: string;
+  ownerTelegramId?: string;
 }
 
 export interface HandleMessageResult {
@@ -66,16 +67,14 @@ export interface HandleMessageResult {
   needsHuman: boolean;
   rateLimited?: boolean;
   // Set once a discovery conversation is ready to hand off to a human
-  // manager (see createDiscoveryHandoff below) -- a deep link that, once
-  // opened, sends the manager bot "/start <token>" and lets it greet the
-  // person with the gathered context already in hand, rather than from
-  // scratch.
+  // manager -- the direct Telegram link to the manager's own chat
+  // (MANAGER_TELEGRAM_URL below), the same fixed link for every
+  // channel. Not a per-conversation deep link: the manager chat is a
+  // separate, real Telegram account, not this bot, so there's no
+  // "/start <token>" for it to receive -- context instead reaches the
+  // manager via the proactive owner notification (see
+  // telegramBotToken/ownerTelegramId above), not through the link.
   handoffUrl?: string;
-  // The same discovery summary just recorded, whether or not handoffUrl
-  // could be built (e.g. telegramBotUsername not configured). The
-  // 'telegram' caller uses this directly to notify the account owner,
-  // since a bot can't otherwise interrupt the owner's own separate chat.
-  discoverySummary?: string;
 }
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -100,6 +99,16 @@ const RATE_LIMIT_MESSAGE =
   "You're sending messages a bit too quickly — please wait a few minutes and try again.";
 const GENERIC_ERROR_MESSAGE =
   'Something went wrong on our end. Please try again in a moment.';
+
+// The direct manager chat -- a real Telegram account, separate from
+// both the manager bot (TELEGRAM_BOT_TOKEN) and the public
+// @agenticCoreHQ channel. Fixed and the same for every channel, since
+// (unlike a bot) it has no "/start <token>" to receive -- context
+// reaches the manager via the proactive owner notification below
+// instead of through this link.
+const MANAGER_TELEGRAM_URL = 'https://t.me/AgenticCoreAgency';
+
+const TELEGRAM_API_BASE = 'https://api.telegram.org/bot';
 
 // Additive context for the forge channel only, appended on top of the
 // same BUSINESS_KNOWLEDGE_PROMPT every channel shares.
@@ -438,11 +447,10 @@ async function createManagerTask(
   throw lastError ?? new Error('Could not allocate a unique manager task id after retries');
 }
 
-// A short, URL-safe, unguessable token -- Telegram's deep-link `start`
-// parameter only allows [A-Za-z0-9_-], up to 64 chars, so a free-text
-// summary can never go in the link itself. This token is looked up
-// server-side (see discovery_handoffs in migration 0006) once the
-// client opens the link and Telegram sends the bot "/start <token>".
+// discovery_handoffs is a durable record only now (who, when, what was
+// gathered) -- not looked up by token anywhere. token still exists
+// because the table's schema requires one (unique, not null); it's
+// just an opaque id for the row rather than something a URL carries.
 function generateHandoffToken(): string {
   return crypto.randomUUID().replace(/-/g, '');
 }
@@ -450,20 +458,50 @@ function generateHandoffToken(): string {
 async function createDiscoveryHandoff(
   supabaseAdmin: SupabaseAdmin,
   params: { channel: Channel; externalId: string; summary: string }
-): Promise<string> {
-  const token = generateHandoffToken();
+): Promise<void> {
   const { error } = await supabaseAdmin.from('discovery_handoffs').insert({
-    token,
+    token: generateHandoffToken(),
     channel: params.channel,
     external_id: params.externalId,
     summary: params.summary
   });
   if (error) throw error;
-  return token;
+}
+
+// Proactively DMs the account owner via the manager bot's own Telegram
+// API the moment a discovery handoff fires, regardless of which channel
+// it came from -- a bot has no way to interrupt the owner's separate
+// chat with the manager account otherwise, so this is what actually
+// gets the manager context "before the conversation starts" per the
+// discovery-first design, not the (fixed, contextless) link itself.
+// Best-effort: a failure here must not break the reply the visitor
+// already got.
+async function notifyOwnerOfHandoff(
+  telegramBotToken: string,
+  ownerTelegramId: string,
+  channel: Channel,
+  summary: string
+): Promise<void> {
+  try {
+    const resp = await fetch(`${TELEGRAM_API_BASE}${telegramBotToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: Number(ownerTelegramId),
+        text: `New discovery handoff (${channel}):\n\n${summary}`
+      })
+    });
+    if (!resp.ok) {
+      const text = await resp.text().catch(() => '');
+      console.error(`notifyOwnerOfHandoff: sendMessage failed (${resp.status}):`, text.slice(0, 500));
+    }
+  } catch (err) {
+    console.error('notifyOwnerOfHandoff failed:', err);
+  }
 }
 
 export async function handleIncomingMessage(params: HandleMessageParams): Promise<HandleMessageResult> {
-  const { supabaseAdmin, channel, externalId, userMessage, openRouterApiKey, xaiApiKey, model, languageHint, telegramBotUsername } = params;
+  const { supabaseAdmin, channel, externalId, userMessage, openRouterApiKey, xaiApiKey, model, languageHint, telegramBotToken, ownerTelegramId } = params;
 
   const conversation = await findOrCreateConversation(supabaseAdmin, channel, externalId);
 
@@ -569,23 +607,22 @@ export async function handleIncomingMessage(params: HandleMessageParams): Promis
   }
 
   // Discovery-first handoff: once the model judges the conversation
-  // ready (needsHuman + a real discoverySummary), create the handoff
-  // record and, if a bot username is configured, a deep link the client
-  // can open to reach the manager bot with that context already
-  // attached. Applies uniformly across all three channels -- even
-  // 'telegram', where the client is already talking to this same bot:
-  // the caller (telegram-webhook) uses discoverySummary from the
-  // returned result to proactively notify the account owner, since a
-  // bot can't otherwise interrupt the owner's own separate chat.
+  // ready (needsHuman + a real discoverySummary), log the handoff and
+  // hand back the fixed manager link -- same for every channel. If this
+  // bot's own token + the owner's Telegram id are configured, also DM
+  // the owner immediately with the summary, since that (not the link)
+  // is what actually gets the manager context ahead of the client
+  // reaching out.
   let handoffUrl: string | undefined;
   if (needsHuman && discoverySummary) {
     try {
-      const token = await createDiscoveryHandoff(supabaseAdmin, { channel, externalId, summary: discoverySummary });
-      if (telegramBotUsername) {
-        handoffUrl = `https://t.me/${telegramBotUsername}?start=${token}`;
-      }
+      await createDiscoveryHandoff(supabaseAdmin, { channel, externalId, summary: discoverySummary });
     } catch (err) {
       console.error('createDiscoveryHandoff failed:', err);
+    }
+    handoffUrl = MANAGER_TELEGRAM_URL;
+    if (telegramBotToken && ownerTelegramId) {
+      await notifyOwnerOfHandoff(telegramBotToken, ownerTelegramId, channel, discoverySummary);
     }
   }
 
@@ -614,5 +651,5 @@ export async function handleIncomingMessage(params: HandleMessageParams): Promis
     })
     .eq('id', conversation.id);
 
-  return { reply, needsHuman, handoffUrl, discoverySummary: discoverySummary || undefined };
+  return { reply, needsHuman, handoffUrl };
 }
