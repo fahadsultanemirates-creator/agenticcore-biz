@@ -135,7 +135,7 @@
   const root = document.getElementById('catalogRoot');
   root.innerHTML = PRICING_CATALOG.map((cat) => `
     <div class="catalog-category">
-      <h3>${cat.category}</h3>
+      <h3>${cat.page ? `<a href="${cat.page}">${cat.category} →</a>` : cat.category}</h3>
       <table class="catalog-table">
         <tbody>
           ${cat.items.map((item) => `

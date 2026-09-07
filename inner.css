@@ -203,6 +203,14 @@
   margin-bottom: var(--space-sm);
 }
 
+.catalog-category h3 a {
+  color: inherit;
+}
+
+.catalog-category h3 a:hover {
+  text-decoration: underline;
+}
+
 .catalog-table {
   width: 100%;
   border-collapse: collapse;

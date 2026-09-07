@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organic Growth &amp; Intelligence — AgenticCore Biz</title>
+<meta name="description" content="Programmatic SEO &amp; content hubs, and real-time competitor &amp; market tracking — what each one is, how it works, and why it matters.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="inner.css">
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" alt="AgenticCore">
+      AgenticCore Biz
+    </a>
+    <div class="nav-links">
+      <a href="services.html">Services</a>
+      <a href="how-it-works.html">How it works</a>
+      <a href="business-pool.html">Business Pool</a>
+      <a href="referral.html">Referrals</a>
+    </div>
+    <div class="nav-cta">
+      <a href="index.html" class="btn btn-primary btn-sm">Home</a>
+      <a href="login.html" class="btn btn-secondary btn-sm">Log in</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<header class="inner-hero">
+  <div class="container">
+    <span class="hero-eyebrow"><span class="dot"></span> <a href="services.html" style="color:var(--text-tertiary);">Services</a> / Organic Growth &amp; Intelligence</span>
+    <h1>Organic Growth &amp; Intelligence</h1>
+    <p class="hero-sub">Growth that doesn't stop the moment ad spend does, and decisions made with an actual view of what your competitors are doing — not guesses.</p>
+  </div>
+</header>
+
+<section class="deep-section">
+  <div class="container narrow">
+
+    <div class="deep-block">
+      <span class="deep-index">What it is</span>
+      <h2>Programmatic SEO &amp; Content Hubs</h2>
+      <p>A structured set of search-optimized pages built around the actual terms your customers search for — not a single blog post here and there, but a real content footprint.</p>
+      <span class="deep-index" style="margin-top:var(--space-md);">How it works</span>
+      <p>We research the search terms and question patterns relevant to your business, then build out a connected hub of pages targeting them — set up once, with ongoing page production available monthly as the hub grows.</p>
+      <span class="deep-index" style="margin-top:var(--space-md);">Why it matters</span>
+      <p>A handful of blog posts rarely moves search rankings. A structured hub of pages, interlinked and built around real search demand, is what actually accumulates organic traffic over months — traffic that keeps showing up without ongoing ad spend.</p>
+    </div>
+
+    <div class="deep-block">
+      <span class="deep-index">What it is</span>
+      <h2>Real-Time Competitor &amp; Market Tracking</h2>
+      <p>Ongoing monitoring of what your competitors are actually doing — pricing changes, new campaigns, positioning shifts — surfaced to you as it happens, not discovered months later.</p>
+      <span class="deep-index" style="margin-top:var(--space-md);">How it works</span>
+      <p>Running monthly, the competitors and market signals worth watching are tracked continuously, with meaningful changes flagged directly rather than left for you to notice on your own.</p>
+      <span class="deep-index" style="margin-top:var(--space-md);">Why it matters</span>
+      <p>Strategy built on a stale view of the market is strategy built on outdated assumptions. Knowing what's actually changing around you is what keeps a plan responsive instead of reactive months too late.</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="category-pricing">
+  <div class="container narrow">
+    <div class="section-head">
+      <span class="section-eyebrow">Pricing</span>
+      <h2>Organic Growth &amp; Intelligence — what it costs</h2>
+      <p>Starting ranges — confirmed once we understand your specific goals and current setup.</p>
+    </div>
+    <div id="categoryPricingRoot"></div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <h2>Want this for your business?</h2>
+    <p>Tell us about your business and goals — costs nothing, and takes a few minutes.</p>
+    <a href="signup.html" class="btn btn-primary">Start the conversation</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo">
+          <img src="logo.png" alt="AgenticCore" width="24" height="24">
+          AgenticCore Biz
+        </a>
+        <p>AI-run marketing, planned before it's posted. Also offering full business setup and custom websites through AgenticCore Agency.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul><li><a href="services.html">All services &amp; pricing</a></li><li><a href="services-ai-video-creative.html">AI Video &amp; Creative</a></li><li><a href="services-lead-generation.html">Lead Generation &amp; Outreach</a></li><li><a href="services-paid-media.html">Paid Media &amp; Optimization</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul><li><a href="business-pool.html">Business Pool</a></li><li><a href="referral.html">Referral Program</a></li><li><a href="how-it-works.html">How it works</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul><li><a href="#">Terms of Service</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Referral Points Policy</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AgenticCore. All rights reserved.</span>
+      <span>An AgenticCore Company</span>
+    </div>
+  </div>
+</footer>
+
+<script src="pricing-catalog.js"></script>
+<script>
+(function renderCategoryPricing() {
+  const cat = PRICING_CATALOG.find((c) => c.category === 'Organic Growth & Intelligence');
+  document.getElementById('categoryPricingRoot').innerHTML = `
+    <table class="catalog-table">
+      <tbody>
+        ${cat.items.map((item) => `
+          <tr>
+            <td>
+              <span class="catalog-name">${item.name}</span>
+              <span class="catalog-unit">${item.unit}</span>
+            </td>
+            <td class="catalog-price">${formatCatalogPrice(item)}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+})();
+</script>
+<script src="main.js"></script>
+</body>
+</html>
