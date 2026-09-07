@@ -342,6 +342,17 @@ function appendForgeMessage(container, role, text) {
   return el;
 }
 
+function appendForgeHandoffLink(container, handoffUrl) {
+  const el = document.createElement('a');
+  el.href = handoffUrl;
+  el.target = '_blank';
+  el.rel = 'noopener';
+  el.className = 'forge-chat-handoff-link';
+  el.textContent = 'Continue with our manager on Telegram →';
+  container.appendChild(el);
+  container.scrollTop = container.scrollHeight;
+}
+
 function appendForgeTyping(container) {
   const el = document.createElement('div');
   el.className = 'forge-chat-typing';
@@ -411,9 +422,10 @@ function initForgeChat() {
     appendForgeTyping(messagesEl);
 
     try {
-      const { reply } = await callForgeChat('message', text);
+      const { reply, handoffUrl } = await callForgeChat('message', text);
       removeForgeTyping();
       appendForgeMessage(messagesEl, 'assistant', reply);
+      if (handoffUrl) appendForgeHandoffLink(messagesEl, handoffUrl);
     } catch (err) {
       console.error('Forge message failed:', err);
       removeForgeTyping();

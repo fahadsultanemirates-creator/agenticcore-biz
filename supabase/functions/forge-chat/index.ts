@@ -21,6 +21,7 @@ const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const XAI_API_KEY = Deno.env.get('XAI_API_KEY')!;
 const XAI_MODEL = Deno.env.get('XAI_MODEL') || undefined;
+const TELEGRAM_BOT_USERNAME = Deno.env.get('TELEGRAM_BOT_USERNAME') || undefined;
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -107,10 +108,11 @@ export async function handleRequest(req: Request): Promise<Response> {
         externalId: caller.id,
         userMessage: message,
         xaiApiKey: XAI_API_KEY,
-        model: XAI_MODEL
+        model: XAI_MODEL,
+        telegramBotUsername: TELEGRAM_BOT_USERNAME
       });
 
-      return jsonResponse({ reply: result.reply, needsHuman: result.needsHuman });
+      return jsonResponse({ reply: result.reply, needsHuman: result.needsHuman, handoffUrl: result.handoffUrl });
     } catch (err) {
       console.error('forge-chat: handleIncomingMessage failed:', err);
       return jsonResponse({ error: 'Something went wrong on our end. Please try again in a moment.' }, 500);

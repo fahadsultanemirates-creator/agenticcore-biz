@@ -126,6 +126,14 @@
   font-size: 0.8rem;
 }
 
+.chat-widget-handoff-link {
+  align-self: flex-start;
+  color: var(--accent);
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.3);
+  padding-bottom: 2px;
+}
+
 .chat-widget-typing {
   display: flex;
   align-items: center;

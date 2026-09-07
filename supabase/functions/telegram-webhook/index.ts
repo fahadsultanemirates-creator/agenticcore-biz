@@ -29,6 +29,12 @@ const OWNER_TELEGRAM_ID = Deno.env.get('OWNER_TELEGRAM_ID') || undefined;
 // this may not exist yet -- see commitWebsiteDraftIfApplicable below,
 // which skips the commit (not an error) when it's unset.
 const GITHUB_TOKEN = Deno.env.get('GITHUB_TOKEN') || undefined;
+// This bot's own public @username (no leading @) -- used only to build
+// the discovery-handoff deep link this file hands to widget/Forge
+// clients (see business-knowledge.ts). Optional: without it,
+// bot-core.ts still records the handoff and this file still notifies
+// the owner, there's just no link to hand back from those two channels.
+const TELEGRAM_BOT_USERNAME = Deno.env.get('TELEGRAM_BOT_USERNAME') || undefined;
 
 const TELEGRAM_API = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 // Telegram's hard limit is 4096 chars; this is just a safety margin so a
@@ -43,6 +49,7 @@ const TASK_ID_PATTERN = /AC-BIZ-\d{4}/i;
 const APPROVE_PATTERN = /^\/approve(?:@\S+)?\s+(AC-BIZ-\d{4})\b/i;
 const REJECT_PATTERN = /^\/reject(?:@\S+)?\s+(AC-BIZ-\d{4})\b/i;
 const STATUS_PATTERN = /^\/status(?:@\S+)?$/i;
+const START_WITH_TOKEN_PATTERN = /^\/start(?:@\S+)?\s+([A-Za-z0-9_-]+)\b/i;
 const APPROVABLE_STATUSES = new Set(['waiting_you', 'review']);
 
 const GITHUB_OWNER = 'fahadsultanemirates-creator';
@@ -275,6 +282,52 @@ async function commitWebsiteDraftIfApplicable(
 }
 
 // ============================================================
+// Discovery-first handoff: "/start <token>" -- Telegram sends this the
+// moment someone opens the https://t.me/<bot_username>?start=<token>
+// link handed out by the widget or Forge (see bot-core.ts's
+// createDiscoveryHandoff). Looks up the summary that link was built
+// from, greets the client with it already in mind instead of starting
+// cold, and proactively notifies the owner -- a bot has no way to
+// interrupt the owner's own separate chat otherwise, so this is the
+// only point where that notification can happen for those two channels.
+// ============================================================
+
+async function notifyOwnerOfDiscoveryHandoff(summary: string, source: string): Promise<void> {
+  if (!OWNER_TELEGRAM_ID) return;
+  await sendTelegramMessage(Number(OWNER_TELEGRAM_ID), `New discovery handoff (${source}):\n\n${summary}`);
+}
+
+async function handleStartWithToken(chatId: number, token: string): Promise<boolean> {
+  const { data: handoff, error } = await supabaseAdmin
+    .from('discovery_handoffs')
+    .select('id, channel, external_id, summary, consumed_at')
+    .eq('token', token)
+    .maybeSingle();
+
+  if (error) {
+    console.error('telegram-webhook: discovery handoff lookup failed', error);
+    return false;
+  }
+  // Not a real token (garbage payload, or already used) -- fall through
+  // to ordinary /start handling rather than erroring visibly; someone
+  // reusing an old link shouldn't see something that looks broken.
+  if (!handoff || handoff.consumed_at) return false;
+
+  await supabaseAdmin
+    .from('discovery_handoffs')
+    .update({ consumed_at: new Date().toISOString() })
+    .eq('id', handoff.id);
+
+  await notifyOwnerOfDiscoveryHandoff(handoff.summary, handoff.channel);
+
+  await sendTelegramMessage(
+    chatId,
+    `Thanks for reaching out — I've got the notes from your earlier conversation, and our manager will pick this up personally from here. Feel free to add anything else in the meantime.`
+  );
+  return true;
+}
+
+// ============================================================
 // Owner commands
 // ============================================================
 
@@ -488,6 +541,15 @@ export async function handleRequest(req: Request): Promise<Response> {
   const owner = isOwner(fromId);
 
   try {
+    const startTokenMatch = trimmed.match(START_WITH_TOKEN_PATTERN);
+    if (startTokenMatch) {
+      const handled = await handleStartWithToken(chatId, startTokenMatch[1]);
+      if (handled) return new Response('ok');
+      // Not a real/unused token -- fall through to ordinary handling
+      // below, which already treats a bare "/start" as a first-contact
+      // greeting.
+    }
+
     if (owner && STATUS_PATTERN.test(trimmed)) {
       await handleStatusCommand(chatId);
       return new Response('ok');
@@ -540,10 +602,20 @@ export async function handleRequest(req: Request): Promise<Response> {
       userMessage: text,
       xaiApiKey: XAI_API_KEY,
       model: XAI_MODEL,
-      languageHint
+      languageHint,
+      telegramBotUsername: TELEGRAM_BOT_USERNAME
     });
 
     await sendTelegramMessage(chatId, result.reply);
+
+    // A client already in this same Telegram chat completing discovery
+    // has no link to click -- notify the owner directly and immediately
+    // rather than leaving it to a later /status check.
+    if (result.discoverySummary) {
+      await notifyOwnerOfDiscoveryHandoff(result.discoverySummary, 'telegram').catch((err) => {
+        console.error('telegram-webhook: notifyOwnerOfDiscoveryHandoff failed', err);
+      });
+    }
   } catch (err) {
     console.error('telegram-webhook: unhandled error', err);
     // Best-effort -- if this also fails, there's nothing more to do

@@ -69,11 +69,21 @@ function appendMessage(container, role, text) {
   return el;
 }
 
-function appendHandoffNote(container) {
-  const el = document.createElement('div');
-  el.className = 'chat-widget-handoff-note';
-  el.textContent = "A team member will follow up on this — you don't need to do anything else here.";
-  container.appendChild(el);
+function appendHandoffNote(container, handoffUrl) {
+  if (handoffUrl) {
+    const el = document.createElement('a');
+    el.href = handoffUrl;
+    el.target = '_blank';
+    el.rel = 'noopener';
+    el.className = 'chat-widget-handoff-link';
+    el.textContent = 'Continue with our manager on Telegram →';
+    container.appendChild(el);
+  } else {
+    const el = document.createElement('div');
+    el.className = 'chat-widget-handoff-note';
+    el.textContent = "A team member will follow up on this — you don't need to do anything else here.";
+    container.appendChild(el);
+  }
   container.scrollTop = container.scrollHeight;
 }
 
@@ -153,7 +163,7 @@ function removeTypingIndicator() {
     appendTypingIndicator(messagesEl);
 
     try {
-      const { reply, needsHuman } = await callWidgetChat({
+      const { reply, needsHuman, handoffUrl } = await callWidgetChat({
         visitorId,
         action: 'message',
         message: text,
@@ -161,7 +171,7 @@ function removeTypingIndicator() {
       });
       removeTypingIndicator();
       appendMessage(messagesEl, 'assistant', reply);
-      if (needsHuman) appendHandoffNote(messagesEl);
+      if (needsHuman) appendHandoffNote(messagesEl, handoffUrl);
     } catch (err) {
       removeTypingIndicator();
       appendMessage(messagesEl, 'assistant', 'Something went wrong on our end. Please try again in a moment.');
