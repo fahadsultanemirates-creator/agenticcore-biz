@@ -301,6 +301,38 @@ async function renderPointsHistory(userId) {
   }
 }
 
+const PACKAGE_LABELS = {
+  'starter-engine': 'AI Starter Engine',
+  'omni-scale-growth-engine': 'Omni-Scale Growth Engine'
+};
+
+async function renderSubscriptionsPanel(userId) {
+  const list = document.getElementById('subscriptionsList');
+
+  const { data: subscriptions, error } = await supabaseClient
+    .from('package_subscriptions')
+    .select('*')
+    .eq('user_id', userId)
+    .order('next_due_date', { ascending: true });
+
+  if (error) {
+    console.error('Failed to load subscriptions', error);
+    return;
+  }
+
+  if (subscriptions.length) {
+    list.innerHTML = subscriptions.map((s) => `
+      <div class="dash-list-item">
+        <div>
+          <strong>${PACKAGE_LABELS[s.package_key] || s.package_key}</strong>
+          <p>$${Number(s.monthly_amount).toFixed(2)}/mo — next due ${new Date(s.next_due_date).toLocaleDateString()}</p>
+        </div>
+        <span class="dash-status-pill">${statusLabel(s.status)}</span>
+      </div>
+    `).join('');
+  }
+}
+
 async function renderBillingPanel(userId) {
   const billingList = document.getElementById('billingList');
 
@@ -466,6 +498,7 @@ function initForgeChat() {
   initForgeChat();
   renderProjectsPanel(session.user.id);
   renderBillingPanel(session.user.id);
+  renderSubscriptionsPanel(session.user.id);
   renderPointsHistory(session.user.id);
 
   function copyReferralLink(inputId) {

@@ -61,3 +61,29 @@
 .admin-table-wrap .dash-empty {
   padding: var(--space-md);
 }
+
+.admin-subscription-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.admin-subscription-form select,
+.admin-subscription-form input {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.admin-overdue-badge {
+  color: #F87171;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-left: 0.4rem;
+}

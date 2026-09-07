@@ -85,6 +85,30 @@
         </div>
       </section>
 
+      <section class="admin-section">
+        <h3>Package Subscriptions</h3>
+        <p class="dash-empty" style="margin-bottom:var(--space-sm);">Recurring billing for the two fixed packages. The Custom Package isn't tracked here — it's billed one-off, same as à la carte services.</p>
+        <div class="admin-subscription-form">
+          <select id="subUserSelect"></select>
+          <select id="subPackageSelect">
+            <option value="starter-engine">AI Starter Engine ($950/mo)</option>
+            <option value="omni-scale-growth-engine">Omni-Scale Growth Engine ($3,450/mo)</option>
+          </select>
+          <input type="number" id="subAmountInput" placeholder="Monthly amount" step="0.01" value="950">
+          <input type="date" id="subDueDateInput">
+          <button class="btn btn-primary btn-sm" id="subCreateBtn">Create Subscription</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Client</th><th>Package</th><th>Monthly</th><th>Next due</th><th>Status</th><th>Payment</th></tr>
+            </thead>
+            <tbody id="subscriptionsTableBody"></tbody>
+          </table>
+          <p class="dash-empty" id="subscriptionsEmpty">No subscriptions yet.</p>
+        </div>
+      </section>
+
     </div>
 
   </div>
