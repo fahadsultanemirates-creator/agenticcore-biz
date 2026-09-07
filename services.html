@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Services — AgenticCore Biz</title>
-<meta name="description" content="Every marketing service we offer, and exactly what's included.">
+<title>Services &amp; Pricing — AgenticCore Biz</title>
+<meta name="description" content="Every AI marketing service we offer, what it does, and what it costs — plus three packages, including a fully custom one scoped with you directly.">
 <link rel="stylesheet" href="main.css">
 <link rel="stylesheet" href="inner.css">
 </head>
@@ -32,9 +32,9 @@
 
 <header class="inner-hero">
   <div class="container">
-    <span class="hero-eyebrow"><span class="dot"></span> The full picture</span>
-    <h1>Every service, one clear plan</h1>
-    <p class="hero-sub">No tiers to compare — one standard plan, scoped to your business during onboarding, so there's nothing to guess before you start.</p>
+    <span class="hero-eyebrow"><span class="dot"></span> Services &amp; pricing</span>
+    <h1>Every service, what it does, what it costs</h1>
+    <p class="hero-sub">À la carte services below, or one of three packages further down — including a fully custom one we scope with you directly. Every price is a starting reference, not a blind checkout: nothing here gets ordered without a real conversation about your business first.</p>
   </div>
 </header>
 
@@ -54,28 +54,48 @@
     </div>
 
     <div class="deep-block">
-      <span class="deep-index">Planning & Feasibility</span>
+      <span class="deep-index">Planning &amp; Feasibility</span>
       <h2>No results without knowing your product, site, and competitors first</h2>
       <p>Before anything launches, we run a planning pass on your product, website, and competitors — then keep tracking as your market shifts, rather than scoping once and moving on.</p>
     </div>
 
     <div class="deep-block">
       <span class="deep-index">AgenticCore Agency</span>
-      <h2>Website and design work, discounted</h2>
-      <p>Need site work, a logo, or other design help alongside your marketing? It's discounted through our sister company, <a href="#">AgenticCore Agency</a>, rather than a separate full-price engagement.</p>
+      <h2>Website builds, logos, and AI-agent frameworks — through our sister company</h2>
+      <p>AgenticCore Biz is specifically the marketing services arm. For a website build, a logo, or any permanent AI-agent-framework solution, that's <a href="https://agenticcore.agency" target="_blank" rel="noopener">AgenticCore Agency</a> — and it's discounted for our clients rather than a separate full-price engagement.</p>
     </div>
 
-    <div class="note-box" style="margin-top:var(--space-xl);">
-      This is a typical scope, not a fixed promise — your exact plan is confirmed by the AI agent during scoping, before you pay anything. Complexity and current volume can shift things slightly in either direction.
+  </div>
+</section>
+
+<section id="catalog">
+  <div class="container narrow">
+    <div class="section-head">
+      <span class="section-eyebrow">À la carte</span>
+      <h2>Pick individual services</h2>
+      <p>Prices are ranges — the exact number is confirmed once we understand your specific goals and current setup.</p>
     </div>
+    <div id="catalogRoot"></div>
+    <div class="note-box">These are starting ranges, not fixed quotes. Nothing here is charged until you've discussed your business with us and agreed on scope and price — see how that works below.</div>
+  </div>
+</section>
+
+<section id="packages">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">Or go all-in</span>
+      <h2>Three packages</h2>
+      <p>Two fixed monthly packages, and a third built entirely around what you actually need.</p>
+    </div>
+    <div class="package-grid" id="packageRoot"></div>
   </div>
 </section>
 
 <section class="final-cta">
   <div class="container">
-    <h2>See it laid out for your business</h2>
-    <p>Start a request and get a confirmed plan — including what's actually included — in minutes.</p>
-    <a href="signup.html" class="btn btn-primary">Start a request</a>
+    <h2>Not sure what fits?</h2>
+    <p>Tell us about your business and goals — costs nothing, and takes a few minutes.</p>
+    <a href="signup.html" class="btn btn-primary">Start the conversation</a>
   </div>
 </section>
 
@@ -109,6 +129,47 @@
   </div>
 </footer>
 
+<script src="pricing-catalog.js"></script>
+<script>
+(function renderCatalog() {
+  const root = document.getElementById('catalogRoot');
+  root.innerHTML = PRICING_CATALOG.map((cat) => `
+    <div class="catalog-category">
+      <h3>${cat.category}</h3>
+      <table class="catalog-table">
+        <tbody>
+          ${cat.items.map((item) => `
+            <tr>
+              <td>
+                <span class="catalog-name">${item.name}</span>
+                <span class="catalog-unit">${item.unit}</span>
+              </td>
+              <td class="catalog-price">${formatCatalogPrice(item)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `).join('');
+})();
+
+(function renderPackages() {
+  const root = document.getElementById('packageRoot');
+  const check = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  root.innerHTML = PACKAGES.map((pkg) => `
+    <div class="package-card${pkg.featured ? ' featured' : ''}">
+      ${pkg.featured ? '<span class="package-featured-tag">Most popular</span>' : ''}
+      <h3>${pkg.name}</h3>
+      <div class="package-price">${pkg.price !== null ? `$${pkg.price.toLocaleString()} <span>${pkg.billing}</span>` : `<span>${pkg.billing}</span>`}</div>
+      <p>${pkg.description}</p>
+      <ul class="package-list">
+        ${pkg.includes.map((line) => `<li>${check} ${line}</li>`).join('')}
+      </ul>
+      <a href="signup.html" class="btn ${pkg.featured ? 'btn-primary' : 'btn-secondary'}">${pkg.price !== null ? 'Get started' : 'Talk to us'}</a>
+    </div>
+  `).join('');
+})();
+</script>
 <script src="main.js"></script>
 </body>
 </html>
