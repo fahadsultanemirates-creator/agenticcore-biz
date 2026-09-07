@@ -109,6 +109,21 @@
         </div>
       </section>
 
+      <section class="admin-section">
+        <h3>Client Attachments</h3>
+        <p class="dash-empty" style="margin-bottom:var(--space-sm);">Files clients have uploaded (currently via Forge chat). Download links expire after a few minutes -- refresh the list to get a new one.</p>
+        <button class="btn btn-secondary btn-sm" id="attachmentsRefreshBtn" style="margin-bottom:var(--space-sm);">Refresh</button>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th>File</th><th>Uploaded by</th><th>Date</th><th>Download</th></tr>
+            </thead>
+            <tbody id="attachmentsTableBody"></tbody>
+          </table>
+          <p class="dash-empty" id="attachmentsEmpty">No attachments uploaded yet.</p>
+        </div>
+      </section>
+
     </div>
 
   </div>
