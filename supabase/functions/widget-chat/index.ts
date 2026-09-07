@@ -22,6 +22,7 @@ const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY') || undefined;
 const OPENROUTER_MODEL = Deno.env.get('OPENROUTER_MODEL') || undefined;
 const XAI_API_KEY = Deno.env.get('XAI_API_KEY') || undefined;
 const XAI_MODEL = Deno.env.get('XAI_MODEL') || undefined;
+const TELEGRAM_BOT_USERNAME = Deno.env.get('TELEGRAM_BOT_USERNAME') || undefined;
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -90,10 +91,11 @@ export async function handleRequest(req: Request): Promise<Response> {
       openRouterApiKey: OPENROUTER_API_KEY,
       xaiApiKey: XAI_API_KEY,
       model: OPENROUTER_API_KEY ? OPENROUTER_MODEL : XAI_MODEL,
-      languageHint: typeof languageHint === 'string' ? languageHint : undefined
+      languageHint: typeof languageHint === 'string' ? languageHint : undefined,
+      telegramBotUsername: TELEGRAM_BOT_USERNAME
     });
 
-    return jsonResponse({ reply: result.reply, needsHuman: result.needsHuman });
+    return jsonResponse({ reply: result.reply, needsHuman: result.needsHuman, handoffUrl: result.handoffUrl });
   }
 
   return jsonResponse({ error: 'Unknown action -- expected "message" or "history"' }, 400);

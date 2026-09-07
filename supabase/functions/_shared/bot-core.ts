@@ -52,12 +52,30 @@ export interface HandleMessageParams {
   // language_code, or the browser's navigator.language) -- not a
   // default, just an extra hint appended to the system prompt.
   languageHint?: string;
+  // Public @username of the Telegram manager bot (no leading @), used
+  // to build the https://t.me/<username>?start=<token> handoff link.
+  // Without it, a discovery handoff still creates its record and (for
+  // telegram/forge) still notifies the owner, but handoffUrl comes back
+  // undefined -- callers should treat that as "no link to show yet"
+  // rather than an error.
+  telegramBotUsername?: string;
 }
 
 export interface HandleMessageResult {
   reply: string;
   needsHuman: boolean;
   rateLimited?: boolean;
+  // Set once a discovery conversation is ready to hand off to a human
+  // manager (see createDiscoveryHandoff below) -- a deep link that, once
+  // opened, sends the manager bot "/start <token>" and lets it greet the
+  // person with the gathered context already in hand, rather than from
+  // scratch.
+  handoffUrl?: string;
+  // The same discovery summary just recorded, whether or not handoffUrl
+  // could be built (e.g. telegramBotUsername not configured). The
+  // 'telegram' caller uses this directly to notify the account owner,
+  // since a bot can't otherwise interrupt the owner's own separate chat.
+  discoverySummary?: string;
 }
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -174,14 +192,19 @@ const REPLY_JSON_SCHEMA = {
       needs_human: {
         type: 'boolean',
         description:
-          'True if this conversation should be handed off to a human -- custom/large scope, price/scope negotiation, signs of frustration, or any commitment beyond pre-approved terms.'
+          'True if this conversation should be handed off to a human -- custom/large scope, price/scope negotiation, signs of frustration, or the discovery conversation has gathered enough to hand off (see discovery_summary).'
       },
       uncertain: {
         type: 'boolean',
         description: 'True if the assistant is not confident in the reply, or the question falls outside the given business knowledge.'
+      },
+      discovery_summary: {
+        type: 'string',
+        description:
+          'Once needs_human is true because the discovery conversation is ready to hand off, a concise summary for the human manager: new or existing business, their goal, and anything else worth knowing before reading the rest of the conversation. Empty string otherwise -- never summarize a conversation that has not actually gathered anything yet.'
       }
     },
-    required: ['reply', 'detected_language', 'needs_human', 'uncertain'],
+    required: ['reply', 'detected_language', 'needs_human', 'uncertain', 'discovery_summary'],
     additionalProperties: false
   }
 };
@@ -191,6 +214,7 @@ interface ParsedReply {
   detected_language: string;
   needs_human: boolean;
   uncertain: boolean;
+  discovery_summary: string;
 }
 
 // Telegram/Forge only: adds create_task/task_title/task_type on top of
@@ -212,11 +236,16 @@ const MANAGER_REPLY_JSON_SCHEMA = {
       needs_human: {
         type: 'boolean',
         description:
-          'True if this conversation should be handed off to a human -- custom/large scope, price/scope negotiation, signs of frustration, or any commitment beyond pre-approved terms.'
+          'True if this conversation should be handed off to a human -- custom/large scope, price/scope negotiation, signs of frustration, or the discovery conversation has gathered enough to hand off (see discovery_summary).'
       },
       uncertain: {
         type: 'boolean',
         description: 'True if the assistant is not confident in the reply, or the question falls outside the given business knowledge.'
+      },
+      discovery_summary: {
+        type: 'string',
+        description:
+          'Once needs_human is true because the discovery conversation is ready to hand off, a concise summary for the human manager: new or existing business, their goal, and anything else worth knowing before reading the rest of the conversation. Empty string otherwise -- never summarize a conversation that has not actually gathered anything yet.'
       },
       create_task: {
         type: 'boolean',
@@ -232,7 +261,7 @@ const MANAGER_REPLY_JSON_SCHEMA = {
         description: 'Short category for the task, e.g. "real-estate", "general-business", "revision", "general". Empty string if create_task is false.'
       }
     },
-    required: ['reply', 'detected_language', 'needs_human', 'uncertain', 'create_task', 'task_title', 'task_type'],
+    required: ['reply', 'detected_language', 'needs_human', 'uncertain', 'discovery_summary', 'create_task', 'task_title', 'task_type'],
     additionalProperties: false
   }
 };
@@ -372,7 +401,7 @@ async function hasOpenManagerTask(
 // (the actual race guard) rather than trusting the count alone.
 async function createManagerTask(
   supabaseAdmin: SupabaseAdmin,
-  params: { channel: Channel; externalId: string; title: string; taskType: string }
+  params: { channel: Channel; externalId: string; title: string; taskType: string; brief?: string }
 ): Promise<string> {
   let lastError: unknown = null;
 
@@ -393,6 +422,7 @@ async function createManagerTask(
       external_id: params.externalId,
       title: params.title,
       task_type: params.taskType,
+      brief: params.brief || null,
       status: 'waiting_you'
     });
 
@@ -408,8 +438,32 @@ async function createManagerTask(
   throw lastError ?? new Error('Could not allocate a unique manager task id after retries');
 }
 
+// A short, URL-safe, unguessable token -- Telegram's deep-link `start`
+// parameter only allows [A-Za-z0-9_-], up to 64 chars, so a free-text
+// summary can never go in the link itself. This token is looked up
+// server-side (see discovery_handoffs in migration 0006) once the
+// client opens the link and Telegram sends the bot "/start <token>".
+function generateHandoffToken(): string {
+  return crypto.randomUUID().replace(/-/g, '');
+}
+
+async function createDiscoveryHandoff(
+  supabaseAdmin: SupabaseAdmin,
+  params: { channel: Channel; externalId: string; summary: string }
+): Promise<string> {
+  const token = generateHandoffToken();
+  const { error } = await supabaseAdmin.from('discovery_handoffs').insert({
+    token,
+    channel: params.channel,
+    external_id: params.externalId,
+    summary: params.summary
+  });
+  if (error) throw error;
+  return token;
+}
+
 export async function handleIncomingMessage(params: HandleMessageParams): Promise<HandleMessageResult> {
-  const { supabaseAdmin, channel, externalId, userMessage, openRouterApiKey, xaiApiKey, model, languageHint } = params;
+  const { supabaseAdmin, channel, externalId, userMessage, openRouterApiKey, xaiApiKey, model, languageHint, telegramBotUsername } = params;
 
   const conversation = await findOrCreateConversation(supabaseAdmin, channel, externalId);
 
@@ -437,6 +491,7 @@ export async function handleIncomingMessage(params: HandleMessageParams): Promis
   let detectedLanguage: string;
   let needsHuman: boolean;
   let uncertain: boolean;
+  let discoverySummary: string;
 
   if (channel === 'telegram' || channel === 'forge') {
     if (!xaiApiKey) throw new Error(`xaiApiKey is required for the ${channel} channel`);
@@ -452,6 +507,7 @@ export async function handleIncomingMessage(params: HandleMessageParams): Promis
     detectedLanguage = parsed.detected_language;
     needsHuman = Boolean(parsed.needs_human);
     uncertain = Boolean(parsed.uncertain);
+    discoverySummary = parsed.discovery_summary || '';
     reply = parsed.reply;
 
     if (parsed.create_task) {
@@ -475,7 +531,8 @@ export async function handleIncomingMessage(params: HandleMessageParams): Promis
             channel,
             externalId,
             title: parsed.task_title || 'Untitled task',
-            taskType: parsed.task_type || 'general'
+            taskType: parsed.task_type || 'general',
+            brief: discoverySummary || undefined
           });
           reply = `${reply}\n\nTask ID: ${publicId}`;
         } catch (err) {
@@ -507,7 +564,29 @@ export async function handleIncomingMessage(params: HandleMessageParams): Promis
     detectedLanguage = parsed.detected_language;
     needsHuman = Boolean(parsed.needs_human);
     uncertain = Boolean(parsed.uncertain);
+    discoverySummary = parsed.discovery_summary || '';
     reply = parsed.reply;
+  }
+
+  // Discovery-first handoff: once the model judges the conversation
+  // ready (needsHuman + a real discoverySummary), create the handoff
+  // record and, if a bot username is configured, a deep link the client
+  // can open to reach the manager bot with that context already
+  // attached. Applies uniformly across all three channels -- even
+  // 'telegram', where the client is already talking to this same bot:
+  // the caller (telegram-webhook) uses discoverySummary from the
+  // returned result to proactively notify the account owner, since a
+  // bot can't otherwise interrupt the owner's own separate chat.
+  let handoffUrl: string | undefined;
+  if (needsHuman && discoverySummary) {
+    try {
+      const token = await createDiscoveryHandoff(supabaseAdmin, { channel, externalId, summary: discoverySummary });
+      if (telegramBotUsername) {
+        handoffUrl = `https://t.me/${telegramBotUsername}?start=${token}`;
+      }
+    } catch (err) {
+      console.error('createDiscoveryHandoff failed:', err);
+    }
   }
 
   await supabaseAdmin.from('bot_messages').insert([
@@ -535,5 +614,5 @@ export async function handleIncomingMessage(params: HandleMessageParams): Promis
     })
     .eq('id', conversation.id);
 
-  return { reply, needsHuman };
+  return { reply, needsHuman, handoffUrl, discoverySummary: discoverySummary || undefined };
 }
