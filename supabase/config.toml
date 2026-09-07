@@ -1,9 +1,16 @@
 # AgenticCore Biz — Supabase project config.
 #
-# payram-webhook is called directly by PayRam with no Supabase user
-# session, so it can't be gated behind JWT verification like a normal
-# authenticated function call -- it authenticates the request itself via
-# an HMAC signature (see supabase/functions/payram-webhook/index.ts).
+# payram-webhook and telegram-webhook are both called directly by an
+# external service (PayRam, Telegram) with no Supabase user session, so
+# neither can be gated behind the platform's default JWT verification --
+# each authenticates the request itself (an HMAC signature for PayRam, a
+# shared secret header for Telegram). Without this, every call from
+# either service is rejected with a 401 at the platform gate before the
+# function's own code ever runs, regardless of whether the webhook is
+# otherwise configured correctly.
 
 [functions.payram-webhook]
+verify_jwt = false
+
+[functions.telegram-webhook]
 verify_jwt = false

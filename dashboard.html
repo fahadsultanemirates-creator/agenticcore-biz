@@ -60,9 +60,14 @@
     </div>
 
     <div class="dash-panel" data-panel="new-request">
-      <div class="dash-empty-state">
-        <h3>New Request is almost ready</h3>
-        <p>We're finishing the request flow — check back soon to submit your first plan.</p>
+      <h3>Tell Forge about your business</h3>
+      <p class="referral-explainer" style="margin-top:-0.5rem;">A self-serve request form is coming soon — for now, describe your business and goals here and Forge will scope it with the team.</p>
+      <div class="forge-chat" id="forgeChat">
+        <div class="forge-chat-messages" id="forgeChatMessages" aria-live="polite"></div>
+        <form class="forge-chat-form" id="forgeChatForm">
+          <input type="text" id="forgeChatInput" class="forge-chat-input" placeholder="Tell Forge about your business…" autocomplete="off" maxlength="4000">
+          <button type="submit" class="btn btn-primary btn-sm" id="forgeChatSend">Send</button>
+        </form>
       </div>
     </div>
 
