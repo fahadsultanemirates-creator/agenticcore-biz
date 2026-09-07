@@ -436,6 +436,21 @@
   opacity: 0.6;
 }
 
+.forge-chat-attach-btn {
+  flex-shrink: 0;
+  padding: 0.6rem 0.7rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.forge-chat-attach-btn:disabled {
+  opacity: 0.6;
+}
+
+.forge-chat-message-attachment {
+  border-style: dashed;
+}
+
 @media (max-width: 900px) {
   .forge-chat {
     height: 400px;

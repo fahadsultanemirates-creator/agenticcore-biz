@@ -65,6 +65,8 @@
       <div class="forge-chat" id="forgeChat">
         <div class="forge-chat-messages" id="forgeChatMessages" aria-live="polite"></div>
         <form class="forge-chat-form" id="forgeChatForm">
+          <input type="file" id="forgeChatAttachInput" hidden accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.txt,.csv">
+          <button type="button" class="btn btn-secondary btn-sm forge-chat-attach-btn" id="forgeChatAttachBtn" title="Attach a file" aria-label="Attach a file">📎</button>
           <input type="text" id="forgeChatInput" class="forge-chat-input" placeholder="Tell Forge about your business…" autocomplete="off" maxlength="4000">
           <button type="submit" class="btn btn-primary btn-sm" id="forgeChatSend">Send</button>
         </form>

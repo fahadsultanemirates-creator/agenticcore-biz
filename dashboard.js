@@ -365,13 +365,37 @@ async function renderBillingPanel(userId) {
 // handleIncomingMessage on the 'forge' channel) -- a completed
 // conversation files a manager_tasks row for the team to scope and
 // price, since there's no self-serve request form yet.
+const FORGE_ATTACHMENT_PREFIX = '📎 Attached: ';
+const FORGE_MAX_ATTACHMENT_BYTES = 15 * 1024 * 1024;
+
 function appendForgeMessage(container, role, text) {
   const el = document.createElement('div');
-  el.className = `forge-chat-message forge-chat-message-${role}`;
+  const isAttachment = role === 'user' && text.startsWith(FORGE_ATTACHMENT_PREFIX);
+  el.className = `forge-chat-message forge-chat-message-${role}${isAttachment ? ' forge-chat-message-attachment' : ''}`;
   el.textContent = text;
   container.appendChild(el);
   container.scrollTop = container.scrollHeight;
   return el;
+}
+
+function sanitizeForgeAttachmentFilename(name) {
+  const cleaned = name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-100);
+  return cleaned || 'file';
+}
+
+// Uploads straight to the request-attachments bucket under the caller's
+// own folder (schema/RLS from migration 0004 -- insert_own policy checks
+// the first path segment equals auth.uid()). No requests/manager_tasks
+// row is touched here; the attachment is tied to the client's Forge
+// conversation the same way any other message is -- see below.
+async function uploadForgeAttachment(file) {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) throw new Error('Not authenticated');
+
+  const path = `${session.user.id}/${Date.now()}-${sanitizeForgeAttachmentFilename(file.name)}`;
+  const { error } = await supabaseClient.storage.from('request-attachments').upload(path, file, { upsert: false });
+  if (error) throw error;
+  return file.name;
 }
 
 function appendForgeHandoffLink(container, handoffUrl) {
@@ -422,9 +446,53 @@ function initForgeChat() {
   const messagesEl = document.getElementById('forgeChatMessages');
   const form = document.getElementById('forgeChatForm');
   const input = document.getElementById('forgeChatInput');
+  const attachBtn = document.getElementById('forgeChatAttachBtn');
+  const attachInput = document.getElementById('forgeChatAttachInput');
 
   let historyLoaded = false;
   let sending = false;
+
+  function setSending(value) {
+    sending = value;
+    input.disabled = value;
+    attachBtn.disabled = value;
+  }
+
+  attachBtn.addEventListener('click', () => {
+    if (sending) return;
+    attachInput.click();
+  });
+
+  attachInput.addEventListener('change', async () => {
+    const file = attachInput.files[0];
+    attachInput.value = '';
+    if (!file || sending) return;
+
+    if (file.size > FORGE_MAX_ATTACHMENT_BYTES) {
+      appendForgeMessage(messagesEl, 'assistant', `That file is too large — please attach something under ${Math.floor(FORGE_MAX_ATTACHMENT_BYTES / (1024 * 1024))}MB.`);
+      return;
+    }
+
+    setSending(true);
+    appendForgeTyping(messagesEl);
+
+    try {
+      const filename = await uploadForgeAttachment(file);
+      const attachmentMessage = `${FORGE_ATTACHMENT_PREFIX}${filename}`;
+      const { reply, handoffUrl } = await callForgeChat('message', attachmentMessage);
+      removeForgeTyping();
+      appendForgeMessage(messagesEl, 'user', attachmentMessage);
+      appendForgeMessage(messagesEl, 'assistant', reply);
+      if (handoffUrl) appendForgeHandoffLink(messagesEl, handoffUrl);
+    } catch (err) {
+      console.error('Forge attachment upload failed:', err);
+      removeForgeTyping();
+      appendForgeMessage(messagesEl, 'assistant', 'Sorry, that upload failed. Please try again in a moment.');
+    } finally {
+      setSending(false);
+      input.focus();
+    }
+  });
 
   async function loadHistory() {
     if (historyLoaded) return;
@@ -449,8 +517,7 @@ function initForgeChat() {
 
     appendForgeMessage(messagesEl, 'user', text);
     input.value = '';
-    sending = true;
-    input.disabled = true;
+    setSending(true);
     appendForgeTyping(messagesEl);
 
     try {
@@ -463,8 +530,7 @@ function initForgeChat() {
       removeForgeTyping();
       appendForgeMessage(messagesEl, 'assistant', 'Something went wrong on our end. Please try again in a moment.');
     } finally {
-      sending = false;
-      input.disabled = false;
+      setSending(false);
       input.focus();
     }
   });
