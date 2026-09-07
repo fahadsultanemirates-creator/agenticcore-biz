@@ -6,6 +6,15 @@
 
 const PROJECT_STATUSES = ['in_progress', 'awaiting_review', 'revision_requested', 'delivered', 'approved'];
 const BILLING_STATUSES = ['pending', 'paid', 'refunded'];
+const SUBSCRIPTION_STATUSES = ['active', 'paused', 'cancelled'];
+const PACKAGE_LABELS = {
+  'starter-engine': 'AI Starter Engine',
+  'omni-scale-growth-engine': 'Omni-Scale Growth Engine'
+};
+const PACKAGE_DEFAULT_AMOUNTS = {
+  'starter-engine': 950,
+  'omni-scale-growth-engine': 3450
+};
 
 let profilesById = new Map();
 
@@ -174,16 +183,122 @@ function renderProfiles(profiles) {
   });
 }
 
+function renderSubscriptions(subscriptions) {
+  const body = document.getElementById('subscriptionsTableBody');
+  const empty = document.getElementById('subscriptionsEmpty');
+  if (!subscriptions.length) {
+    empty.style.display = 'block';
+    body.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  body.innerHTML = subscriptions.map((s) => {
+    const overdue = s.status === 'active' && s.next_due_date < today;
+    return `
+      <tr>
+        <td>${clientLabel(s.user_id)}</td>
+        <td>${PACKAGE_LABELS[s.package_key] || s.package_key}</td>
+        <td>$${Number(s.monthly_amount).toFixed(2)}</td>
+        <td>${s.next_due_date}${overdue ? '<span class="admin-overdue-badge">Overdue</span>' : ''}</td>
+        <td>
+          <select data-sub-status="${s.id}">
+            ${SUBSCRIPTION_STATUSES.map((st) => `<option value="${st}" ${st === s.status ? 'selected' : ''}>${st}</option>`).join('')}
+          </select>
+          <button class="btn btn-secondary btn-sm" data-update-sub-status="${s.id}">Update</button>
+        </td>
+        <td>
+          <button class="btn btn-primary btn-sm" data-record-payment="${s.id}">Record Payment</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  body.querySelectorAll('[data-update-sub-status]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const subId = btn.dataset.updateSubStatus;
+      const select = body.querySelector(`[data-sub-status="${subId}"]`);
+      const { error } = await supabaseClient.rpc('admin_update_subscription_status', {
+        p_subscription_id: subId,
+        p_new_status: select.value
+      });
+      if (error) {
+        alert('Failed to update subscription: ' + error.message);
+        return;
+      }
+      await loadAll();
+    });
+  });
+
+  body.querySelectorAll('[data-record-payment]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const subId = btn.dataset.recordPayment;
+      if (!confirm('Record this cycle as paid? This creates a billing row and advances the next due date by one month.')) return;
+      const { error } = await supabaseClient.rpc('admin_record_subscription_payment', {
+        p_subscription_id: subId
+      });
+      if (error) {
+        alert('Failed to record payment: ' + error.message);
+        return;
+      }
+      await loadAll();
+    });
+  });
+}
+
+function populateSubUserSelect(profiles) {
+  const select = document.getElementById('subUserSelect');
+  const currentValue = select.value;
+  select.innerHTML = profiles.map((p) => `<option value="${p.id}">${p.full_name || p.id}</option>`).join('');
+  if (currentValue) select.value = currentValue;
+}
+
+function initSubscriptionForm() {
+  document.getElementById('subPackageSelect').addEventListener('change', (e) => {
+    document.getElementById('subAmountInput').value = PACKAGE_DEFAULT_AMOUNTS[e.target.value] || '';
+  });
+
+  document.getElementById('subCreateBtn').addEventListener('click', async () => {
+    const userId = document.getElementById('subUserSelect').value;
+    const packageKey = document.getElementById('subPackageSelect').value;
+    const amount = parseFloat(document.getElementById('subAmountInput').value);
+    const dueDate = document.getElementById('subDueDateInput').value;
+
+    if (!userId || !amount || !dueDate) {
+      alert('Fill in client, amount, and first due date.');
+      return;
+    }
+
+    const { error } = await supabaseClient.rpc('admin_create_package_subscription', {
+      p_user_id: userId,
+      p_package_key: packageKey,
+      p_monthly_amount: amount,
+      p_first_due_date: dueDate
+    });
+
+    if (error) {
+      alert('Failed to create subscription: ' + error.message);
+      return;
+    }
+
+    document.getElementById('subDueDateInput').value = '';
+    await loadAll();
+  });
+}
+
 async function loadAll() {
-  const [profilesRes, requestsRes, projectsRes, billingRes] = await Promise.all([
+  const [profilesRes, requestsRes, projectsRes, billingRes, subscriptionsRes] = await Promise.all([
     supabaseClient.from('profiles').select('*'),
     supabaseClient.from('requests').select('*').order('created_at', { ascending: false }),
     supabaseClient.from('projects').select('*').order('created_at', { ascending: false }),
-    supabaseClient.from('billing').select('*').order('created_at', { ascending: false })
+    supabaseClient.from('billing').select('*').order('created_at', { ascending: false }),
+    supabaseClient.from('package_subscriptions').select('*').order('next_due_date', { ascending: true })
   ]);
 
-  if (profilesRes.error || requestsRes.error || projectsRes.error || billingRes.error) {
-    console.error('Admin load failed', profilesRes.error, requestsRes.error, projectsRes.error, billingRes.error);
+  if (profilesRes.error || requestsRes.error || projectsRes.error || billingRes.error || subscriptionsRes.error) {
+    console.error('Admin load failed', profilesRes.error, requestsRes.error, projectsRes.error, billingRes.error, subscriptionsRes.error);
     return;
   }
 
@@ -193,6 +308,8 @@ async function loadAll() {
   renderProjects(projectsRes.data);
   renderBilling(billingRes.data);
   renderProfiles(profilesRes.data);
+  renderSubscriptions(subscriptionsRes.data);
+  populateSubUserSelect(profilesRes.data);
 }
 
 (async function init() {
@@ -214,5 +331,6 @@ async function loadAll() {
   }
 
   document.getElementById('adminContent').hidden = false;
+  initSubscriptionForm();
   await loadAll();
 })();
