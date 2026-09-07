@@ -21,7 +21,8 @@ const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const XAI_API_KEY = Deno.env.get('XAI_API_KEY')!;
 const XAI_MODEL = Deno.env.get('XAI_MODEL') || undefined;
-const TELEGRAM_BOT_USERNAME = Deno.env.get('TELEGRAM_BOT_USERNAME') || undefined;
+const TELEGRAM_BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') || undefined;
+const OWNER_TELEGRAM_ID = Deno.env.get('OWNER_TELEGRAM_ID') || undefined;
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -109,7 +110,8 @@ export async function handleRequest(req: Request): Promise<Response> {
         userMessage: message,
         xaiApiKey: XAI_API_KEY,
         model: XAI_MODEL,
-        telegramBotUsername: TELEGRAM_BOT_USERNAME
+        telegramBotToken: TELEGRAM_BOT_TOKEN,
+        ownerTelegramId: OWNER_TELEGRAM_ID
       });
 
       return jsonResponse({ reply: result.reply, needsHuman: result.needsHuman, handoffUrl: result.handoffUrl });
