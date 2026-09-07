@@ -3,17 +3,30 @@
 // function (same signature scheme, same idempotency ordering) --
 // only env var names and .biz's own schema differ.
 //
-// Public endpoint (server-to-server from PayRam, no Supabase JWT --
-// verify_jwt = false in supabase/config.toml). Trusts nothing until the
-// X-Payram-Signature header is verified: HMAC-SHA256 of the *raw* body,
-// keyed with the same project API key used to create payments (PayRam
-// has no separate webhook signing secret).
+// Public endpoint (server-to-server, no Supabase JWT -- verify_jwt =
+// false in supabase/config.toml). Two ways in are trusted:
+//   1. PayRam itself, verified via the X-Payram-Signature header
+//      (HMAC-SHA256 of the *raw* body, keyed with the same project API
+//      key used to create payments -- PayRam has no separate webhook
+//      signing secret).
+//   2. .agency's shared PayRam relay: since .biz reuses .agency's
+//      PayRam project/keys (one shared wallet -- see
+//      payram-create-payment's header comment), PayRam's own webhook
+//      only ever reaches .agency's endpoint, which strips the "biz-"
+//      invoiceID prefix and re-dispatches .biz's events here. Those
+//      calls carry X-Internal-Relay-Secret instead of a PayRam
+//      signature -- if it matches INTERNAL_RELAY_SECRET, the payload
+//      is treated as pre-verified and PayRam's own signature check is
+//      skipped for that request only. Everything after
+//      authentication -- parsing, idempotency, the requests/billing
+//      writes -- is identical either way.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const PAYRAM_API_KEY = Deno.env.get('PAYRAM_API_KEY')!;
+const INTERNAL_RELAY_SECRET = Deno.env.get('INTERNAL_RELAY_SECRET') || undefined;
 
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -54,16 +67,21 @@ export async function handleRequest(req: Request): Promise<Response> {
   // the exact bytes PayRam sent, before any JSON parsing.
   const rawBody = await req.text();
 
-  const signatureHeader = req.headers.get('X-Payram-Signature');
-  if (!signatureHeader || !signatureHeader.startsWith('sha256=')) {
-    return new Response('Unauthorized', { status: 401 });
-  }
+  const relaySecretHeader = req.headers.get('X-Internal-Relay-Secret');
+  const isVerifiedRelay = Boolean(INTERNAL_RELAY_SECRET) && Boolean(relaySecretHeader) && constantTimeEqual(relaySecretHeader!, INTERNAL_RELAY_SECRET!);
 
-  const expectedHex = await computeHmacSha256Hex(PAYRAM_API_KEY, rawBody);
-  const providedHex = signatureHeader.slice('sha256='.length);
+  if (!isVerifiedRelay) {
+    const signatureHeader = req.headers.get('X-Payram-Signature');
+    if (!signatureHeader || !signatureHeader.startsWith('sha256=')) {
+      return new Response('Unauthorized', { status: 401 });
+    }
 
-  if (!constantTimeEqual(providedHex, expectedHex)) {
-    return new Response('Unauthorized', { status: 401 });
+    const expectedHex = await computeHmacSha256Hex(PAYRAM_API_KEY, rawBody);
+    const providedHex = signatureHeader.slice('sha256='.length);
+
+    if (!constantTimeEqual(providedHex, expectedHex)) {
+      return new Response('Unauthorized', { status: 401 });
+    }
   }
 
   let payload: any;
