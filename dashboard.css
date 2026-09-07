@@ -457,6 +457,76 @@
   }
 }
 
+.new-request-form {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.new-request-form .field-group {
+  margin-bottom: var(--space-md);
+}
+
+.new-request-form label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.new-request-form select,
+.new-request-form textarea {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.new-request-form textarea {
+  resize: vertical;
+}
+
+.new-request-form select:focus,
+.new-request-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.new-request-status {
+  margin-top: var(--space-sm);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+}
+
+.new-request-status-pending {
+  background: var(--bg-panel-hover);
+  color: var(--text-secondary);
+}
+
+.new-request-status-success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ADE80;
+}
+
+.new-request-status-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #F87171;
+}
+
+.new-request-forge-heading {
+  margin-top: var(--space-lg);
+}
+
 /* ============================================
    Delivery lifecycle (revision / approve)
    ============================================ */

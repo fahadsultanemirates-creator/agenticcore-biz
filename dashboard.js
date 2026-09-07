@@ -1,7 +1,6 @@
 // AgenticCore Biz — dashboard shell: header (points/referral/Business
 // Pool), tab navigation, and read-only rendering of requests/projects/
-// billing. The New Request submission flow itself lands in a later PR --
-// this only needs to load and display whatever already exists.
+// billing, plus the New Request self-serve form and Forge chat.
 
 const BUSINESS_POOL_THRESHOLD = 5000;
 const UPFRONT_FRACTION = 0.3;
@@ -442,6 +441,131 @@ async function callForgeChat(action, message) {
   return resp.json();
 }
 
+// -------- New Request: self-serve form --------
+// Writes straight into the `requests` table via the client's own
+// insert_own_requests RLS policy (migration 0001) -- the same table
+// and admin.html "Pending requests" / Create Project flow that have
+// been there since day one, just never had a form to feed them.
+// (Forge chat's own pipeline -- manager_tasks/AC-BIZ ids -- is built
+// around an AI judging an open-ended conversation and doesn't fit a
+// structured, non-conversational form.) A best-effort call to
+// notify-new-request pings the owner on Telegram immediately, the
+// same "manager finds out right away" property Forge/Telegram
+// discovery handoffs already have.
+// PRICING_CATALOG/PACKAGES come from pricing-catalog.js, the same
+// source of truth services.html/index.html use, so the dropdown can
+// never drift from the site's own published catalog.
+
+function populateNewRequestSelect() {
+  const select = document.getElementById('newRequestInterest');
+
+  const packagesGroup = document.createElement('optgroup');
+  packagesGroup.label = 'Packages';
+  PACKAGES.forEach((pkg) => {
+    const opt = document.createElement('option');
+    opt.value = `package:${pkg.key}`;
+    opt.textContent = pkg.price ? `${pkg.name} — $${pkg.price}/mo` : `${pkg.name} — custom pricing`;
+    packagesGroup.appendChild(opt);
+  });
+  select.appendChild(packagesGroup);
+
+  const servicesGroup = document.createElement('optgroup');
+  servicesGroup.label = 'À la carte services';
+  PRICING_CATALOG.forEach((cat) => {
+    cat.items.forEach((item) => {
+      const opt = document.createElement('option');
+      opt.value = `service:${cat.category}::${item.name}`;
+      opt.textContent = `${item.name} — ${cat.category}`;
+      servicesGroup.appendChild(opt);
+    });
+  });
+  select.appendChild(servicesGroup);
+
+  const generalOpt = document.createElement('option');
+  generalOpt.value = 'general';
+  generalOpt.textContent = 'Not sure yet — just want to talk';
+  select.appendChild(generalOpt);
+}
+
+function parseNewRequestInterest(value) {
+  if (value.startsWith('package:')) {
+    const key = value.slice('package:'.length);
+    const pkg = PACKAGES.find((p) => p.key === key);
+    return { serviceCategory: `Package: ${pkg ? pkg.name : key}`, taskType: key };
+  }
+  if (value.startsWith('service:')) {
+    const [category, itemName] = value.slice('service:'.length).split('::');
+    return { serviceCategory: category, taskType: itemName };
+  }
+  return { serviceCategory: 'General inquiry', taskType: 'general' };
+}
+
+function showNewRequestStatus(message, kind) {
+  const el = document.getElementById('newRequestStatus');
+  el.textContent = message;
+  el.hidden = false;
+  el.className = `new-request-status new-request-status-${kind}`;
+}
+
+async function notifyNewRequest(requestId) {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) return;
+  await fetch(`${SUPABASE_URL}/functions/v1/notify-new-request`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session.access_token}`
+    },
+    body: JSON.stringify({ requestId })
+  });
+}
+
+function initNewRequestForm(userId) {
+  populateNewRequestSelect();
+
+  const form = document.getElementById('newRequestForm');
+  const submitBtn = document.getElementById('newRequestSubmit');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const interestValue = document.getElementById('newRequestInterest').value;
+    const description = document.getElementById('newRequestDescription').value.trim();
+
+    if (!interestValue || !description) {
+      showNewRequestStatus('Please select what you’re interested in and add a short description.', 'error');
+      return;
+    }
+
+    const { serviceCategory, taskType } = parseNewRequestInterest(interestValue);
+
+    submitBtn.disabled = true;
+    showNewRequestStatus('Submitting…', 'pending');
+
+    try {
+      const { data, error } = await supabaseClient
+        .from('requests')
+        .insert({ user_id: userId, service_category: serviceCategory, task_type: taskType, description })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      form.reset();
+      showNewRequestStatus("Thanks! Your request has been sent to the team — we'll follow up shortly.", 'success');
+
+      notifyNewRequest(data.id).catch((err) => console.error('notify-new-request failed:', err));
+
+      renderProjectsPanel(userId);
+    } catch (err) {
+      console.error('Failed to submit request', err);
+      showNewRequestStatus('Something went wrong submitting your request. Please try again.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+}
+
 function initForgeChat() {
   const messagesEl = document.getElementById('forgeChatMessages');
   const form = document.getElementById('forgeChatForm');
@@ -561,6 +685,7 @@ function initForgeChat() {
 
   renderHeader(profile);
   initTabs();
+  initNewRequestForm(session.user.id);
   initForgeChat();
   renderProjectsPanel(session.user.id);
   renderBillingPanel(session.user.id);
