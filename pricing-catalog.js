@@ -8,6 +8,7 @@
 const PRICING_CATALOG = [
   {
     category: 'AI Video & Creative',
+    page: 'services-ai-video-creative.html',
     items: [
       { name: 'Multilingual AI Avatar Spokesperson videos', unit: 'per 60–90s video', priceLow: 175, priceHigh: 250 },
       { name: 'Automated Video Repurposing', unit: 'per month, 12 vertical shorts/reels', priceLow: 450, priceHigh: 750 },
@@ -16,6 +17,7 @@ const PRICING_CATALOG = [
   },
   {
     category: 'Lead Generation & Outreach',
+    page: 'services-lead-generation.html',
     items: [
       { name: 'Multi-Agent Lead Scraping & Enrichment', unit: '1,000 ICP-verified B2B leads', priceLow: 400, priceHigh: 700 },
       { name: 'Hyper-Personalized Cold Outreach', unit: 'per month, full outbound infrastructure', priceLow: 1200, priceHigh: 1800 },
@@ -24,6 +26,7 @@ const PRICING_CATALOG = [
   },
   {
     category: 'Customer Engagement',
+    page: 'services-customer-engagement.html',
     items: [
       { name: '24/7 AI Sales & Support Chatbot', unit: 'setup + monthly', priceLow: 650, priceHigh: 650, priceLowMonthly: 150, priceHighMonthly: 150 },
       { name: 'Automated Review & Reputation Management', unit: 'per month', priceLow: 300, priceHigh: 450 },
@@ -32,6 +35,7 @@ const PRICING_CATALOG = [
   },
   {
     category: 'Paid Media & Optimization',
+    page: 'services-paid-media.html',
     items: [
       { name: 'Predictive Audience Targeting & Setup', unit: 'setup', priceLow: 400, priceHigh: 650 },
       { name: 'Autonomous Ad Budget Allocation', unit: 'per month', priceLow: 600, priceHigh: 1000 },
@@ -40,6 +44,7 @@ const PRICING_CATALOG = [
   },
   {
     category: 'Organic Growth & Intelligence',
+    page: 'services-organic-growth.html',
     items: [
       { name: 'Programmatic SEO & Content Hubs', unit: 'setup', priceLow: 800, priceHigh: 1500 },
       { name: 'Real-Time Competitor & Market Tracking', unit: 'per month', priceLow: 350, priceHigh: 500 }
