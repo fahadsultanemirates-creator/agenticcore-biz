@@ -10,7 +10,13 @@
 //
 // Env vars (Supabase project secrets):
 //   SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY -- injected automatically
-//   PAYRAM_API_KEY, PAYRAM_BASE_URL -- .biz's own PayRam project credentials (not issued yet)
+//   PAYRAM_API_KEY, PAYRAM_BASE_URL -- deliberately the SAME PayRam
+//     project credentials as AgenticCore Agency, not a separate .biz
+//     deployment -- one shared wallet across both businesses for now.
+//     Every invoiceID this function sends is prefixed "biz-" (see
+//     below) so that shared PayRam project/webhook can later tell
+//     .biz's payments apart from .agency's, which use their own
+//     (unprefixed) request ids.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -133,7 +139,10 @@ export async function handleRequest(req: Request): Promise<Response> {
         customerEmail: caller.email,
         customerID: caller.id,
         amountInUSD: amountDue,
-        invoiceID: requestId,
+        // "biz-" prefix -- see the file header comment. This is the
+        // only thing distinguishing a .biz payment from a .agency one
+        // on the shared PayRam project.
+        invoiceID: `biz-${requestId}`,
       }),
     });
   } catch (err) {
