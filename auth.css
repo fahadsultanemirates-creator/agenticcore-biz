@@ -79,6 +79,27 @@
   margin-bottom: var(--space-md);
 }
 
+.auth-success {
+  display: none;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ADE80;
+  font-size: 0.85rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-md);
+}
+
+.auth-forgot-link {
+  text-align: right;
+  font-size: 0.82rem;
+  margin: -0.6rem 0 var(--space-md);
+}
+
+.auth-forgot-link a {
+  color: var(--accent);
+}
+
 .auth-card .btn {
   width: 100%;
   padding: 0.85rem;

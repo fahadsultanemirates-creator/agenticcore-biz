@@ -89,6 +89,119 @@ if (loginForm) {
   });
 }
 
+// -------- FORGOT PASSWORD --------
+// Uses Supabase Auth's own built-in recovery email (no custom email
+// infrastructure needed) -- resetPasswordForEmail sends a link that
+// lands the visitor back on reset-password.html with a recovery
+// session, which updateUser() below then acts on.
+const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+if (forgotPasswordForm) {
+  forgotPasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errorEl = document.getElementById('authError');
+    const successEl = document.getElementById('authSuccess');
+    const btn = document.getElementById('forgotPasswordBtn');
+    hideAuthError(errorEl);
+    successEl.style.display = 'none';
+
+    const email = document.getElementById('email').value.trim();
+
+    setLoading(btn, true, 'Send reset link');
+
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password.html`
+    });
+
+    setLoading(btn, false, 'Send reset link');
+
+    if (error) {
+      showAuthError(errorEl, error.message);
+      return;
+    }
+
+    forgotPasswordForm.hidden = true;
+    successEl.textContent = "If an account exists for that email, we've sent a link to reset your password.";
+    successEl.style.display = 'block';
+  });
+}
+
+// -------- RESET PASSWORD --------
+// Supabase's client auto-detects the recovery session from the link's
+// URL and fires a PASSWORD_RECOVERY auth event -- that's the signal
+// this is a genuine reset link, not just someone visiting the page.
+// Falls back to checking for any active session shortly after, and to
+// an "invalid or expired" state if neither shows up in time.
+const resetPasswordForm = document.getElementById('resetPasswordForm');
+if (resetPasswordForm) {
+  const subEl = document.getElementById('resetPasswordSub');
+  const errorEl = document.getElementById('authError');
+  const successEl = document.getElementById('authSuccess');
+  const footerEl = document.getElementById('resetPasswordFooter');
+  let recoveryReady = false;
+
+  function showResetForm() {
+    if (recoveryReady) return;
+    recoveryReady = true;
+    subEl.textContent = 'Enter a new password for your account.';
+    resetPasswordForm.hidden = false;
+  }
+
+  function showInvalidLink() {
+    if (recoveryReady) return;
+    subEl.style.display = 'none';
+    showAuthError(errorEl, 'This password reset link is invalid or has expired.');
+    footerEl.hidden = false;
+  }
+
+  supabaseClient.auth.onAuthStateChange((event) => {
+    if (event === 'PASSWORD_RECOVERY') showResetForm();
+  });
+
+  (async () => {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) showResetForm();
+  })();
+
+  setTimeout(() => {
+    if (!recoveryReady) showInvalidLink();
+  }, 2500);
+
+  resetPasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAuthError(errorEl);
+
+    const password = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const btn = document.getElementById('resetPasswordBtn');
+
+    if (password.length < 8) {
+      showAuthError(errorEl, 'Password must be at least 8 characters.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      showAuthError(errorEl, 'Passwords do not match.');
+      return;
+    }
+
+    setLoading(btn, true, 'Update password');
+
+    const { error } = await supabaseClient.auth.updateUser({ password });
+
+    setLoading(btn, false, 'Update password');
+
+    if (error) {
+      showAuthError(errorEl, error.message);
+      return;
+    }
+
+    resetPasswordForm.hidden = true;
+    subEl.style.display = 'none';
+    successEl.textContent = 'Password updated! Redirecting to your dashboard…';
+    successEl.style.display = 'block';
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+  });
+}
+
 // -------- LOG OUT (used on dashboard pages) --------
 async function logOut() {
   await supabaseClient.auth.signOut();
