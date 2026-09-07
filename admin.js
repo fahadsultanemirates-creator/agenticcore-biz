@@ -312,6 +312,74 @@ async function loadAll() {
   populateSubUserSelect(profilesRes.data);
 }
 
+// -------- Client Attachments --------
+// Storage RLS has no admin-read policy (see migration 0004) -- this
+// goes through the admin-list-attachments edge function instead, which
+// checks is_admin server-side and does the listing with the service
+// role key. Download links are short-lived signed URLs, not a
+// standing public policy, so "Refresh" re-fetches rather than caching.
+
+function formatFileSize(bytes) {
+  if (bytes == null) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function renderAttachments(attachments) {
+  const body = document.getElementById('attachmentsTableBody');
+  const empty = document.getElementById('attachmentsEmpty');
+  if (!attachments.length) {
+    empty.textContent = 'No attachments uploaded yet.';
+    empty.style.display = 'block';
+    body.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  body.innerHTML = attachments.map((a) => `
+    <tr>
+      <td>${a.filename}${a.sizeBytes != null ? ` <span class="dash-empty">(${formatFileSize(a.sizeBytes)})</span>` : ''}</td>
+      <td>${a.uploaderName}</td>
+      <td>${a.uploadedAt ? new Date(a.uploadedAt).toLocaleString() : '—'}</td>
+      <td>${a.downloadUrl ? `<a class="btn btn-secondary btn-sm" href="${a.downloadUrl}" target="_blank" rel="noopener">Download</a>` : '—'}</td>
+    </tr>
+  `).join('');
+}
+
+async function loadAttachments() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) return;
+
+  const body = document.getElementById('attachmentsTableBody');
+  const empty = document.getElementById('attachmentsEmpty');
+  body.innerHTML = '';
+  empty.textContent = 'Loading…';
+  empty.style.display = 'block';
+
+  try {
+    const resp = await fetch(`${SUPABASE_URL}/functions/v1/admin-list-attachments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({})
+    });
+    if (!resp.ok) {
+      const errBody = await resp.json().catch(() => ({}));
+      throw new Error(errBody.error || `Request failed (${resp.status})`);
+    }
+    const { attachments } = await resp.json();
+    renderAttachments(attachments);
+  } catch (err) {
+    console.error('Failed to load attachments', err);
+    body.innerHTML = '';
+    empty.textContent = 'Failed to load attachments: ' + err.message;
+    empty.style.display = 'block';
+  }
+}
+
 (async function init() {
   const session = await requireAuth();
   if (!session) return;
@@ -332,5 +400,7 @@ async function loadAll() {
 
   document.getElementById('adminContent').hidden = false;
   initSubscriptionForm();
+  document.getElementById('attachmentsRefreshBtn').addEventListener('click', loadAttachments);
   await loadAll();
+  await loadAttachments();
 })();
