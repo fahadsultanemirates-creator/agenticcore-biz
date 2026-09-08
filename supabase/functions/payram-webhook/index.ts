@@ -12,8 +12,11 @@
 //   2. .agency's shared PayRam relay: since .biz reuses .agency's
 //      PayRam project/keys (one shared wallet -- see
 //      payram-create-payment's header comment), PayRam's own webhook
-//      only ever reaches .agency's endpoint, which strips the "biz-"
-//      invoiceID prefix and re-dispatches .biz's events here. Those
+//      only ever reaches .agency's endpoint, which re-dispatches .biz's
+//      events here with the raw body UNMODIFIED -- the "biz-" invoiceID
+//      prefix is still on payload.invoice_id and is stripped below,
+//      right before the local requests.id lookup (that column is a
+//      plain uuid and would never match the prefixed string). Relay
 //      calls carry X-Internal-Relay-Secret instead of a PayRam
 //      signature -- if it matches INTERNAL_RELAY_SECRET, the payload
 //      is treated as pre-verified and PayRam's own signature check is
@@ -27,6 +30,7 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const PAYRAM_API_KEY = Deno.env.get('PAYRAM_API_KEY')!;
 const INTERNAL_RELAY_SECRET = Deno.env.get('INTERNAL_RELAY_SECRET') || undefined;
+const BIZ_INVOICE_PREFIX = 'biz-';
 
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -91,12 +95,22 @@ export async function handleRequest(req: Request): Promise<Response> {
     return new Response('Bad request', { status: 400 });
   }
 
-  const invoiceId = payload?.invoice_id;
+  const rawInvoiceId = payload?.invoice_id;
   const status = payload?.status;
 
-  if (!invoiceId || typeof invoiceId !== 'string') {
+  if (!rawInvoiceId || typeof rawInvoiceId !== 'string') {
     return new Response('ok');
   }
+
+  // Strip the "biz-" prefix before using this as a local requests.id
+  // lookup -- the relayed payload (forwarded unmodified by .agency)
+  // still carries it, but requests.id is a plain uuid column that would
+  // never match the prefixed string. A direct-from-PayRam call (not
+  // relayed) would never carry this prefix in the first place, so this
+  // is a no-op for that path.
+  const invoiceId = rawInvoiceId.startsWith(BIZ_INVOICE_PREFIX)
+    ? rawInvoiceId.slice(BIZ_INVOICE_PREFIX.length)
+    : rawInvoiceId;
 
   if (!CONFIRMING_STATUSES.has(status)) {
     return new Response('ok');
