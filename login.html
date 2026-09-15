@@ -6,6 +6,7 @@
 <title>Log in — AgenticCore Biz</title>
 <link rel="stylesheet" href="main.css">
 <link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="chat-widget.css">
 </head>
 <body>
 
@@ -26,14 +27,21 @@
       </div>
       <div class="field-group">
         <label for="password">Password</label>
-        <input type="password" id="password" required autocomplete="current-password">
+        <div class="password-field">
+          <input type="password" id="password" required autocomplete="current-password">
+          <button type="button" class="password-toggle" data-target="password" aria-label="Show password">
+            <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 19c-7 0-11-7-11-7a18.42 18.42 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 7 11 7a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+          </button>
+        </div>
       </div>
       <p class="auth-forgot-link"><a href="forgot-password.html">Forgot password?</a></p>
       <button type="submit" class="btn btn-primary" id="loginBtn">Log in</button>
     </form>
 
     <p class="auth-footer">Don't have an account? <a href="signup.html">Create one</a></p>
-    <p style="text-align:center;margin-top:var(--space-md);">
+    <p style="text-align:center;margin-top:var(--space-md);display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;">
+      <button type="button" class="btn btn-secondary btn-sm auth-home-btn" onclick="history.back()">← Back</button>
       <a href="index.html" class="btn btn-primary btn-sm auth-home-btn">Home</a>
     </p>
   </div>
@@ -42,5 +50,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="supabase-client.js"></script>
 <script src="auth.js"></script>
+<script src="chat-widget.js"></script>
 </body>
 </html>

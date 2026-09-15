@@ -40,8 +40,9 @@ function buildWidgetMarkup() {
   const wrap = document.createElement('div');
   wrap.className = 'chat-widget';
   wrap.innerHTML = `
-    <a href="mailto:hello@agenticcore.biz" class="chat-widget-support-btn" aria-label="Email support">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg>
+    <a href="mailto:hello@agenticcore.biz" class="chat-widget-support-btn" id="chatWidgetSupportBtn" aria-label="Email support">
+      <svg class="chat-widget-support-icon-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg>
+      <svg class="chat-widget-support-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><polyline points="20 6 9 17 4 12"/></svg>
     </a>
     <button type="button" class="chat-widget-toggle" id="chatWidgetToggle" aria-label="Chat with AgenticCore Biz" aria-expanded="false">
       <svg class="chat-widget-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -114,6 +115,27 @@ function removeTypingIndicator() {
   const messagesEl = document.getElementById('chatWidgetMessages');
   const form = document.getElementById('chatWidgetForm');
   const input = document.getElementById('chatWidgetInput');
+
+  // mailto: does nothing visible when the visitor has no default mail
+  // client configured, so also copy the address and flip the icon to a
+  // checkmark briefly -- guarantees some feedback either way.
+  const supportBtn = document.getElementById('chatWidgetSupportBtn');
+  supportBtn.addEventListener('click', () => {
+    const email = 'hello@agenticcore.biz';
+    if (navigator.clipboard) navigator.clipboard.writeText(email).catch(() => {});
+
+    const mailIcon = supportBtn.querySelector('.chat-widget-support-icon-mail');
+    const checkIcon = supportBtn.querySelector('.chat-widget-support-icon-check');
+    supportBtn.setAttribute('aria-label', 'Email copied!');
+    mailIcon.hidden = true;
+    checkIcon.hidden = false;
+
+    setTimeout(() => {
+      supportBtn.setAttribute('aria-label', 'Email support');
+      mailIcon.hidden = false;
+      checkIcon.hidden = true;
+    }, 2000);
+  });
 
   let historyLoaded = false;
   let sending = false;

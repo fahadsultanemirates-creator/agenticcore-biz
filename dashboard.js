@@ -6,15 +6,54 @@ const BUSINESS_POOL_THRESHOLD = 5000;
 const UPFRONT_FRACTION = 0.3;
 const USDT_BEP20_ADDRESS = '0x62Ad7D55fbc8A8591109D72b67Ec63aa1EE196bC';
 
+function switchTab(name) {
+  document.querySelectorAll('.dash-tab').forEach((t) => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.dash-panel').forEach((p) => p.classList.toggle('active', p.dataset.panel === name));
+}
+
 function initTabs() {
   const tabs = document.querySelectorAll('.dash-tab');
-  const panels = document.querySelectorAll('.dash-panel');
   tabs.forEach((tab) => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+}
+
+// -------- Forge FAB: jump to New Request > Forge chat from any tab, and
+// back again -- toggles like the marketing chat widget's bubble/X. --------
+function initForgeFab() {
+  const fab = document.getElementById('forgeFab');
+  if (!fab) return;
+  const chatIcon = document.getElementById('forgeFabIconChat');
+  const closeIcon = document.getElementById('forgeFabIconClose');
+  const label = document.getElementById('forgeFabLabel');
+
+  let isOpen = false;
+  let previousTab = 'projects';
+
+  function setOpen(open) {
+    isOpen = open;
+    chatIcon.hidden = open;
+    closeIcon.hidden = !open;
+    label.textContent = open ? 'Close' : 'Chat with Forge';
+    fab.setAttribute('aria-label', open ? 'Close Forge chat' : 'Chat with Forge');
+  }
+
+  fab.addEventListener('click', () => {
+    if (isOpen) {
+      switchTab(previousTab);
+      setOpen(false);
+      return;
+    }
+    previousTab = document.querySelector('.dash-tab.active')?.dataset.tab || 'projects';
+    switchTab('new-request');
+    document.getElementById('forgeChat').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('forgeChatInput').focus();
+    setOpen(true);
+  });
+
+  document.querySelectorAll('.dash-tab').forEach((tab) => {
     tab.addEventListener('click', () => {
-      tabs.forEach((t) => t.classList.remove('active'));
-      panels.forEach((p) => p.classList.remove('active'));
-      tab.classList.add('active');
-      document.querySelector(`.dash-panel[data-panel="${tab.dataset.tab}"]`).classList.add('active');
+      if (isOpen && tab.dataset.tab !== 'new-request') setOpen(false);
     });
   });
 }
@@ -56,12 +95,7 @@ function paymentSectionHtml(r) {
   return `
     <div class="pay-cta" data-request-id="${r.id}">
       <p class="pay-cta-amount">$${amountDue} due now <span>(30% upfront)</span></p>
-      <div class="pay-cta-actions">
-        <button class="btn btn-primary btn-sm" data-action="pay-payram">Pay with PayRam</button>
-        <button class="btn btn-secondary btn-sm" data-action="toggle-usdt">Pay with USDT (BEP20)</button>
-      </div>
-      <p class="pay-cta-status" hidden></p>
-      <div class="usdt-panel" hidden>
+      <div class="usdt-panel">
         <p>Send exactly <strong>$${amountDue}</strong> worth of USDT on the <strong>BEP20 (BNB Smart Chain)</strong> network to:</p>
         <div class="usdt-address-row">
           <input type="text" readonly value="${USDT_BEP20_ADDRESS}">
@@ -201,69 +235,17 @@ async function handleApproveDelivery(projectId, userId, btn, statusEl) {
 }
 
 function attachPaymentHandlers(container) {
-  container.addEventListener('click', async (e) => {
-    const payBtn = e.target.closest('[data-action="pay-payram"]');
-    const usdtToggle = e.target.closest('[data-action="toggle-usdt"]');
+  container.addEventListener('click', (e) => {
     const copyBtn = e.target.closest('[data-action="copy-usdt"]');
-    if (!payBtn && !usdtToggle && !copyBtn) return;
+    if (!copyBtn) return;
 
     const card = e.target.closest('.pay-cta');
-    const requestId = card.dataset.requestId;
-    const statusEl = card.querySelector('.pay-cta-status');
-
-    if (payBtn) {
-      await initiatePayment(requestId, payBtn, statusEl);
-    } else if (usdtToggle) {
-      const panel = card.querySelector('.usdt-panel');
-      panel.hidden = !panel.hidden;
-    } else if (copyBtn) {
-      const input = card.querySelector('.usdt-address-row input');
-      input.select();
-      navigator.clipboard.writeText(input.value);
-      copyBtn.textContent = 'Copied';
-      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
-    }
+    const input = card.querySelector('.usdt-address-row input');
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    copyBtn.textContent = 'Copied';
+    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
   });
-}
-
-function showPayCtaStatus(statusEl, message, isError) {
-  statusEl.textContent = message;
-  statusEl.hidden = false;
-  statusEl.classList.toggle('pay-cta-status-error', Boolean(isError));
-}
-
-async function initiatePayment(requestId, payBtn, statusEl) {
-  payBtn.disabled = true;
-  const originalText = payBtn.textContent;
-  payBtn.textContent = 'Starting…';
-  statusEl.hidden = true;
-
-  try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    const { data, error } = await supabaseClient.functions.invoke('payram-create-payment', {
-      body: { requestId },
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    });
-
-    if (error || data?.error) {
-      showPayCtaStatus(
-        statusEl,
-        data?.error === 'PayRam is not configured for this environment yet'
-          ? 'Card/crypto checkout via PayRam isn’t live yet — please use the USDT (BEP20) option below.'
-          : 'Something went wrong starting PayRam checkout — please use the USDT (BEP20) option below or try again shortly.',
-        true
-      );
-      return;
-    }
-
-    window.open(data.paymentUrl, '_blank', 'noopener');
-  } catch (err) {
-    console.error('initiatePayment failed', err);
-    showPayCtaStatus(statusEl, 'Something went wrong starting PayRam checkout — please use the USDT (BEP20) option below.', true);
-  } finally {
-    payBtn.disabled = false;
-    payBtn.textContent = originalText;
-  }
 }
 
 function pointsHistoryLabel(row) {
@@ -687,6 +669,7 @@ function initForgeChat() {
   initTabs();
   initNewRequestForm(session.user.id);
   initForgeChat();
+  initForgeFab();
   renderProjectsPanel(session.user.id);
   renderBillingPanel(session.user.id);
   renderSubscriptionsPanel(session.user.id);
