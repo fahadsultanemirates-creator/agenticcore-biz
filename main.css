@@ -416,45 +416,8 @@ section {
 }
 
 /* ============================================
-   Bento grid — feature highlights
+   Bento icon — still used standalone by how-it-works.html
    ============================================ */
-
-.bento {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: minmax(180px, auto);
-  gap: 1rem;
-}
-
-.bento-card {
-  background: var(--bg-panel);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: border-color 0.25s ease, transform 0.25s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.bento-card:hover {
-  border-color: rgba(var(--accent-rgb), 0.35);
-  transform: translateY(-2px);
-}
-
-.bento-card.large {
-  grid-column: span 3;
-}
-
-.bento-card.medium {
-  grid-column: span 2;
-}
-
-.bento-card.small {
-  grid-column: span 2;
-}
 
 .bento-icon {
   width: 40px;
@@ -474,34 +437,59 @@ section {
   stroke: var(--accent);
 }
 
-.bento-card h3 {
-  font-size: 1.15rem;
-  margin-bottom: 0.4rem;
+/* ============================================
+   Service cards — landing page pricing grid
+   ============================================ */
+
+.service-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }
 
-.bento-card p {
-  color: var(--text-secondary);
-  font-size: 0.92rem;
+.service-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  transition: border-color 0.25s ease, transform 0.25s ease;
 }
 
-.bento-link {
-  display: inline-block;
-  margin-top: var(--space-sm);
+.service-card:hover {
+  border-color: rgba(var(--accent-rgb), 0.35);
+  transform: translateY(-2px);
+}
+
+.service-card-category {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+}
+
+.service-card h3 {
+  font-size: 1.02rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.service-card-price {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
   color: var(--accent);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(var(--accent-rgb), 0.3);
 }
 
 @media (max-width: 900px) {
-  .bento {
+  .service-cards {
     grid-template-columns: repeat(2, 1fr);
   }
-  .bento-card.large,
-  .bento-card.medium,
-  .bento-card.small {
-    grid-column: span 2;
+}
+
+@media (max-width: 600px) {
+  .service-cards {
+    grid-template-columns: 1fr;
   }
 }
 

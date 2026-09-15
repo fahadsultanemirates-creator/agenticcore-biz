@@ -434,22 +434,12 @@ async function callForgeChat(action, message) {
 // notify-new-request pings the owner on Telegram immediately, the
 // same "manager finds out right away" property Forge/Telegram
 // discovery handoffs already have.
-// PRICING_CATALOG/PACKAGES come from pricing-catalog.js, the same
-// source of truth services.html/index.html use, so the dropdown can
-// never drift from the site's own published catalog.
+// PRICING_CATALOG comes from pricing-catalog.js, the same source of
+// truth services.html/index.html use, so the dropdown can never drift
+// from the site's own published catalog.
 
 function populateNewRequestSelect() {
   const select = document.getElementById('newRequestInterest');
-
-  const packagesGroup = document.createElement('optgroup');
-  packagesGroup.label = 'Packages';
-  PACKAGES.forEach((pkg) => {
-    const opt = document.createElement('option');
-    opt.value = `package:${pkg.key}`;
-    opt.textContent = pkg.price ? `${pkg.name} — $${pkg.price}/mo` : `${pkg.name} — custom pricing`;
-    packagesGroup.appendChild(opt);
-  });
-  select.appendChild(packagesGroup);
 
   const servicesGroup = document.createElement('optgroup');
   servicesGroup.label = 'À la carte services';
@@ -470,11 +460,6 @@ function populateNewRequestSelect() {
 }
 
 function parseNewRequestInterest(value) {
-  if (value.startsWith('package:')) {
-    const key = value.slice('package:'.length);
-    const pkg = PACKAGES.find((p) => p.key === key);
-    return { serviceCategory: `Package: ${pkg ? pkg.name : key}`, taskType: key };
-  }
   if (value.startsWith('service:')) {
     const [category, itemName] = value.slice('service:'.length).split('::');
     return { serviceCategory: category, taskType: itemName };
