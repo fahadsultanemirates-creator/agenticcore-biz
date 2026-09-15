@@ -1,0 +1,17 @@
+# AgenticCore Biz
+# Signed-in surfaces are excluded: they hold nothing crawlable (every
+# one is an empty shell until Supabase fills it client-side) and an
+# indexed /dashboard.html or /admin.html in search results is only ever
+# a confusing result for a visitor who isn't logged in.
+
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+Disallow: /admin.html
+Disallow: /login.html
+Disallow: /signup.html
+Disallow: /forgot-password.html
+Disallow: /reset-password.html
+Disallow: /check-email.html
+
+Sitemap: https://agenticcore.biz/sitemap.xml

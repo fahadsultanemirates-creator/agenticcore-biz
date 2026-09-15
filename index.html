@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgenticCore Biz — Planning-First AI Marketing</title>
 <meta name="description" content="Social media, AI marketing agents, and growth planning — run by AI agents, starting with a real assessment of your product, website, and competition.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="canonical" href="https://agenticcore.biz/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AgenticCore Biz">
+<meta property="og:url" content="https://agenticcore.biz/">
+<meta property="og:title" content="AgenticCore Biz — Planning-First AI Marketing">
+<meta property="og:description" content="Social media, AI marketing agents, and growth planning — run by AI agents, starting with a real assessment of your product, website, and competition.">
+<meta property="og:image" content="https://agenticcore.biz/dashboard-preview.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@AgenticCoreHQ">
+<meta name="twitter:title" content="AgenticCore Biz — Planning-First AI Marketing">
+<meta name="twitter:description" content="Social media, AI marketing agents, and growth planning — run by AI agents, starting with a real assessment of your product, website, and competition.">
+<meta name="twitter:image" content="https://agenticcore.biz/dashboard-preview.jpg">
 <link rel="stylesheet" href="main.css">
 <link rel="stylesheet" href="chat-widget.css">
 </head>
@@ -13,11 +27,11 @@
 <!-- ============ NAV ============ -->
 <nav class="nav" id="nav">
   <div class="container nav-inner">
-    <a href="#" class="nav-logo">
+    <a href="index.html" class="nav-logo">
       <img src="logo.png" alt="AgenticCore">
       AgenticCore Biz
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <a href="services.html">Services</a>
       <a href="how-it-works.html">How it works</a>
       <a href="business-pool.html">Business Pool</a>
@@ -26,6 +40,10 @@
     <div class="nav-cta">
       <a href="login.html" class="btn btn-secondary btn-sm">Log in</a>
       <a href="signup.html" class="btn btn-primary btn-sm">Get started</a>
+      <button type="button" class="nav-menu-toggle" id="navMenuToggle" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg class="nav-icon-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="nav-icon-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
     </div>
   </div>
 </nav>
@@ -50,7 +68,7 @@
     <div class="section-head">
       <span class="section-eyebrow">What we build</span>
       <h2>Everything your marketing needs, actually planned</h2>
-      <p>Tell us about your business, and let the agent scope your plan from there.</p>
+      <p>Tell us about your business, and we’ll scope your plan from there.</p>
     </div>
     <div class="bento">
       <div class="bento-card large">
@@ -289,9 +307,9 @@
         <h3>Bring in clients, earn AgenticCore Points</h3>
         <p>Share your link. When someone you refer completes a task, you both get rewarded — redeemable toward any future service.</p>
         <ul class="panel-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Up to 3 levels deep — reward the whole chain</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Your referral earns 10% of their own task value back, in Points</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Points, not cash — always usable, never expire</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Three levels deep: 20% from someone you refer, 10% from their referral, 5% from the level after</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Referred yourself? You earn 10% of your own task value back, in Points</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Earned on each person's first 3 completed tasks — Points, not cash, and they never expire</li>
         </ul>
         <a href="referral.html" class="btn btn-secondary btn-sm">See referral terms</a>
       </div>
@@ -303,8 +321,8 @@
 <section class="final-cta">
   <div class="container">
     <h2>Ready to grow with a plan behind it?</h2>
-    <p>Sign up, tell us about your business, and get a scoped plan back in minutes.</p>
-    <a href="signup.html" class="btn btn-primary">Get started free</a>
+    <p>Sign up, tell us about your business, and we’ll come back with a scoped plan and a price — before anything is charged.</p>
+    <a href="signup.html" class="btn btn-primary">Get started — free to sign up</a>
   </div>
 </section>
 
@@ -313,7 +331,7 @@
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="#" class="nav-logo">
+        <a href="index.html" class="nav-logo">
           <img src="logo.png" alt="AgenticCore" width="24" height="24">
           AgenticCore Biz
         </a>
@@ -359,9 +377,9 @@
       <div class="footer-col">
         <h5>Legal</h5>
         <ul>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Referral Points Policy</a></li>
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="referral-points.html">Referral Points Policy</a></li>
         </ul>
       </div>
     </div>

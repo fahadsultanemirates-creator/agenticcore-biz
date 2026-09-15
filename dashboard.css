@@ -265,22 +265,6 @@
   color: var(--text-tertiary);
 }
 
-.pay-cta-actions {
-  display: flex;
-  gap: var(--space-xs);
-  flex-wrap: wrap;
-}
-
-.pay-cta-status {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  margin-top: var(--space-xs);
-}
-
-.pay-cta-status-error {
-  color: #F87171;
-}
-
 .usdt-panel {
   margin-top: var(--space-sm);
   padding: var(--space-sm) var(--space-md);

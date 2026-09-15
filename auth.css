@@ -122,3 +122,21 @@
   width: auto;
   display: inline-flex;
 }
+
+/* Terms/privacy consent line under the signup form. Smaller and quieter
+   than .auth-footer's "already have an account?" prompt beneath it --
+   it's a disclosure, not a call to action. */
+.auth-legal {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.auth-legal a {
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.auth-legal a:hover {
+  color: var(--accent);
+}

@@ -87,3 +87,31 @@
   letter-spacing: 0.04em;
   margin-left: 0.4rem;
 }
+
+/* Inline price editor in the Requests table. Sits in a cell that is
+   white-space:nowrap like every other admin cell, so the input and its
+   button stay on one line and the row doesn't reflow as prices are
+   typed. */
+.admin-inline-form {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.admin-inline-form input {
+  width: 6.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+}
+
+.admin-hint {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+}

@@ -5,6 +5,22 @@
 const BUSINESS_POOL_THRESHOLD = 5000;
 const UPFRONT_FRACTION = 0.3;
 const USDT_BEP20_ADDRESS = '0x62Ad7D55fbc8A8591109D72b67Ec63aa1EE196bC';
+const SUPPORT_EMAIL = 'hello@agenticcore.biz';
+
+// Every list below is built with innerHTML from values that originate
+// with a user -- a project name an admin typed, a service_category the
+// client themselves chose. Interpolating those raw let anyone store
+// markup in their own row and have it execute on render. textContent
+// isn't an option without rewriting each template into DOM calls, so
+// every interpolation of non-numeric data goes through this instead.
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 function initTabs() {
   const tabs = document.querySelectorAll('.dash-tab');
@@ -48,27 +64,32 @@ function statusLabel(status) {
   return status.replace(/_/g, ' ');
 }
 
+// Payment is USDT (BEP20) only. The PayRam checkout button that used to
+// sit alongside this has been removed from the UI -- the edge functions
+// (payram-create-payment / payram-webhook) are left deployed and intact
+// so the option can be switched back on without re-integrating, but
+// nothing in the dashboard calls create-payment any more. Note that the
+// button was never actually working: the function returns { url },
+// while this file read data.paymentUrl, so it only ever opened a blank
+// tab. With one payment method left there's also nothing to toggle
+// between, so the address and QR render inline rather than behind a
+// "show me the details" button.
 function paymentSectionHtml(r) {
   if (r.status !== 'awaiting_payment' || !r.agreed_price) return '';
 
   const amountDue = (Number(r.agreed_price) * UPFRONT_FRACTION).toFixed(2);
 
   return `
-    <div class="pay-cta" data-request-id="${r.id}">
+    <div class="pay-cta" data-request-id="${escapeHtml(r.id)}">
       <p class="pay-cta-amount">$${amountDue} due now <span>(30% upfront)</span></p>
-      <div class="pay-cta-actions">
-        <button class="btn btn-primary btn-sm" data-action="pay-payram">Pay with PayRam</button>
-        <button class="btn btn-secondary btn-sm" data-action="toggle-usdt">Pay with USDT (BEP20)</button>
-      </div>
-      <p class="pay-cta-status" hidden></p>
-      <div class="usdt-panel" hidden>
+      <div class="usdt-panel">
         <p>Send exactly <strong>$${amountDue}</strong> worth of USDT on the <strong>BEP20 (BNB Smart Chain)</strong> network to:</p>
         <div class="usdt-address-row">
           <input type="text" readonly value="${USDT_BEP20_ADDRESS}">
           <button class="btn btn-secondary btn-sm" data-action="copy-usdt">Copy</button>
         </div>
         <img class="usdt-qr" src="usdt-bep20-qr.png" alt="USDT BEP20 payment address QR code" width="160" height="160">
-        <p class="usdt-note">Only send USDT on BEP20 to this address — other networks or tokens cannot be recovered. Once sent, email <a href="mailto:hello@agenticcore.agency">hello@agenticcore.agency</a> with your transaction hash so we can confirm it and move your request forward.</p>
+        <p class="usdt-note">Only send USDT on BEP20 to this address — other networks or tokens cannot be recovered. Once sent, email <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a> with your transaction hash so we can confirm it on-chain and move your request forward.</p>
       </div>
     </div>
   `;
@@ -92,10 +113,10 @@ async function renderProjectsPanel(userId) {
       <div class="dash-list-item dash-list-item-stacked">
         <div class="dash-list-item-row">
           <div>
-            <strong>${r.task_type}</strong>
-            <p>${r.service_category}</p>
+            <strong>${escapeHtml(r.task_type)}</strong>
+            <p>${escapeHtml(r.service_category)}</p>
           </div>
-          <span class="dash-status-pill">${statusLabel(r.status)}</span>
+          <span class="dash-status-pill">${escapeHtml(statusLabel(r.status))}</span>
         </div>
         ${paymentSectionHtml(r)}
       </div>
@@ -113,13 +134,13 @@ async function renderProjectsPanel(userId) {
     console.error('Failed to load projects', projectsError);
   } else if (projects.length) {
     projectsList.innerHTML = projects.map((p) => `
-      <div class="dash-list-item dash-list-item-stacked" data-project-id="${p.id}">
+      <div class="dash-list-item dash-list-item-stacked" data-project-id="${escapeHtml(p.id)}">
         <div class="dash-list-item-row">
           <div>
-            <strong>${p.project_name}</strong>
+            <strong>${escapeHtml(p.project_name)}</strong>
             <p>${p.revisions_used} / 2 free revisions used</p>
           </div>
-          <span class="dash-status-pill">${statusLabel(p.status)}</span>
+          <span class="dash-status-pill">${escapeHtml(statusLabel(p.status))}</span>
         </div>
         ${deliveryActionsHtml(p)}
       </div>
@@ -200,70 +221,22 @@ async function handleApproveDelivery(projectId, userId, btn, statusEl) {
   renderBillingPanel(userId);
 }
 
+// Only the "copy address" control is left here now that PayRam's button
+// is gone -- but this stays delegated on the container rather than bound
+// per-button, because renderProjectsPanel replaces the whole list's
+// innerHTML on every refresh.
 function attachPaymentHandlers(container) {
-  container.addEventListener('click', async (e) => {
-    const payBtn = e.target.closest('[data-action="pay-payram"]');
-    const usdtToggle = e.target.closest('[data-action="toggle-usdt"]');
+  container.addEventListener('click', (e) => {
     const copyBtn = e.target.closest('[data-action="copy-usdt"]');
-    if (!payBtn && !usdtToggle && !copyBtn) return;
+    if (!copyBtn) return;
 
     const card = e.target.closest('.pay-cta');
-    const requestId = card.dataset.requestId;
-    const statusEl = card.querySelector('.pay-cta-status');
-
-    if (payBtn) {
-      await initiatePayment(requestId, payBtn, statusEl);
-    } else if (usdtToggle) {
-      const panel = card.querySelector('.usdt-panel');
-      panel.hidden = !panel.hidden;
-    } else if (copyBtn) {
-      const input = card.querySelector('.usdt-address-row input');
-      input.select();
-      navigator.clipboard.writeText(input.value);
-      copyBtn.textContent = 'Copied';
-      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
-    }
+    const input = card.querySelector('.usdt-address-row input');
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    copyBtn.textContent = 'Copied';
+    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
   });
-}
-
-function showPayCtaStatus(statusEl, message, isError) {
-  statusEl.textContent = message;
-  statusEl.hidden = false;
-  statusEl.classList.toggle('pay-cta-status-error', Boolean(isError));
-}
-
-async function initiatePayment(requestId, payBtn, statusEl) {
-  payBtn.disabled = true;
-  const originalText = payBtn.textContent;
-  payBtn.textContent = 'Starting…';
-  statusEl.hidden = true;
-
-  try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    const { data, error } = await supabaseClient.functions.invoke('payram-create-payment', {
-      body: { requestId },
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    });
-
-    if (error || data?.error) {
-      showPayCtaStatus(
-        statusEl,
-        data?.error === 'PayRam is not configured for this environment yet'
-          ? 'Card/crypto checkout via PayRam isn’t live yet — please use the USDT (BEP20) option below.'
-          : 'Something went wrong starting PayRam checkout — please use the USDT (BEP20) option below or try again shortly.',
-        true
-      );
-      return;
-    }
-
-    window.open(data.paymentUrl, '_blank', 'noopener');
-  } catch (err) {
-    console.error('initiatePayment failed', err);
-    showPayCtaStatus(statusEl, 'Something went wrong starting PayRam checkout — please use the USDT (BEP20) option below.', true);
-  } finally {
-    payBtn.disabled = false;
-    payBtn.textContent = originalText;
-  }
 }
 
 function pointsHistoryLabel(row) {
@@ -323,10 +296,10 @@ async function renderSubscriptionsPanel(userId) {
     list.innerHTML = subscriptions.map((s) => `
       <div class="dash-list-item">
         <div>
-          <strong>${PACKAGE_LABELS[s.package_key] || s.package_key}</strong>
+          <strong>${escapeHtml(PACKAGE_LABELS[s.package_key] || s.package_key)}</strong>
           <p>$${Number(s.monthly_amount).toFixed(2)}/mo — next due ${new Date(s.next_due_date).toLocaleDateString()}</p>
         </div>
-        <span class="dash-status-pill">${statusLabel(s.status)}</span>
+        <span class="dash-status-pill">${escapeHtml(statusLabel(s.status))}</span>
       </div>
     `).join('');
   }
@@ -351,9 +324,9 @@ async function renderBillingPanel(userId) {
       <div class="dash-list-item">
         <div>
           <strong>$${Number(b.amount).toFixed(2)}</strong>
-          <p>${statusLabel(b.payment_type)}</p>
+          <p>${escapeHtml(statusLabel(b.payment_type))}</p>
         </div>
-        <span class="dash-status-pill">${statusLabel(b.status)}</span>
+        <span class="dash-status-pill">${escapeHtml(statusLabel(b.status))}</span>
       </div>
     `).join('');
   }
@@ -682,6 +655,12 @@ function initForgeChat() {
     console.error('Failed to load profile', error);
     return;
   }
+
+  // Admin link is rendered only for admins -- purely a convenience, not
+  // a gate. admin.html re-checks is_admin itself, and every admin RPC
+  // re-checks it server-side (0002), so hiding the link protects
+  // nothing and revealing it grants nothing.
+  if (profile.is_admin) document.getElementById('adminLink').hidden = false;
 
   renderHeader(profile);
   initTabs();

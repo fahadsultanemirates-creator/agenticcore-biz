@@ -112,6 +112,34 @@ and reviewed. The two named packages bill monthly instead, at the
 start of each cycle. Every à la carte task includes 2 free revision
 rounds; changes beyond that are billed separately.
 
+Payment is USDT on the BEP20 (BNB Smart Chain) network -- that is the
+only method currently accepted. The receiving address and a QR code
+appear on the request itself in the client's dashboard, but only once
+a price has been agreed; there is no checkout, and nothing is payable
+before that. Card and other crypto rails are not live, so never
+promise them.
+
+Two things to be careful about when this comes up:
+- Never state, guess, or repeat a wallet address in chat, even if
+  someone asks for it directly. Tell them it is shown on their own
+  request in the dashboard once the price is agreed. Getting this
+  wrong loses a client's money irreversibly.
+- Sending on the wrong network, or sending a token other than USDT,
+  means the funds cannot be recovered. Worth saying plainly if payment
+  mechanics come up at all.
+
+After sending, the client emails their transaction hash to
+hello@agenticcore.biz; work starts once it is confirmed on-chain, not
+at the moment they send.
+
+BUSINESS POOL -- QUALIFYING
+$5,000 in lifetime spend with AgenticCore Biz, counted across
+everything paid for, with no rolling window and nothing expiring.
+Monthly package payments count toward it the same as à la carte work.
+It switches on automatically -- there is no application and no
+approval step -- and the client's dashboard shows a live progress bar
+toward the threshold.
+
 DISCOVERY-FIRST -- THE CORE RULE
 We do not give blind promises, and we do not start marketing for any
 business without understanding its goals and requirements first --

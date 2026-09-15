@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — AgenticCore Biz</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
 <link rel="stylesheet" href="main.css">
 <link rel="stylesheet" href="dashboard.css">
 <link rel="stylesheet" href="admin.css">
@@ -36,10 +38,11 @@
 
       <section class="admin-section">
         <h3>All Requests</h3>
+        <p class="dash-empty" style="margin-bottom:var(--space-sm);">The full lifecycle of a request runs from here: set the agreed price (which moves it to <em>awaiting payment</em> and shows the client the USDT payment details), confirm the transfer once you've verified it on-chain, then create the project.</p>
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead>
-              <tr><th>Client</th><th>Category</th><th>Task</th><th>Price</th><th>Status</th><th>Project</th></tr>
+              <tr><th>Client</th><th>Category</th><th>Task</th><th>Status</th><th>Agreed price</th><th>Next step</th></tr>
             </thead>
             <tbody id="requestsTableBody"></tbody>
           </table>
