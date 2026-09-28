@@ -5,6 +5,13 @@
 const BUSINESS_POOL_THRESHOLD = 5000;
 const UPFRONT_FRACTION = 0.3;
 const USDT_BEP20_ADDRESS = '0x62Ad7D55fbc8A8591109D72b67Ec63aa1EE196bC';
+// AgenticCore (AC) token, BEP-20, BSC mainnet -- from the agenticcore-token-
+// repo's deployed tokenConfig.ts (isContractLive: true). Same wallet as
+// USDT above -- BEP20 accepts any BEP20 token.
+const AC_TOKEN_CONTRACT_ADDRESS = '0xe9568888a0bc317519957047cf736e134B097768';
+const AC_TOKEN_DISCOUNT_PCT = 15;
+// Fahad will supply the AC token buy-page URL later -- swap it in here once given.
+const AC_TOKEN_BUY_URL = null;
 
 function switchTab(name) {
   document.querySelectorAll('.dash-tab').forEach((t) => t.classList.toggle('active', t.dataset.tab === name));
@@ -91,6 +98,7 @@ function paymentSectionHtml(r) {
   if (r.status !== 'awaiting_payment' || !r.agreed_price) return '';
 
   const amountDue = (Number(r.agreed_price) * UPFRONT_FRACTION).toFixed(2);
+  const acAmountDue = (Number(r.agreed_price) * UPFRONT_FRACTION * (1 - AC_TOKEN_DISCOUNT_PCT / 100)).toFixed(2);
 
   return `
     <div class="pay-cta" data-request-id="${r.id}">
@@ -103,6 +111,14 @@ function paymentSectionHtml(r) {
         </div>
         <img class="usdt-qr" src="usdt-bep20-qr.png" alt="USDT BEP20 payment address QR code" width="160" height="160">
         <p class="usdt-note">Only send USDT on BEP20 to this address — other networks or tokens cannot be recovered. Once sent, email <a href="mailto:hello@agenticcore.agency">hello@agenticcore.agency</a> with your transaction hash so we can confirm it and move your request forward.</p>
+      </div>
+      <div class="usdt-panel">
+        <p>Or pay <strong>$${acAmountDue}</strong> worth of AC token (${AC_TOKEN_DISCOUNT_PCT}% off for paying in AC) — same address as USDT above:</p>
+        <div class="usdt-address-row">
+          <input type="text" readonly value="${USDT_BEP20_ADDRESS}">
+          <button class="btn btn-secondary btn-sm" data-action="copy-ac">Copy</button>
+        </div>
+        <p class="usdt-note">AC token contract: <a href="https://bscscan.com/token/${AC_TOKEN_CONTRACT_ADDRESS}" target="_blank" rel="noopener">${AC_TOKEN_CONTRACT_ADDRESS}</a>${AC_TOKEN_BUY_URL ? ` — <a href="${AC_TOKEN_BUY_URL}" target="_blank" rel="noopener">Buy AC token</a>` : ''}. Once sent, email <a href="mailto:hello@agenticcore.agency">hello@agenticcore.agency</a> with your transaction hash so we can confirm it and move your request forward.</p>
       </div>
     </div>
   `;
@@ -236,11 +252,10 @@ async function handleApproveDelivery(projectId, userId, btn, statusEl) {
 
 function attachPaymentHandlers(container) {
   container.addEventListener('click', (e) => {
-    const copyBtn = e.target.closest('[data-action="copy-usdt"]');
+    const copyBtn = e.target.closest('[data-action="copy-usdt"], [data-action="copy-ac"]');
     if (!copyBtn) return;
 
-    const card = e.target.closest('.pay-cta');
-    const input = card.querySelector('.usdt-address-row input');
+    const input = copyBtn.closest('.usdt-address-row').querySelector('input');
     input.select();
     navigator.clipboard.writeText(input.value);
     copyBtn.textContent = 'Copied';
