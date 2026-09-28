@@ -110,7 +110,7 @@ function paymentSectionHtml(r) {
           <button class="btn btn-secondary btn-sm" data-action="copy-usdt">Copy</button>
         </div>
         <img class="usdt-qr" src="usdt-bep20-qr.png" alt="USDT BEP20 payment address QR code" width="160" height="160">
-        <p class="usdt-note">Only send USDT on BEP20 to this address — other networks or tokens cannot be recovered. Once sent, email <a href="mailto:hello@agenticcore.agency">hello@agenticcore.agency</a> with your transaction hash so we can confirm it and move your request forward.</p>
+        <p class="usdt-note">Only send USDT on BEP20 to this address — other networks or tokens cannot be recovered. Once sent, email <a href="mailto:hello@agenticcore.biz">hello@agenticcore.biz</a> with your transaction hash so we can confirm it and move your request forward.</p>
       </div>
       <div class="usdt-panel">
         <p>Or pay <strong>$${acAmountDue}</strong> worth of AC token (${AC_TOKEN_DISCOUNT_PCT}% off for paying in AC) — same address as USDT above:</p>
@@ -118,7 +118,7 @@ function paymentSectionHtml(r) {
           <input type="text" readonly value="${USDT_BEP20_ADDRESS}">
           <button class="btn btn-secondary btn-sm" data-action="copy-ac">Copy</button>
         </div>
-        <p class="usdt-note">AC token contract: <a href="https://bscscan.com/token/${AC_TOKEN_CONTRACT_ADDRESS}" target="_blank" rel="noopener">${AC_TOKEN_CONTRACT_ADDRESS}</a>${AC_TOKEN_BUY_URL ? ` — <a href="${AC_TOKEN_BUY_URL}" target="_blank" rel="noopener">Buy AC token</a>` : ''}. Once sent, email <a href="mailto:hello@agenticcore.agency">hello@agenticcore.agency</a> with your transaction hash so we can confirm it and move your request forward.</p>
+        <p class="usdt-note">AC token contract: <a href="https://bscscan.com/token/${AC_TOKEN_CONTRACT_ADDRESS}" target="_blank" rel="noopener">${AC_TOKEN_CONTRACT_ADDRESS}</a>${AC_TOKEN_BUY_URL ? ` — <a href="${AC_TOKEN_BUY_URL}" target="_blank" rel="noopener">Buy AC token</a>` : ''}. Once sent, email <a href="mailto:hello@agenticcore.biz">hello@agenticcore.biz</a> with your transaction hash so we can confirm it and move your request forward.</p>
       </div>
     </div>
   `;
