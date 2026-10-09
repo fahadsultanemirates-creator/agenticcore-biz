@@ -111,11 +111,9 @@
         <p class="dash-empty" style="margin-bottom:var(--space-sm);">Recurring billing for the two fixed packages. The Custom Package isn't tracked here — it's billed one-off, same as à la carte services.</p>
         <div class="admin-subscription-form">
           <select id="subUserSelect"></select>
-          <select id="subPackageSelect">
-            <option value="starter-engine">AI Starter Engine ($950/mo)</option>
-            <option value="omni-scale-growth-engine">Omni-Scale Growth Engine ($3,450/mo)</option>
-          </select>
-          <input type="number" id="subAmountInput" placeholder="Monthly amount" step="0.01" value="950">
+          <!-- Options are filled from BUSINESS_PACKAGES by admin.js. -->
+          <select id="subPackageSelect"></select>
+          <input type="number" id="subAmountInput" placeholder="Monthly amount" step="0.01">
           <input type="date" id="subDueDateInput">
           <button class="btn btn-primary btn-sm" id="subCreateBtn">Create Subscription</button>
         </div>
@@ -153,6 +151,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="supabase-client.js"></script>
 <script src="auth.js"></script>
+<script src="pricing-catalog.js"></script>
 <script src="admin.js"></script>
 </body>
 </html>

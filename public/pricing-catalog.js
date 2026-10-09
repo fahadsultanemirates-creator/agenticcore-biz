@@ -206,3 +206,21 @@ const BUSINESS_PACKAGES = [
 function formatCatalogPrice(item) {
   return item.display;
 }
+
+/**
+ * Look a package up by the key stored in package_subscriptions.package_key.
+ *
+ * The legacy dashboard and admin pages each kept their own PACKAGE_LABELS
+ * map, and an admin page kept its own PACKAGE_DEFAULT_AMOUNTS as well --
+ * three hand-written copies of the package list, all of them still naming
+ * the two retired engines at their old prices. They call these instead.
+ */
+function findPackage(key) {
+  return BUSINESS_PACKAGES.find((p) => p.id === key);
+}
+
+/** The package's name, or the raw key if it is one we no longer carry. */
+function packageLabel(key) {
+  const found = findPackage(key);
+  return found ? found.name : key;
+}
