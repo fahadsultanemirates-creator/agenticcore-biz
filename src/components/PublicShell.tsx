@@ -2,6 +2,7 @@ import { type ReactNode, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ChatLauncher } from "./ChatLauncher";
+import { AccountMenu } from "./AccountMenu";
 import { Logo } from "./Logo";
 import { Footer } from "./landing/Footer";
 
@@ -38,18 +39,10 @@ export function PublicShell({
             <Logo className="hidden sm:block" />
           </Link>
           <div className="ml-auto flex shrink-0 items-center gap-2">
-            <a
-              href="/login.html"
-              className="hidden rounded-full border border-border px-4 py-2 text-sm font-semibold text-fg-muted transition-colors hover:border-orange-400/50 hover:text-fg sm:inline-flex"
-            >
-              Sign In
-            </a>
-            <a
-              href="/signup.html"
-              className="rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-void transition-transform hover:-translate-y-0.5"
-            >
-              Get Started Free
-            </a>
+            {/* Was two hardcoded Sign In / Get Started anchors, which greeted
+                a signed-in client with an invitation to sign up. AccountMenu
+                knows which of the two situations this is. */}
+            <AccountMenu />
           </div>
         </div>
       </header>

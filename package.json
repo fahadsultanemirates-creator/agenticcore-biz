@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "generate:catalog": "node --experimental-strip-types scripts/generate-legacy-catalog.mjs",
     "prebuild": "npm run generate:catalog",
-    "test": "node --experimental-strip-types src/data/catalog.test.ts"
+    "test": "node --experimental-strip-types src/data/catalog.test.ts && node --experimental-strip-types src/data/connections.test.ts && node --experimental-strip-types src/lib/payment.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

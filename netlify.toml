@@ -7,9 +7,59 @@
   command = "npm run build"
   publish = "dist"
 
+# The auth pages and the client dashboard moved into React, and their old
+# files are deleted. These keep every link already in circulation working --
+# an emailed password-reset link, a bookmarked dashboard, a signup link in
+# somebody's WhatsApp history. 301 rather than 200 so browsers and search
+# engines learn the new address instead of serving the old one forever.
+#
+# Order matters: Netlify applies redirects top to bottom, so these have to
+# sit above the catch-all below or it would swallow them.
+[[redirects]]
+  from = "/login.html"
+  to = "/login"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/signup.html"
+  to = "/signup"
+  status = 301
+  force = true
+
+# Both halves of the reset flow are one React route: arriving without a
+# recovery session gets the "email me a link" form, arriving from the
+# emailed link gets the "choose a password" one.
+[[redirects]]
+  from = "/forgot-password.html"
+  to = "/reset"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/reset-password.html"
+  to = "/reset"
+  status = 301
+  force = true
+
+# The old "check your email" page was a whole page for one sentence. Signup
+# now says it in place, so its only job is not to 404.
+[[redirects]]
+  from = "/check-email.html"
+  to = "/signup"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/dashboard.html"
+  to = "/dashboard"
+  status = 301
+  force = true
+
 # Netlify serves a matching file before it consults redirects, so every
-# legacy /*.html page still wins this rule. It only fires for paths with
-# no file behind them -- which is exactly the React router's territory.
+# legacy /*.html page that still exists wins this rule. It only fires for
+# paths with no file behind them -- which is exactly the React router's
+# territory.
 [[redirects]]
   from = "/*"
   to = "/index.html"

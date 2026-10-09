@@ -1,19 +1,23 @@
 // Regenerates public/pricing-catalog.js from src/data/catalog.ts.
 //
 // WHY THIS EXISTS. The pre-React pages are plain <script> tags: they
-// cannot import the TypeScript catalog, so they read a global
-// PRICING_CATALOG from public/pricing-catalog.js. That file used to be
-// hand-maintained, and it was still serving the twelve retired
-// marketing services -- which meant the legacy dashboard's "New
-// Request" dropdown was offering them and writing them straight into
-// the requests table. Hiding the cards would not have fixed that; the
-// services were live in the ordering system.
+// cannot import the TypeScript catalog, so they read globals from
+// public/pricing-catalog.js. That file used to be hand-maintained, and it
+// was still serving the twelve retired marketing services -- which meant
+// the legacy dashboard's "New Request" dropdown was offering them and
+// writing them straight into the requests table. Hiding the cards would
+// not have fixed that; the services were live in the ordering system.
 //
-// So the file is generated, every build, from the one catalog. It
-// cannot drift, and a service retired in TypeScript disappears from
-// the legacy dropdown in the same commit.
+// WHAT STILL READS IT. The client dashboard is React now and
+// public/dashboard.js is gone, so PRICING_CATALOG has no reader left.
+// public/admin.html does still read BUSINESS_PACKAGES, findPackage and
+// packageLabel for its subscription form -- which is the one place a
+// package can still be created by hand, and so the one place that must
+// not offer a package nobody sells.
 //
-// Delete this script the day no .html page reads the global.
+// PRICING_CATALOG is still emitted because admin is the next thing to be
+// rebuilt and it will want the list. If admin moves into React and nothing
+// reads these globals, delete this script and the prebuild hook with it.
 
 import { writeFileSync } from "node:fs";
 import { activeServices, categories, formatPrice, packages } from "../src/data/catalog.ts";
