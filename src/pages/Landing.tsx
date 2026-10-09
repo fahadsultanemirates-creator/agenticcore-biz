@@ -1,30 +1,33 @@
 import { ChatLauncher } from "../components/ChatLauncher";
-import { BusinessPoolSection } from "../components/landing/BusinessPoolSection";
-import { CtaBanner } from "../components/landing/CtaBanner";
+import { Faq } from "../components/landing/Faq";
+import { FamilySection } from "../components/landing/FamilySection";
+import { FeaturedServices } from "../components/landing/FeaturedServices";
+import { FinalCta } from "../components/landing/FinalCta";
 import { Footer } from "../components/landing/Footer";
+import { ForgeSection } from "../components/landing/ForgeSection";
 import { Hero } from "../components/landing/Hero";
 import { HowItWorks } from "../components/landing/HowItWorks";
 import { Nav } from "../components/landing/Nav";
-import { NoCreditsSection } from "../components/landing/NoCreditsSection";
-import { RealEstateSection } from "../components/landing/RealEstateSection";
-import { ServicesGrid } from "../components/landing/ServicesGrid";
-import { StatsBand } from "../components/landing/StatsBand";
-import { TermsSummary } from "../components/landing/TermsSummary";
+import { PackagesSection } from "../components/landing/PackagesSection";
+import { WhatWeDo } from "../components/landing/WhatWeDo";
+import { WhyBiz } from "../components/landing/WhyBiz";
 
+// Sections A-J from the restructuring brief, in order.
 export function Landing() {
   return (
     <div>
       <Nav />
       <main>
         <Hero />
-        <RealEstateSection />
-        <ServicesGrid />
+        <WhatWeDo />
+        <WhyBiz />
+        <FeaturedServices />
+        <PackagesSection />
         <HowItWorks />
-        <NoCreditsSection />
-        <StatsBand />
-        <BusinessPoolSection />
-        <TermsSummary />
-        <CtaBanner />
+        <ForgeSection />
+        <FamilySection />
+        <Faq />
+        <FinalCta />
       </main>
       <Footer />
       <ChatLauncher />

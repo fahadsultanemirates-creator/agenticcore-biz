@@ -1,49 +1,208 @@
-// AgenticCore Biz — service catalog. Single source of truth for
-// services.html and index.html's pricing displays, and the dashboard's
-// New Request dropdown (dashboard.js). À la carte only -- no packages.
+// GENERATED FILE -- DO NOT EDIT.
+//
+// Written by scripts/generate-legacy-catalog.mjs from src/data/catalog.ts
+// on every build. The pre-React pages cannot import TypeScript, so this
+// is how they see the same catalog the React app does.
+//
+// Editing this by hand will be silently undone by the next build, and
+// worse, it would let the legacy pages offer services the real catalog
+// has retired. Change src/data/catalog.ts instead.
 
 const PRICING_CATALOG = [
   {
-    category: 'Customer Engagement & Support',
-    items: [
-      { name: 'AI Chatbot / Website Assistant', unit: 'setup + monthly', priceLow: 209, priceHigh: 419, priceLowMonthly: 104, priceHighMonthly: 209 },
-      { name: 'AI Voice Agent (Phone Answering)', unit: 'setup + monthly', priceLow: 209, priceHigh: 209, priceLowMonthly: 139, priceHighMonthly: 279 },
-      { name: 'AI Reputation & Review Management', unit: 'per month', priceLow: 209, priceHigh: 319 }
+    "category": "Business Launch & Planning",
+    "items": [
+      {
+        "id": "BIZ-01",
+        "name": "Startup Roadmap & Business Action Plan",
+        "unit": "one-time",
+        "price": 25,
+        "startingFrom": false,
+        "display": "$25"
+      },
+      {
+        "id": "BIZ-02",
+        "name": "Business Feasibility & Market-Fit Report",
+        "unit": "one-time",
+        "price": 39,
+        "startingFrom": false,
+        "display": "$39"
+      },
+      {
+        "id": "BIZ-03",
+        "name": "Market & Competitor Research",
+        "unit": "one-time",
+        "price": 29,
+        "startingFrom": false,
+        "display": "$29"
+      },
+      {
+        "id": "BIZ-04",
+        "name": "Business Registration Preparation Checklist",
+        "unit": "one-time",
+        "price": 19,
+        "startingFrom": false,
+        "display": "$19"
+      },
+      {
+        "id": "BIZ-05",
+        "name": "Business Administration Starter System",
+        "unit": "one-time",
+        "price": 39,
+        "startingFrom": false,
+        "display": "$39"
+      },
+      {
+        "id": "BIZ-06",
+        "name": "Standard Operating Procedures Pack",
+        "unit": "one-time",
+        "price": 29,
+        "startingFrom": false,
+        "display": "$29"
+      }
     ]
   },
   {
-    category: 'Content, Social & Video',
-    items: [
-      { name: 'AI Social Media Management', unit: 'per month', priceLow: 279, priceHigh: 559 },
-      { name: 'AI SEO Content & Optimization', unit: 'per month', priceLow: 349, priceHigh: 699 },
-      { name: 'AI Website & Landing Page Copy', unit: 'per page', priceLow: 209, priceHigh: 419, altPricing: 'or $349–$699/mo for ongoing copy' },
-      { name: 'AI Short-Form Video Ads (UGC-style)', unit: 'per video', priceLow: 69, priceHigh: 104, altPricing: 'or $559–$909/mo for 10 videos' }
+    "category": "Office & Financial Administration",
+    "items": [
+      {
+        "id": "BIZ-07",
+        "name": "Invoicing, Quotations & Receipts Setup",
+        "unit": "one-time",
+        "price": 19,
+        "startingFrom": false,
+        "display": "$19"
+      },
+      {
+        "id": "BIZ-08",
+        "name": "Expense & Cash-Flow Tracking System",
+        "unit": "one-time",
+        "price": 29,
+        "startingFrom": false,
+        "display": "$29"
+      },
+      {
+        "id": "BIZ-09",
+        "name": "Payroll Administration Tracker",
+        "unit": "one-time",
+        "price": 29,
+        "startingFrom": false,
+        "display": "$29"
+      },
+      {
+        "id": "BIZ-10",
+        "name": "Bookkeeping Setup or Basic Cleanup",
+        "unit": "one-time",
+        "price": 49,
+        "startingFrom": true,
+        "display": "from $49"
+      },
+      {
+        "id": "BIZ-11",
+        "name": "Monthly Basic Bookkeeping Assistance",
+        "unit": "per month",
+        "price": 59,
+        "startingFrom": false,
+        "display": "$59/month"
+      },
+      {
+        "id": "BIZ-12",
+        "name": "Monthly Financial & KPI Reports",
+        "unit": "per month",
+        "price": 29,
+        "startingFrom": false,
+        "display": "$29/month"
+      },
+      {
+        "id": "BIZ-13",
+        "name": "Business Proposals & Professional Documents",
+        "unit": "one-time",
+        "price": 25,
+        "startingFrom": true,
+        "display": "from $25"
+      }
     ]
   },
   {
-    category: 'Growth & Acquisition',
-    items: [
-      { name: 'AI Lead Generation & Outreach', unit: 'per month', priceLow: 489, priceHigh: 909 },
-      { name: 'AI-Assisted PPC / Ad Management', unit: 'setup + monthly', priceLow: 209, priceHigh: 209, priceLowMonthly: 349, priceHighMonthly: 629, altPricing: 'or ~10% of ad spend' },
-      { name: 'AI Email Marketing Automation', unit: 'build + monthly', priceLow: 350, priceHigh: 700, priceLowMonthly: 349, priceHighMonthly: 699 }
-    ]
-  },
-  {
-    category: 'Analytics & Optimization',
-    items: [
-      { name: 'AI Marketing Analytics Dashboard', unit: 'per month', priceLow: 139, priceHigh: 279 },
-      { name: 'AI Conversion Rate Optimization (CRO) & A/B Testing', unit: 'per month', priceLow: 349, priceHigh: 599 }
+    "category": "Business Management & Growth",
+    "items": [
+      {
+        "id": "BIZ-14",
+        "name": "CRM Customer Records & Pipeline Setup",
+        "unit": "one-time",
+        "price": 39,
+        "startingFrom": false,
+        "display": "$39"
+      },
+      {
+        "id": "BIZ-15",
+        "name": "AI-Assisted Virtual Back-Office Support",
+        "unit": "per month",
+        "price": 99,
+        "startingFrom": false,
+        "display": "$99/month"
+      },
+      {
+        "id": "BIZ-16",
+        "name": "Lead Research & Follow-Up Management",
+        "unit": "per month",
+        "price": 79,
+        "startingFrom": false,
+        "display": "$79/month"
+      },
+      {
+        "id": "BIZ-17",
+        "name": "Managed Social Media Marketing",
+        "unit": "per month",
+        "price": 99,
+        "startingFrom": false,
+        "display": "$99/month"
+      },
+      {
+        "id": "BIZ-18",
+        "name": "Advertising Campaign Management",
+        "unit": "per month",
+        "price": 79,
+        "startingFrom": false,
+        "display": "$79/month"
+      },
+      {
+        "id": "BIZ-19",
+        "name": "Email Campaign Management",
+        "unit": "per month",
+        "price": 49,
+        "startingFrom": false,
+        "display": "$49/month"
+      }
     ]
   }
 ];
 
-function formatCatalogPrice(item) {
-  const primary = item.priceLow === item.priceHigh ? `$${item.priceLow}` : `$${item.priceLow}–$${item.priceHigh}`;
-  let out = primary;
-  if (item.priceLowMonthly) {
-    const monthly = item.priceLowMonthly === item.priceHighMonthly ? `$${item.priceLowMonthly}` : `$${item.priceLowMonthly}–$${item.priceHighMonthly}`;
-    out = `${primary} + ${monthly}/mo`;
+const BUSINESS_PACKAGES = [
+  {
+    "id": "PKG-LAUNCH-KIT",
+    "name": "Business Launch Kit",
+    "price": 69,
+    "unit": "one-time",
+    "display": "$69"
+  },
+  {
+    "id": "PKG-BACK-OFFICE",
+    "name": "Back-Office Essential",
+    "price": 79,
+    "unit": "per month",
+    "display": "$79/month"
+  },
+  {
+    "id": "PKG-OPS-PLUS",
+    "name": "Business Operations Plus",
+    "price": 149,
+    "unit": "per month",
+    "display": "$149/month"
   }
-  if (item.altPricing) out += ` (${item.altPricing})`;
-  return out;
+];
+
+/** Kept for the legacy pages that already call it. */
+function formatCatalogPrice(item) {
+  return item.display;
 }

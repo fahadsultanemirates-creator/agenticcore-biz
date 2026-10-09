@@ -1,28 +1,35 @@
-import { ClipboardCheck, FileSearch, Rocket, Send } from "lucide-react";
+import { CheckCircle2, FileSearch, MessageSquare, PackageCheck } from "lucide-react";
 import { Reveal } from "../Reveal";
 
-// The four steps from how-it-works.html, in the site's own words. The
-// order is the pitch: nothing is made until step three is signed off.
+/**
+ * The real process, not an aspirational one.
+ *
+ * Step 2 says Forge "helps organize" and "prepares a proposed scope",
+ * which is what it does. It deliberately does not say Forge prices the
+ * job or issues the quote: a proposal becomes a price when a person
+ * approves it, and claiming otherwise would be selling a capability that
+ * is not built.
+ */
 const STEPS = [
   {
-    icon: Send,
-    title: "Tell us about your business",
-    body: "Product, website, competitors — the basics we need before recommending anything.",
+    icon: MessageSquare,
+    title: "Choose a service or describe your project",
+    body: "Pick something from the catalog, or just say what you are trying to get done.",
   },
   {
     icon: FileSearch,
-    title: "We assess, then plan",
-    body: "No results without a real look at what you're selling and who you're up against.",
+    title: "Forge helps organize your requirements",
+    body: "It asks the missing questions and turns your description into a structured brief with a proposed scope.",
   },
   {
-    icon: ClipboardCheck,
-    title: "Approve your plan & pay",
-    body: "One clear plan, scoped to your business, with the real number on it — not a range.",
+    icon: CheckCircle2,
+    title: "Review the final price and approve",
+    body: "You see the scope, the deliverables, the timeline and the real number before anything is charged.",
   },
   {
-    icon: Rocket,
-    title: "We run it and report",
-    body: "Content, posting and monitoring, end to end, with the numbers visible in your dashboard.",
+    icon: PackageCheck,
+    title: "Track progress and receive your work",
+    body: "Follow the job in your dashboard and collect the deliverables there when it is done.",
   },
 ];
 
@@ -32,12 +39,8 @@ export function HowItWorks() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-semibold text-fg sm:text-4xl">
-            No results without a plan, in four steps
+            Four steps. Less administration. More progress.
           </h2>
-          <p className="mt-4 text-fg-muted">
-            We won't start marketing for any business without understanding its goals first — no
-            exceptions, whichever service you pick.
-          </p>
         </div>
 
         <ol className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -52,7 +55,7 @@ export function HowItWorks() {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="font-display text-lg font-semibold text-fg">{step.title}</h3>
+                <h3 className="font-display text-base font-semibold text-fg">{step.title}</h3>
                 <p className="text-sm text-fg-muted">{step.body}</p>
               </li>
             </Reveal>

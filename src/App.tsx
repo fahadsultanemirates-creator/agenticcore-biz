@@ -1,23 +1,31 @@
 import { Route, Routes } from "react-router-dom";
+import { CreateProject } from "./pages/CreateProject";
 import { Landing } from "./pages/Landing";
+import { Packages } from "./pages/Packages";
+import { ServiceDetail } from "./pages/ServiceDetail";
+import { Services } from "./pages/Services";
 
-// Phase 1: the React app owns "/" and nothing else yet.
-//
-// Everything behind the login -- the dashboard, requests, billing,
-// referrals, admin -- is still the pre-React site in public/, served by
-// Netlify as ordinary files at the URLs it always had. A matching file
-// wins over the SPA redirect, so those pages keep working untouched.
-//
-// That split is exactly what went wrong on .agency, where a new landing
-// page dropped visitors straight back into the old site on the first
-// click and it was left that way. The difference here is that it is
-// stated, scoped and scheduled: phase 2 is the dashboard and the project
-// area, ported the same way, and until it lands every link off this page
-// still goes somewhere that works.
+/**
+ * Routes the React app owns.
+ *
+ * The public side is complete: landing, the full service directory, a
+ * detail page per service, the packages page and project creation. Every
+ * link on the homepage goes to one of these.
+ *
+ * Everything behind the login -- sign in, sign up, dashboard, admin --
+ * is still the pre-React site in public/, served by Netlify at the URLs
+ * it always had, because a matching file beats the SPA redirect. That is
+ * the next phase, and until it lands those pages keep working as they
+ * always have.
+ */
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/services" element={<Services />} />
+      <Route path="/services/:id" element={<ServiceDetail />} />
+      <Route path="/packages" element={<Packages />} />
+      <Route path="/create-project" element={<CreateProject />} />
     </Routes>
   );
 }

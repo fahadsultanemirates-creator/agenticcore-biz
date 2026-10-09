@@ -1,23 +1,30 @@
-import { MessageSquare } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 
 /**
- * The way into a conversation, on every public page.
+ * The floating way into Forge.
  *
- * It matters more here than on the other two sites. .biz will not start
- * work without a discovery call -- "we don't give blind promises" is the
- * pitch -- so the thing a visitor most needs is a way to talk to someone,
- * not a checkout.
+ * Icon-only below `sm`, with the label appearing once there is room.
+ * The labelled pill is about 130px wide, and at 390px that is a third
+ * of the screen parked over whatever is beneath it -- in the earlier
+ * screenshots it sat across a service card's price and its tap target.
+ * A 48px circle still clears Apple's and Google's minimum touch size
+ * while covering a quarter of the area.
  *
- * Still the legacy chat page for now; it becomes a route in phase 2.
+ * Pages that scroll also need to end clear of it, which is why the
+ * shells carry bottom padding greater than this button's height plus
+ * its offset. A FAB that hides the last row of a list is a FAB that
+ * loses the last item.
  */
 export function ChatLauncher() {
   return (
-    <a
-      href="/how-it-works.html#discovery"
-      className="fixed right-4 bottom-4 z-40 inline-flex items-center gap-2 rounded-full bg-orange-400 px-4 py-3 text-sm font-semibold text-void shadow-glow-orange transition-transform hover:-translate-y-0.5 sm:right-6 sm:bottom-6 sm:px-5"
+    <Link
+      to="/create-project"
+      aria-label="Create a project with Forge"
+      className="fixed right-4 bottom-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-orange-400 text-void shadow-glow-orange transition-transform hover:-translate-y-0.5 sm:right-6 sm:bottom-6 sm:h-auto sm:w-auto sm:gap-2 sm:px-5 sm:py-3 sm:text-sm sm:font-semibold"
     >
-      <MessageSquare className="h-4 w-4" />
-      Talk it through
-    </a>
+      <Sparkles className="h-5 w-5 sm:h-4 sm:w-4" />
+      <span className="hidden sm:inline">Ask Forge</span>
+    </Link>
   );
 }

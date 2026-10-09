@@ -1,16 +1,15 @@
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Logo } from "../Logo";
 
-// Links point at the pre-React pages on purpose. They are real, working
-// pages at their own URLs; sending people to a route the React app does
-// not own yet would be a 404 dressed as progress. They become routes in
-// phase 2, when those pages are rebuilt.
+// In-page anchors for the sections, real routes for the pages that
+// exist. Nothing here points at a page that is not built.
 const LINKS = [
-  { href: "#services", label: "Services" },
-  { href: "#how-it-works", label: "How it works" },
-  { href: "/real-estate.html", label: "Real estate" },
-  { href: "/business-pool.html", label: "Business Pool" },
+  { href: "#services", label: "Our Services" },
+  { href: "#packages", label: "Business Packages" },
+  { href: "#how-it-works", label: "How It Works" },
+  { href: "#family", label: "AgenticCore Family" },
 ];
 
 export function Nav() {
@@ -36,13 +35,17 @@ export function Nav() {
           <Logo className="hidden sm:block" />
         </a>
 
-        <nav className="hidden items-center gap-8 font-medium text-fg-muted lg:flex">
+        <nav className="hidden items-center gap-7 font-medium text-fg-muted lg:flex">
           {LINKS.map((link) => (
             <a key={link.href} href={link.href} className="group relative transition-colors hover:text-fg">
               {link.label}
               <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-orange-400 transition-all duration-200 group-hover:w-full" />
             </a>
           ))}
+          <Link to="/create-project" className="group relative transition-colors hover:text-fg">
+            Create a Project
+            <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-orange-400 transition-all duration-200 group-hover:w-full" />
+          </Link>
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
@@ -50,13 +53,13 @@ export function Nav() {
             href="/login.html"
             className="hidden rounded-full border border-border px-4 py-2 text-sm font-semibold text-fg-muted transition-colors hover:border-orange-400/50 hover:text-fg sm:inline-flex"
           >
-            Log in
+            Sign In
           </a>
           <a
             href="/signup.html"
             className="rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-void transition-transform hover:-translate-y-0.5"
           >
-            Get started
+            Get Started Free
           </a>
           <button
             type="button"
@@ -73,7 +76,7 @@ export function Nav() {
       {menuOpen && (
         <nav className="animate-fade-up border-t border-border bg-void px-4 pb-4 sm:px-6 lg:hidden">
           <ul className="flex flex-col py-2">
-            {[...LINKS, { href: "/login.html", label: "Log in" }].map((link) => (
+            {LINKS.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
@@ -84,6 +87,24 @@ export function Nav() {
                 </a>
               </li>
             ))}
+            <li>
+              <Link
+                to="/create-project"
+                onClick={() => setMenuOpen(false)}
+                className="block rounded-xl px-3 py-3 font-medium text-orange-400 transition-colors hover:bg-surface"
+              >
+                Create a Project
+              </Link>
+            </li>
+            <li>
+              <a
+                href="/login.html"
+                onClick={() => setMenuOpen(false)}
+                className="block rounded-xl px-3 py-3 font-medium text-fg-muted transition-colors hover:bg-surface hover:text-fg"
+              >
+                Sign In / Dashboard
+              </a>
+            </li>
           </ul>
         </nav>
       )}
