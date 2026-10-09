@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* The same neutrals as .click and .agency, deliberately unchanged. The
+     three sites are meant to read as siblings; the accent is the only
+     thing that tells them apart. */
+  --color-void: #09090d;
+  --color-surface: #151519;
+  --color-surface-2: #1e1e24;
+  --color-border: #2a2a32;
+
+  --color-fg: #f6f5f2;
+  --color-fg-muted: #a6a4b0;
+  --color-fg-faint: #6d6b78;
+
+  /* Orange, sampled from the logo rather than picked by eye.
+   *
+   * --color-orange-400 is #FB7701: the body of the mark, and by a long
+   * way its most common pixel. 600 and 700 are the darker end of the
+   * mark's own gradient; 100-300 are tints of 400 toward white, so the
+   * whole ramp belongs to one colour instead of drifting into brown at
+   * one end and apricot at the other.
+   *
+   * Black text on 400 is about 7.7:1, so the primary button keeps the
+   * dark-on-accent treatment the other two sites use. White on 400 is
+   * 2.7:1 and fails, so it is never used. */
+  --color-orange-100: #fee4cc;
+  --color-orange-200: #fdc999;
+  --color-orange-300: #fcaf66;
+  --color-orange-400: #fb7701;
+  --color-orange-500: #f26a00;
+  --color-orange-600: #cc3a01;
+  --color-orange-700: #952901;
+
+  /* The gold sweep across the mark, for the rare highlight that wants to
+     echo the logo's own catch-light. */
+  --color-ember: #fcd431;
+
+  --shadow-glow: 0 0 0 1px var(--color-border), 0 20px 40px -12px rgba(0, 0, 0, 0.6);
+  --shadow-glow-orange: 0 8px 30px -8px rgba(251, 119, 1, 0.45);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-orange-400);
+  color: var(--color-void);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-orange-400);
+  outline-offset: 2px;
+}
+
+/* Pressed feedback, everywhere, in one place.
+ *
+ * Nearly every control on the site had a :hover state and no :active one.
+ * Hover does not exist on a touchscreen, so on a phone -- which is most of
+ * the traffic -- tapping any button did nothing visible until the page
+ * changed. Taps got repeated because nothing acknowledged the first one.
+ *
+ * Doing this as a base rule rather than a Tailwind class on each button is
+ * deliberate: there are several hundred controls across the dashboard, the
+ * intake forms and the landing page, and a per-button class is a rule that
+ * holds only until the next button is written. This one covers anything
+ * added later for free.
+ *
+ * Tailwind v4 animates `scale` as its own CSS property rather than through
+ * the `transform` shorthand, so this composes with the hover:-translate-y
+ * lifts already on the primary buttons instead of cancelling them. Any
+ * element that wants a different press still wins: an `active:` utility is
+ * a class plus a pseudo-class, which outranks this element selector.
+ */
+button:not(:disabled):not([aria-disabled="true"]):active,
+summary:active,
+label[class*="cursor-pointer"]:active,
+[role="button"]:not([aria-disabled="true"]):active,
+a[class*="rounded-"]:active {
+  scale: 0.97;
+  opacity: 0.9;
+}
+
+/* iOS paints its own grey flash over anything tappable, on top of the above.
+ * Two different press effects at once reads as a rendering glitch. */
+button,
+summary,
+label,
+[role="button"],
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled):active,
+  summary:active,
+  label[class*="cursor-pointer"]:active,
+  [role="button"]:active,
+  a[class*="rounded-"]:active {
+    scale: 1;
+  }
+}
+
+.bg-noise {
+  background-image: radial-gradient(var(--color-fg) 0.6px, transparent 0.6px);
+  background-size: 16px 16px;
+}
+
+.link-underline {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--color-orange-400);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-orange-400) 40%, transparent);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.link-underline:hover {
+  text-decoration-color: var(--color-orange-400);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes blob-float {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(24px, -18px);
+  }
+}
+
+.animate-blob {
+  animation: blob-float 11s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 212, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgba(255, 212, 0, 0);
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-fade-up,
+  .animate-blob,
+  .animate-pulse-ring {
+    animation: none;
+  }
+}

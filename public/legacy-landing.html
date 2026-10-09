@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgenticCore Biz — Planning-First AI Marketing</title>
+<meta name="description" content="Social media, AI marketing agents, and growth planning — run by AI agents, starting with a real assessment of your product, website, and competition.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="chat-widget.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="logo.png" alt="AgenticCore">
+      AgenticCore Biz
+    </a>
+    <div class="nav-links">
+      <a href="services.html">Services</a>
+      <a href="how-it-works.html">How it works</a>
+      <a href="business-pool.html">Business Pool</a>
+      <a href="referral.html">Referrals</a>
+    </div>
+    <div class="nav-cta">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="history.back()">← Back</button>
+      <a href="login.html" class="btn btn-secondary btn-sm">Log in</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <canvas class="hero-network" id="heroNetwork"></canvas>
+  <div class="container hero-inner">
+    <span class="hero-eyebrow"><span class="dot"></span> Planning-first marketing</span>
+    <h1>Marketing that starts with a <span class="accent">plan</span>, not a posting schedule.</h1>
+    <p class="hero-sub">Before a single post goes out, we assess your product, your website, and your competition. Then social, AI agents, and auto-posting go to work — matched to what will actually move your business.</p>
+    <div class="hero-actions">
+      <a href="signup.html" class="btn btn-primary">Start your project</a>
+      <a href="#how-it-works" class="btn btn-secondary">See how it works</a>
+    </div>
+    <p class="hero-chat-lead">Prefer to talk it through first?</p>
+    <div class="hero-chat-actions">
+      <a href="https://t.me/AgenticCoreAgency" class="btn-chat btn-chat-telegram" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.1c-.3-.2-.7-.3-1.1-.1L2.9 10.6c-.5.2-.8.6-.8 1.1 0 .5.4.9.8 1l4.6 1.4 1.8 5.6c.1.4.4.6.8.7h.1c.3 0 .6-.1.8-.4l2.5-2.9 4.6 3.4c.2.2.5.2.7.2.2 0 .4 0 .6-.1.3-.2.6-.5.6-.9L22.4 5c.1-.4-.1-.7-.5-.9zM9.1 13.4l-3.5-1.1L18 6.5l-8.9 6.9zm.9 4.7l-1-3.1 1.9-1.5 1 1zm2.7-3.8l-2-1.5L18 7.4l-5.3 6.9z"/></svg>
+        Chat on Telegram
+      </a>
+      <a href="https://wa.me/18089985226" class="btn-chat btn-chat-whatsapp" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.4-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s1 2.5 1.1 2.7c.1.2 2 3 4.7 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.5-.3z"/><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .9.9-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+        Chat on WhatsApp
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ SERVICES (REAL PRICING) ============ -->
+<section id="services">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">What we build</span>
+      <h2>Twelve AI marketing services, real published prices</h2>
+      <p>No bundles, no packages — pick what your business actually needs, at a price you can see up front.</p>
+    </div>
+    <div class="service-cards" id="serviceCardsRoot"></div>
+    <p style="text-align:center;margin-top:var(--space-lg);">
+      <a href="services.html" style="color:var(--accent);border-bottom:1px solid rgba(var(--accent-rgb),0.3);">See what's included in every service →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ REAL ESTATE SPECIALTY ============ -->
+<section id="real-estate">
+  <div class="container">
+    <div class="split-feature">
+      <div class="split-feature-media">
+        <img src="images/real-estate-strategy.jpg" alt="AI-driven marketing strategy for real estate development projects" loading="lazy">
+      </div>
+      <div class="split-feature-text">
+        <span class="section-eyebrow">Our specialty</span>
+        <h2>Marketing built for real estate developers</h2>
+        <p>We design and run complete marketing campaigns specifically for real estate developers — full campaign design, all creative and design work, automated social posting, and full project marketing management, using the latest AI tools to reach real, qualified buyers instead of guessing with old-fashioned marketing.</p>
+        <ul class="panel-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Full campaign design and creative, from concept to launch</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Automated social posting that runs continuously, not in bursts</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> AI-driven targeting that reaches real, qualified buyers</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> One team managing your entire project's marketing, start to finish</li>
+        </ul>
+        <a href="signup.html" class="btn btn-primary">Talk to us about your project</a>
+        <p style="margin-top:var(--space-sm);"><a href="real-estate.html" style="color:var(--accent);border-bottom:1px solid rgba(var(--accent-rgb),0.3);">See the full details for developers →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GENERAL BUSINESS MARKETING ============ -->
+<section id="general-business">
+  <div class="container">
+    <div class="split-feature reverse">
+      <div class="split-feature-media">
+        <img src="images/general-business-marketing.jpg" alt="Full-service AI-driven marketing management for any business" loading="lazy">
+      </div>
+      <div class="split-feature-text">
+        <span class="section-eyebrow">For every other business</span>
+        <h2>The same full-service marketing, for any business</h2>
+        <p>Whatever you run, we handle your entire marketing — planning, content, posting, and monitoring, end to end — the same full-service approach as our real estate work, matched to your business instead.</p>
+        <ul class="panel-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Full-service marketing management, not just a single task</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Planning and feasibility built in before anything launches</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Automatic status updates on your work, delivered straight to Telegram <em style="color:var(--text-tertiary);font-style:normal;">(coming soon)</em></li>
+        </ul>
+        <a href="signup.html" class="btn btn-primary">Get started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DISCOVERY-FIRST PHILOSOPHY ============ -->
+<section id="discovery-first">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">How we actually work</span>
+      <h2>We don't give blind promises</h2>
+      <p>We won't start marketing for any business without understanding its goals and requirements first — no exceptions, no matter which service.</p>
+    </div>
+    <ul class="panel-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> We're building long-term relationships through solid, well-planned strategy — not chasing quick, transactional orders.</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Discussing your business and goals with us costs nothing — that conversation is how every engagement starts.</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Looking for a website, a logo, or a permanent AI-agent framework instead? That's <a href="https://agenticcore.agency" target="_blank" rel="noopener">AgenticCore Agency</a> — this site is specifically our marketing services arm.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ QUICK LINKS ============ -->
+<section class="quick-links">
+  <div class="container">
+    <div class="quick-links-row">
+      <a href="business-pool.html" class="btn btn-primary">Explore Business Pool →</a>
+      <a href="referral.html" class="btn btn-primary">Refer &amp; Earn →</a>
+      <a href="how-it-works.html" class="btn btn-primary">See How It Works →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY NOT CREDITS ============ -->
+<section id="why-not-credits">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">Not a credit system</span>
+      <h2>Not another credit system</h2>
+      <p>Most AI marketing tools sell credits — cheap, disposable, and built to run out before you see results. We plan first, then execute.</p>
+    </div>
+    <ul class="panel-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> We assess your product, website, and competition before a single post goes out — credits don't ask what you're actually selling.</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Every task includes 2 free revisions — credits vanish the moment something needs fixing.</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Earn AgenticCore Points on every completed task — real value that compounds, not a prepaid balance draining with each click.</li>
+    </ul>
+    <p class="credits-closing">Cheaper credits look better on paper. They don't know your market.</p>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">The process</span>
+      <h2>No results without a plan, in four steps</h2>
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <h4>Tell us about your business</h4>
+        <p>Product, website, competitors — the basics we need before recommending anything.</p>
+      </div>
+      <div class="flow-step">
+        <h4>We assess, then plan</h4>
+        <p>No results without a real look at what you're selling and who you're up against.</p>
+      </div>
+      <div class="flow-step">
+        <h4>Approve your plan & pay</h4>
+        <p>One clear plan, scoped to your business — you approve it in writing before anything's charged.</p>
+      </div>
+      <div class="flow-step">
+        <h4>Track it to delivery</h4>
+        <p>Posts go out, agents run, and results show up — all from one dashboard.</p>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:var(--space-lg);">
+      <a href="how-it-works.html" style="color:var(--accent);border-bottom:1px solid rgba(var(--accent-rgb),0.3);">See the full dashboard walkthrough →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ DASHBOARD PREVIEW ============ -->
+<section class="preview-section">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">Your command center</span>
+      <h2>One dashboard for everything</h2>
+      <p>Plans, requests, billing, and referrals — nothing hidden behind another page.</p>
+    </div>
+    <div class="preview-frame">
+      <img src="dashboard-preview.jpg" alt="AgenticCore Biz dashboard preview" loading="lazy" width="1400" height="788" style="display:block;">
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIP + REFERRAL ============ -->
+<section id="vip">
+  <div class="container">
+    <div class="dual-panel">
+      <div class="panel-card vip">
+        <span class="panel-tag">Business Pool</span>
+        <h3>Built for teams who work with us often</h3>
+        <p>Once your spend crosses the threshold, you're in — faster delivery, a dedicated manager, and real savings.</p>
+        <ul class="panel-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Priority delivery on every request</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Dedicated manager, 24/7 on WhatsApp & Telegram</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 20% off every service</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> A custom content bundle, every month</li>
+        </ul>
+        <a href="business-pool.html" class="btn btn-secondary btn-sm">Learn about qualifying</a>
+      </div>
+      <div class="panel-card" id="referral">
+        <span class="panel-tag">Referral Program</span>
+        <h3>Bring in clients, earn AgenticCore Points</h3>
+        <p>Share your link. When someone you refer completes a task, you both get rewarded — redeemable toward any future service.</p>
+        <ul class="panel-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Up to 3 levels deep — reward the whole chain</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Your referral earns 10% of their own task value back, in Points</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Points, not cash — always usable, never expire</li>
+        </ul>
+        <a href="referral.html" class="btn btn-secondary btn-sm">See referral terms</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta">
+  <div class="container">
+    <h2>Ready to grow with a plan behind it?</h2>
+    <p>Sign up, tell us about your business, and get a scoped plan back in minutes.</p>
+    <a href="signup.html" class="btn btn-primary">Get started free</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">
+          <img src="logo.png" alt="AgenticCore" width="24" height="24">
+          AgenticCore Biz
+        </a>
+        <p>AI-run marketing, planned before it's posted. Also offering full business setup and custom websites through AgenticCore Agency.</p>
+        <p class="footer-social-label">Follow us</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/share/1HppKFetgD/" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.91h-2.33V22c4.78-.76 8.44-4.92 8.44-9.94z"/></svg>
+          </a>
+          <a href="https://instagram.com/agenticcore.agency" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.9" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://x.com/AgenticCoreHQ" target="_blank" rel="noopener" aria-label="X">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.9l-5.4-6.6L4.5 22H1.4l8.1-9.3L1 2h7.1l4.9 6.1L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z"/></svg>
+          </a>
+          <a href="https://t.me/agenticCoreHQ" target="_blank" rel="noopener" aria-label="Telegram">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.5 18.6 20c-.25 1.1-.9 1.37-1.83.85l-5.06-3.73-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.15L18.5 6.6c.42-.37-.09-.58-.65-.2L6.3 13.65l-4.98-1.56c-1.08-.34-1.1-1.08.23-1.6L20.5 3.4c.9-.34 1.68.2 1.4 1.1z"/></svg>
+          </a>
+          <a href="https://whatsapp.com/channel/0029VbDURL0H5JM1xbaGNK39" target="_blank" rel="noopener" aria-label="WhatsApp Channel">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.36 2 11.75c0 2.02.63 3.9 1.7 5.46L2.5 22l4.98-1.3a10.1 10.1 0 0 0 4.52 1.06c5.52 0 10-4.36 10-9.75S17.52 2 12 2zm5.2 13.9c-.22.6-1.27 1.15-1.75 1.2-.45.05-.9.24-3.03-.63-2.56-1.05-4.2-3.65-4.33-3.82-.13-.17-1.03-1.37-1.03-2.6 0-1.24.65-1.85.88-2.1.22-.25.5-.3.66-.3l.48.01c.15.01.36-.06.56.43.22.53.75 1.82.81 1.96.06.14.1.3.02.48-.09.18-.13.3-.26.46-.13.16-.28.35-.4.47-.13.13-.27.27-.12.53.15.26.68 1.12 1.46 1.82 1 .9 1.85 1.18 2.11 1.31.26.13.41.11.56-.07.15-.18.63-.73.8-.98.17-.25.34-.2.57-.12.23.08 1.47.7 1.72.82.25.13.42.19.48.3.06.11.06.62-.15 1.23z"/></svg>
+          </a>
+          <a href="https://youtube.com/@AgenticcoreAgency" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 7.2s-.23-1.64-.94-2.36c-.9-.94-1.9-.95-2.36-1C16.9 3.5 12 3.5 12 3.5h-.01s-4.9 0-8.2.34c-.46.05-1.46.06-2.36 1C.72 5.56.5 7.2.5 7.2S.25 9.13.25 11.05v1.8c0 1.93.25 3.85.25 3.85s.23 1.64.93 2.36c.9.95 2.08.92 2.6 1.02 1.89.18 8.02.34 8.02.34s4.9-.01 8.2-.35c.46-.05 1.46-.06 2.36-1 .7-.72.93-2.36.93-2.36s.25-1.92.25-3.85v-1.8c0-1.92-.25-3.85-.25-3.85zM9.7 14.9V7.85l6.5 3.53-6.5 3.52z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="services.html">Chatbots &amp; Voice Agents</a></li>
+          <li><a href="services.html">Social Media Management</a></li>
+          <li><a href="services.html">SEO &amp; Content</a></li>
+          <li><a href="services.html">Lead Generation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="business-pool.html">Business Pool</a></li>
+          <li><a href="referral.html">Referral Program</a></li>
+          <li><a href="how-it-works.html">How it works</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="referral.html">Referral Points Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AgenticCore. All rights reserved.</span>
+      <span>An AgenticCore Company</span>
+    </div>
+  </div>
+</footer>
+
+<script src="network-animation.js"></script>
+<script src="pricing-catalog.js"></script>
+<script>
+(function renderServiceCards() {
+  const root = document.getElementById('serviceCardsRoot');
+  root.innerHTML = PRICING_CATALOG.map((cat) => cat.items.map((item) => `
+    <div class="service-card">
+      <span class="service-card-category">${cat.category}</span>
+      <h3>${item.name}</h3>
+      <div class="service-card-price">${formatCatalogPrice(item)}</div>
+    </div>
+  `).join('')).join('');
+})();
+</script>
+<script src="main.js"></script>
+<script src="chat-widget.js"></script>
+<script src="visit-tracker.js"></script>
+</body>
+</html>
