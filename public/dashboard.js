@@ -297,11 +297,6 @@ async function renderPointsHistory(userId) {
   }
 }
 
-const PACKAGE_LABELS = {
-  'starter-engine': 'AI Starter Engine',
-  'omni-scale-growth-engine': 'Omni-Scale Growth Engine'
-};
-
 async function renderSubscriptionsPanel(userId) {
   const list = document.getElementById('subscriptionsList');
 
@@ -320,7 +315,7 @@ async function renderSubscriptionsPanel(userId) {
     list.innerHTML = subscriptions.map((s) => `
       <div class="dash-list-item">
         <div>
-          <strong>${PACKAGE_LABELS[s.package_key] || s.package_key}</strong>
+          <strong>${packageLabel(s.package_key)}</strong>
           <p>$${Number(s.monthly_amount).toFixed(2)}/mo — next due ${new Date(s.next_due_date).toLocaleDateString()}</p>
         </div>
         <span class="dash-status-pill">${statusLabel(s.status)}</span>

@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:catalog": "node --experimental-strip-types scripts/generate-legacy-catalog.mjs",
+    "prebuild": "npm run generate:catalog",
+    "test": "node --experimental-strip-types src/data/catalog.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

@@ -20,9 +20,15 @@ const LEGAL = [
   { href: "/privacy.html", label: "Privacy" },
 ];
 
+/**
+ * The family, repeated small in the footer.
+ *
+ * Each says what it is FOR, because the whole purpose of these links is
+ * to stop somebody ordering a custom dashboard as back-office support.
+ */
 const ELSEWHERE = [
-  { href: "https://agenticcore.agency", label: "agenticcore.agency — full business setup and custom websites" },
-  { href: "https://agenticcore.click", label: "agenticcore.click — the fast, self-serve one" },
+  { href: "https://agenticcore.click", label: "agenticcore.click — quick standardized digital tasks" },
+  { href: "https://agenticcore.agency", label: "agenticcore.agency — custom websites, apps and AI systems" },
 ];
 
 export function Footer() {
@@ -33,7 +39,7 @@ export function Footer() {
           <div className="flex flex-col items-center gap-2 sm:items-start">
             <Logo />
             <p className="text-sm text-fg-faint">
-              AI-run marketing, planned before it's posted.
+              Business setup, back-office and managed support.
             </p>
           </div>
 

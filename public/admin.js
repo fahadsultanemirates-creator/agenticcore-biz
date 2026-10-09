@@ -7,14 +7,6 @@
 const PROJECT_STATUSES = ['in_progress', 'awaiting_review', 'revision_requested', 'delivered', 'approved'];
 const BILLING_STATUSES = ['pending', 'paid', 'refunded'];
 const SUBSCRIPTION_STATUSES = ['active', 'paused', 'cancelled'];
-const PACKAGE_LABELS = {
-  'starter-engine': 'AI Starter Engine',
-  'omni-scale-growth-engine': 'Omni-Scale Growth Engine'
-};
-const PACKAGE_DEFAULT_AMOUNTS = {
-  'starter-engine': 950,
-  'omni-scale-growth-engine': 3450
-};
 
 let profilesById = new Map();
 
@@ -200,7 +192,7 @@ function renderSubscriptions(subscriptions) {
     return `
       <tr>
         <td>${clientLabel(s.user_id)}</td>
-        <td>${PACKAGE_LABELS[s.package_key] || s.package_key}</td>
+        <td>${packageLabel(s.package_key)}</td>
         <td>$${Number(s.monthly_amount).toFixed(2)}</td>
         <td>${s.next_due_date}${overdue ? '<span class="admin-overdue-badge">Overdue</span>' : ''}</td>
         <td>
@@ -255,10 +247,29 @@ function populateSubUserSelect(profiles) {
   if (currentValue) select.value = currentValue;
 }
 
+// The package dropdown and its default amount both come from the generated
+// catalog (pricing-catalog.js -> BUSINESS_PACKAGES). They used to be written
+// out by hand in admin.html and in a PACKAGE_DEFAULT_AMOUNTS map here, and
+// both were still offering the two retired engines at $950 and $3,450 a
+// month -- prices no package has carried since the restructuring. An admin
+// picking from that list would have written a subscription nobody sells.
+function populateSubPackageSelect() {
+  const select = document.getElementById('subPackageSelect');
+  select.innerHTML = BUSINESS_PACKAGES
+    .map((p) => `<option value="${p.id}">${p.name} (${p.display})</option>`)
+    .join('');
+  applyPackageDefaultAmount();
+}
+
+function applyPackageDefaultAmount() {
+  const key = document.getElementById('subPackageSelect').value;
+  const found = findPackage(key);
+  document.getElementById('subAmountInput').value = found ? found.price : '';
+}
+
 function initSubscriptionForm() {
-  document.getElementById('subPackageSelect').addEventListener('change', (e) => {
-    document.getElementById('subAmountInput').value = PACKAGE_DEFAULT_AMOUNTS[e.target.value] || '';
-  });
+  populateSubPackageSelect();
+  document.getElementById('subPackageSelect').addEventListener('change', applyPackageDefaultAmount);
 
   document.getElementById('subCreateBtn').addEventListener('click', async () => {
     const userId = document.getElementById('subUserSelect').value;
