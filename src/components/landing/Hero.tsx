@@ -47,7 +47,7 @@ export function Hero() {
 
         <p className="animate-fade-up mt-5 text-sm text-fg-faint">
           Already have an account?{" "}
-          <a href="/dashboard.html" className="font-semibold text-orange-400 hover:underline">
+          <a href="/dashboard" className="font-semibold text-orange-400 hover:underline">
             Open Dashboard
           </a>
         </p>

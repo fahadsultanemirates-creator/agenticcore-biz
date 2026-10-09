@@ -1,3 +1,4 @@
+import { AccountMenu } from "../AccountMenu";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -49,18 +50,10 @@ export function Nav() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <a
-            href="/login.html"
-            className="hidden rounded-full border border-border px-4 py-2 text-sm font-semibold text-fg-muted transition-colors hover:border-orange-400/50 hover:text-fg sm:inline-flex"
-          >
-            Sign In
-          </a>
-          <a
-            href="/signup.html"
-            className="rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-void transition-transform hover:-translate-y-0.5"
-          >
-            Get Started Free
-          </a>
+          {/* Signed out this is Sign in / Get started; signed in it is the
+              client's own account menu. One component so the landing page
+              and the dashboard never disagree about who is logged in. */}
+          <AccountMenu />
           <button
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -97,13 +90,13 @@ export function Nav() {
               </Link>
             </li>
             <li>
-              <a
-                href="/login.html"
+              <Link
+                to="/dashboard"
                 onClick={() => setMenuOpen(false)}
                 className="block rounded-xl px-3 py-3 font-medium text-fg-muted transition-colors hover:bg-surface hover:text-fg"
               >
-                Sign In / Dashboard
-              </a>
+                Dashboard
+              </Link>
             </li>
           </ul>
         </nav>
