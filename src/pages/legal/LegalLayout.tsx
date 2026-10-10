@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { PublicShell } from "../../components/PublicShell";
+import { SUPPORT_EMAIL, TELEGRAM_URL } from "../../data/contact";
 
 /**
  * The frame for the Terms and Privacy pages.
@@ -40,14 +41,14 @@ export function LegalLayout({
         <p className="mt-12 max-w-2xl text-sm text-fg-muted">
           Questions about any of this?{" "}
           <a
-            href="mailto:hello@agenticcore.biz"
+            href={`mailto:${SUPPORT_EMAIL}`}
             className="font-semibold text-orange-400 hover:underline"
           >
-            hello@agenticcore.biz
+            {SUPPORT_EMAIL}
           </a>{" "}
           or{" "}
           <a
-            href="https://t.me/agenticCoreHQ"
+            href={TELEGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-orange-400 hover:underline"

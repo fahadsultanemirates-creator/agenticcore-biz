@@ -5,6 +5,7 @@ import { RequireAuth } from "./components/auth/RequireAuth";
 import { Landing } from "./pages/Landing";
 import { Terms } from "./pages/legal/Terms";
 import { Privacy } from "./pages/legal/Privacy";
+import { Contact } from "./pages/Contact";
 import { Login } from "./pages/Login";
 import { Services } from "./pages/Services";
 import { Signup } from "./pages/Signup";
@@ -109,6 +110,7 @@ export default function App() {
 
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/contact" element={<Contact />} />
 
         <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
         <Route

@@ -56,6 +56,12 @@ const pages = [
       "Tell us what the business needs and we scope and price it. Nothing is charged until you approve the quote.",
   },
   {
+    path: "contact",
+    title: "Contact",
+    description:
+      "Telegram, email, or start a project — no account needed to ask a question first.",
+  },
+  {
     path: "terms",
     title: "Terms of Service",
     description:
