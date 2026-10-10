@@ -16,8 +16,8 @@ const SOCIALS: { href: string; label: string; icon: ComponentType<{ className?: 
 /** The two policy pages, kept as pages of their own. */
 
 const LEGAL = [
-  { href: "/terms.html", label: "Terms" },
-  { href: "/privacy.html", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
+  { href: "/privacy", label: "Privacy" },
 ];
 
 /**
@@ -63,7 +63,7 @@ export function Footer() {
               <Mail className="h-5 w-5" />
             </a>
             <a
-              href="https://t.me/AgenticCoreAgency"
+              href="https://t.me/agenticCoreHQ"
               target="_blank"
               rel="noreferrer"
               aria-label="Support on Telegram"

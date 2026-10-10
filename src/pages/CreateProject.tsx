@@ -3,6 +3,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import { activeServices, categories, formatPrice, packages } from "../data/catalog";
+import { MONTHLY_BILLING_NOTE, paymentSplitSentence } from "../data/paymentTerms";
 
 /**
  * Create a Project with Forge.
@@ -305,6 +306,20 @@ export function CreateProject() {
                 <Link to="/" className="text-orange-400 hover:underline">
                   Back to the services
                 </Link>
+              </p>
+
+              {/* The payment split used to live only inside the Terms page, so
+                  a customer could approve a quote without ever having been
+                  told that 70% was still to come. It is read from the same
+                  module the Terms page renders. */}
+              <p className="mt-2 max-w-xl text-xs text-fg-faint">
+                When you approve a quote, one-off work is{" "}
+                <span className="text-fg-muted">{paymentSplitSentence()}</span>.{" "}
+                {MONTHLY_BILLING_NOTE}{" "}
+                <Link to="/terms" className="text-orange-400 hover:underline">
+                  Full terms
+                </Link>
+                .
               </p>
             </div>
           </form>

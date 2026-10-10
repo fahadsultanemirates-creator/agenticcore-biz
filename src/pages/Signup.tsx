@@ -157,14 +157,25 @@ export function Signup() {
           </form>
 
           <p className="mt-4 text-xs text-fg-faint">
-            {/* Still the legacy pages at their legacy URLs -- plain anchors,
-                not <Link>, because the router does not own those routes. */}
+            {/* New tab, not <Link>. These are the documents being consented
+                to, so they have to be reachable from here -- but navigating
+                away mid-signup discards everything typed into the form. */}
             By creating an account you agree to our{" "}
-            <a href="/terms.html" className="text-fg-muted hover:underline">
+            <a
+              href="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-fg-muted hover:underline"
+            >
               terms
             </a>{" "}
             and{" "}
-            <a href="/privacy.html" className="text-fg-muted hover:underline">
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-fg-muted hover:underline"
+            >
               privacy policy
             </a>
             .
