@@ -30,6 +30,27 @@ import { createClient } from "@supabase/supabase-js";
  * React pages and the remaining legacy pages share one login even though
  * they build their clients separately.
  */
+/**
+ * Did this page load from a password-recovery link?
+ *
+ * Captured HERE, above createClient, and that placement is the whole point.
+ * supabase-js reads the recovery token out of the URL fragment and then
+ * clears it, so anything that asks later may find an empty hash and
+ * conclude this was an ordinary visit.
+ *
+ * Why it is needed at all: resetPasswordForEmail asks Supabase to send the
+ * client back to /reset, but Supabase only honours a redirect it has been
+ * configured to allow. If /reset is not on the project's Redirect URLs
+ * list, it silently substitutes the Site URL -- so the client lands on the
+ * homepage holding a valid recovery session, sees a marketing page, and has
+ * no way to set a password. Nothing errors. They are simply locked out.
+ *
+ * App.tsx uses this to send them to /reset wherever they land, which makes
+ * the flow work whether or not that setting is right.
+ */
+export const ARRIVED_FOR_RECOVERY =
+  typeof window !== "undefined" && /(?:^|[#&?])type=recovery(?:[&=]|$)/.test(window.location.hash);
+
 const SUPABASE_URL =
   (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?? "https://bvpdvtsshivkzhcmszkd.supabase.co";
 
