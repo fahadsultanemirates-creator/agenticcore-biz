@@ -75,6 +75,11 @@ export function Privacy() {
           ]}
         />
         <p>Beyond these, we do not share your information with third parties.</p>
+        <p>
+          That list is the whole list. Nothing else loads from anywhere else — the fonts and every
+          other asset on this page are served from our own domain, so simply opening the site does
+          not announce your visit to anyone.
+        </p>
       </Clause>
 
       <Clause heading="How long we keep it">

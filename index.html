@@ -20,16 +20,40 @@
       property="og:description"
       content="Business setup, back-office support and managed services — 19 clearly scoped services with published prices, and three support packages."
     />
-    <meta property="og:image" content="https://agenticcore.biz/favicon.png" />
+    <!-- A real 1200x630 card, built by scripts/make-og-card.py. This pointed
+         at favicon.png, a 256px square, so every share previewed as a
+         cropped icon. -->
+    <meta property="og:image" content="https://agenticcore.biz/og-card.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="agenticcore.biz" />
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Start your business. Organize it. Keep it running."
+    />
+    <meta
+      name="twitter:description"
+      content="Business setup, back-office support and managed services — 19 clearly scoped services with published prices, and three support packages."
+    />
+    <meta name="twitter:image" content="https://agenticcore.biz/og-card.jpg" />
     <title>AgenticCore.biz | Business Setup, Back-Office &amp; AI-Powered Business Support</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Self-hosted, so these are same-origin and worth preloading: they
+         are needed for the first paint and nothing else requests them. -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,500..700&family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/inter-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/fraunces-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
   </head>
   <body>
