@@ -1,5 +1,6 @@
-import { lazy, Suspense, type ReactNode } from "react";
-import { Route, Routes } from "react-router-dom";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { ARRIVED_FOR_RECOVERY, supabase } from "./lib/supabase";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { Landing } from "./pages/Landing";
 import { Login } from "./pages/Login";
@@ -46,11 +47,50 @@ const NotFound = lazy(() => import("./pages/NotFound").then((m) => ({ default: m
 // reads as a glitch.
 const LOADING = <div className="min-h-screen bg-void" />;
 
+
+/**
+ * Make sure a password-recovery link reaches the reset form, wherever it
+ * lands.
+ *
+ * resetPasswordForEmail asks Supabase to return the client to /reset, but
+ * Supabase honours a redirect only if the project's Redirect URLs list
+ * allows it; otherwise it quietly substitutes the Site URL. The failure is
+ * invisible and total: the client arrives holding a valid recovery session,
+ * looks at a marketing page, and cannot set a password. The old site sent
+ * these links to /reset-password.html, so that is the URL likely to be on
+ * the list rather than this one.
+ *
+ * Two checks because they race. ARRIVED_FOR_RECOVERY is read at module load,
+ * before supabase-js can strip the fragment. The event covers the case where
+ * it already had -- and may have fired before this listener existed, which
+ * is why the flag is not enough on its own either.
+ */
+function useRecoveryRedirect() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (ARRIVED_FOR_RECOVERY && pathname !== "/reset") {
+      navigate("/reset", { replace: true });
+      return;
+    }
+
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY" && window.location.pathname !== "/reset") {
+        navigate("/reset", { replace: true });
+      }
+    });
+    return () => data.subscription.unsubscribe();
+  }, [navigate, pathname]);
+}
+
 function Protected({ children }: { children: ReactNode }) {
   return <RequireAuth>{children}</RequireAuth>;
 }
 
 export default function App() {
+  useRecoveryRedirect();
+
   return (
     <Suspense fallback={LOADING}>
       <Routes>

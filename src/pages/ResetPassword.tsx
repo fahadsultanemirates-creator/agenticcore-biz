@@ -13,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthCard, BUTTON, ERROR, FIELD, LABEL, LINK } from "../components/auth/AuthCard";
 import { PasswordInput } from "../components/PasswordInput";
 import { useAuth } from "../context/AuthContext";
-import { supabase } from "../lib/supabase";
+import { ARRIVED_FOR_RECOVERY, supabase } from "../lib/supabase";
 
 const MIN_PASSWORD = 8;
 
@@ -21,7 +21,11 @@ export function ResetPassword() {
   const { requestPasswordReset, setPassword } = useAuth();
   const navigate = useNavigate();
 
-  const [recovering, setRecovering] = useState(false);
+  // Seeded from the flag captured at module load, before supabase-js could
+  // strip the fragment. Starting at false meant a client who arrived from
+  // the email could be shown the "email me a link" form while holding a
+  // perfectly good recovery session -- see the race below.
+  const [recovering, setRecovering] = useState(ARRIVED_FOR_RECOVERY);
   const [email, setEmail] = useState("");
   const [password, setPasswordValue] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -29,10 +33,21 @@ export function ResetPassword() {
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Two ways to find out we are mid-recovery, because they race. The event
-  // fires when supabase-js finishes reading the token out of the URL, which
-  // may already have happened before this component mounted -- in which case
-  // no event is coming and only the session says so.
+  // Three ways to find out we are mid-recovery, because they race, and the
+  // first two can both lose.
+  //
+  // The event fires when supabase-js finishes reading the token out of the
+  // URL -- which may already have happened before this component mounted,
+  // in which case no event is coming. The hash check covers that, except
+  // supabase-js clears the fragment once it has used it, so by the time
+  // anything reads it the evidence may be gone. That leaves a client holding
+  // a valid recovery session being shown the "email me a link" form, which
+  // is the one thing this page exists to avoid. App.tsx redirecting here
+  // from another route makes it likelier still, by mounting this component
+  // later.
+  //
+  // So the real answer is the flag read at module load, above createClient,
+  // which cannot be raced. The other two stay as belt and braces.
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") setRecovering(true);
