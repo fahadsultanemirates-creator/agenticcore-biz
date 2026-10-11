@@ -15,6 +15,17 @@ import { MONTHLY_BILLING_NOTE, PAYMENT_SPLIT } from "../../data/paymentTerms";
  * What carried over unchanged, because it was right: the 30/70 split (owner
  * confirmed), the monthly-billing exception, and review-before-handover.
  *
+ * What was removed because nobody approved it: an earlier draft of this
+ * page said we accept "bank transfer by arrangement for ongoing
+ * engagements". That was a suggestion that had been made, never a policy
+ * the owner agreed to, and a Terms page is the last place to float an
+ * idea. USDT is what this site takes.
+ *
+ * The chain-confirmation wording was NOT copied from the .agency Terms
+ * either: Agency watches the chain, .biz does not (UsdtPanel.tsx says so
+ * too, and there is no watcher function in supabase/functions). Matching
+ * the structure is right; matching that sentence would have been false.
+ *
  * What was removed as untrue: references to chatbots, voice agents, real
  * estate developers, AI agent builds (that is .agency's catalogue, not this
  * one) and AC token as a payment method.
@@ -90,8 +101,12 @@ export function Terms() {
         </p>
         <p>{MONTHLY_BILLING_NOTE}</p>
         <p>
-          We accept USDT, and bank transfer by arrangement for ongoing engagements. We do not
-          process or store card numbers.
+          Payment is in USDT on BNB Smart Chain (BEP-20). We do not process or store card numbers.
+        </p>
+        <p>
+          Unlike our sister sites, a .biz payment is <strong className="text-fg">checked by a
+          person</strong>, not detected automatically. Send it, tell us in the dashboard, and we
+          confirm it and move your request forward.
         </p>
       </Clause>
 
