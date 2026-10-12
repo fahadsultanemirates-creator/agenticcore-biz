@@ -790,3 +790,27 @@ export function formatPrice(service: Service | Package): string {
 export function needsQuote(service: Service): boolean {
   return service.startingFrom === true;
 }
+
+/**
+ * The caveat that has to travel with "every price is published".
+ *
+ * The homepage said "Six of the most-ordered services. Every price is
+ * published" directly above a grid containing BIZ-10 at "from $49" -- a
+ * figure that is explicitly not the final price. "Most-ordered" was also a
+ * ranking claim with nothing behind it.
+ *
+ * Derived rather than written, so if the catalogue ever has no "from"
+ * prices the caveat disappears on its own, and if one is added to a list
+ * that had none it appears.
+ */
+export function hasStartingFromPrice(items: readonly Service[]): boolean {
+  return items.some((s) => Boolean(s.startingFrom));
+}
+
+/** How many of the given services are quoted rather than fixed. */
+export function startingFromCount(items: readonly Service[]): number {
+  return items.filter((s) => Boolean(s.startingFrom)).length;
+}
+
+export const PRICE_CAVEAT =
+  "A price shown as “from” is a starting point — we quote the scope in writing before anything is charged.";

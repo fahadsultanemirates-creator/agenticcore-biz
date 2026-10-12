@@ -1,7 +1,13 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Reveal } from "../Reveal";
-import { SERVICE_COUNT, featuredServices, formatPrice } from "../../data/catalog";
+import {
+  PRICE_CAVEAT,
+  SERVICE_COUNT,
+  featuredServices,
+  formatPrice,
+  hasStartingFromPrice,
+} from "../../data/catalog";
 
 /**
  * Six, not nineteen. The homepage is not the catalog -- the full list
@@ -19,9 +25,15 @@ export function FeaturedServices() {
           <h2 className="font-display text-3xl font-semibold text-fg sm:text-4xl">
             Where most businesses start
           </h2>
+          {/* Was "Six of the most-ordered services. Every price is
+              published." Nothing measures what is most ordered, and this
+              grid contains a "from" price, so neither half was true. */}
           <p className="mt-4 text-fg-muted">
-            Six of the most-ordered services. Every price is published, every scope is written down.
+            Popular services. Every price is shown up front and every scope is written down.
           </p>
+          {hasStartingFromPrice(featuredServices) ? (
+            <p className="mt-2 text-sm text-fg-faint">{PRICE_CAVEAT}</p>
+          ) : null}
         </div>
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

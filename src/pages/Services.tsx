@@ -3,9 +3,11 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { PublicShell } from "../components/PublicShell";
 import {
+  PRICE_CAVEAT,
   activeServices,
   categories,
   formatPrice,
+  hasStartingFromPrice,
   type ServiceCategoryId,
 } from "../data/catalog";
 
@@ -35,9 +37,12 @@ export function Services() {
           All {activeServices.length} services
         </h1>
         <p className="mt-3 max-w-2xl text-fg-muted">
-          Every price published, every scope written down. Order individually, or combine them into
-          a package.
+          Every price is shown up front and every scope is written down. Order individually, or
+          combine them into a package.
         </p>
+        {hasStartingFromPrice(activeServices) ? (
+          <p className="mt-2 max-w-2xl text-sm text-fg-faint">{PRICE_CAVEAT}</p>
+        ) : null}
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">

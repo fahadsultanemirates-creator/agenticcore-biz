@@ -3,6 +3,9 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ARRIVED_FOR_RECOVERY, supabase } from "./lib/supabase";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { Landing } from "./pages/Landing";
+import { Terms } from "./pages/legal/Terms";
+import { Privacy } from "./pages/legal/Privacy";
+import { Contact } from "./pages/Contact";
 import { Login } from "./pages/Login";
 import { Services } from "./pages/Services";
 import { Signup } from "./pages/Signup";
@@ -17,8 +20,9 @@ import { Signup } from "./pages/Signup";
  * when they are needed.
  *
  * Still NOT React, and still served by Netlify at their own URLs because a
- * matching file beats the SPA redirect: /admin.html, /terms.html,
- * /privacy.html, /referral.html, /business-pool.html, /how-it-works.html.
+ * matching file beats the SPA redirect: /admin.html, /referral.html,
+ * /business-pool.html, /how-it-works.html. /terms.html and /privacy.html
+ * were deleted and now 301 to the React /terms and /privacy routes.
  * The auth pages and the client dashboard that used to live there are gone,
  * and netlify.toml redirects their old addresses here.
  */
@@ -103,6 +107,10 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/reset" element={<ResetPassword />} />
+
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/contact" element={<Contact />} />
 
         <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
         <Route

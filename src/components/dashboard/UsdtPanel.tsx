@@ -1,12 +1,9 @@
 import { AlertTriangle, Check, Copy, Mail } from "lucide-react";
 import { useState } from "react";
 import {
-  AC_TOKEN_CONTRACT,
-  AC_TOKEN_DISCOUNT_PCT,
   BILLING_EMAIL,
   money,
   upfrontDue,
-  upfrontDueInAc,
   USDT_BEP20_ADDRESS,
 } from "../../lib/payment";
 
@@ -24,12 +21,13 @@ import {
  * bottom: USDT sent on Ethereum or Tron to a BEP-20 address is gone.
  */
 export function UsdtPanel({ agreedPrice }: { agreedPrice: number }) {
-  const [copied, setCopied] = useState<"usdt" | "ac" | null>(null);
+  // Only one address now that the AC token option is gone, but the keyed
+  // state is kept: it is what makes "Copied" clear itself correctly.
+  const [copied, setCopied] = useState<"usdt" | null>(null);
 
   const due = upfrontDue(agreedPrice);
-  const dueInAc = upfrontDueInAc(agreedPrice);
 
-  const copy = async (which: "usdt" | "ac") => {
+  const copy = async (which: "usdt") => {
     try {
       await navigator.clipboard.writeText(USDT_BEP20_ADDRESS);
       setCopied(which);
@@ -75,28 +73,6 @@ export function UsdtPanel({ agreedPrice }: { agreedPrice: number }) {
         </div>
       </div>
 
-      <div className="mt-5 border-t border-border pt-4">
-        <p className="text-sm font-semibold text-fg">
-          Or pay in AC and save {AC_TOKEN_DISCOUNT_PCT}%
-        </p>
-        <p className="mt-1 text-xs text-fg-muted">
-          {money(dueInAc)} worth of AC token instead of {money(due)}. BEP-20 accepts any BEP-20
-          token, so it goes to the same address — there is no second one to get wrong.
-        </p>
-        <AddressRow copied={copied === "ac"} onCopy={() => void copy("ac")} />
-        <p className="mt-2 text-xs text-fg-faint">
-          Token contract{" "}
-          <a
-            href={`https://bscscan.com/token/${AC_TOKEN_CONTRACT}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-fg-muted hover:underline"
-          >
-            {AC_TOKEN_CONTRACT.slice(0, 10)}…{AC_TOKEN_CONTRACT.slice(-8)}
-          </a>
-          , verifiable on BscScan.
-        </p>
-      </div>
 
       {/* The one step a client must not skip. Nothing here watches the
           chain, so an unreported payment sits unnoticed. Saying so is

@@ -8,8 +8,6 @@ import assert from "node:assert/strict";
 import process from "node:process";
 
 import {
-  AC_TOKEN_CONTRACT,
-  AC_TOKEN_DISCOUNT_PCT,
   BUSINESS_POOL_THRESHOLD,
   UPFRONT_FRACTION,
   USDT_BEP20_ADDRESS,
@@ -19,7 +17,6 @@ import {
   remainderDue,
   roundMoney,
   upfrontDue,
-  upfrontDueInAc,
 } from "./payment.ts";
 
 let passed = 0;
@@ -41,18 +38,14 @@ test("the receiving address is the one the site has always used", () => {
   // somewhere unrecoverable, and no test that only checks the shape of an
   // address would catch it.
   assert.equal(USDT_BEP20_ADDRESS, "0x62Ad7D55fbc8A8591109D72b67Ec63aa1EE196bC");
-  assert.equal(AC_TOKEN_CONTRACT, "0xe9568888a0bc317519957047cf736e134B097768");
 });
 
-test("both addresses are well-formed EVM addresses", () => {
-  for (const address of [USDT_BEP20_ADDRESS, AC_TOKEN_CONTRACT]) {
-    assert.match(address, /^0x[0-9a-fA-F]{40}$/, address);
-  }
+test("the receiving address is a well-formed EVM address", () => {
+  assert.match(USDT_BEP20_ADDRESS, /^0x[0-9a-fA-F]{40}$/, USDT_BEP20_ADDRESS);
 });
 
 test("the agreed business terms are what they have always been", () => {
   assert.equal(UPFRONT_FRACTION, 0.3);
-  assert.equal(AC_TOKEN_DISCOUNT_PCT, 15);
   assert.equal(BUSINESS_POOL_THRESHOLD, 5000);
 });
 
@@ -84,14 +77,6 @@ test("the deposit and the remainder add back up to the agreed price", () => {
   }
 });
 
-test("paying in AC takes 15 per cent off the deposit", () => {
-  assert.equal(upfrontDueInAc(100), 25.5);
-  assert.equal(upfrontDueInAc(69), 17.6);
-  // Never more than the USDT deposit, for any price we sell.
-  for (const price of [19, 25, 29, 39, 49, 59, 69, 79, 99, 149]) {
-    assert.ok(upfrontDueInAc(price) < upfrontDue(price), `${price}`);
-  }
-});
 
 test("Business Pool progress is a percentage that cannot overshoot", () => {
   assert.equal(businessPoolProgress(0), 0);

@@ -17,13 +17,6 @@
  *  dashboard has always shown, and the same one .click settles to. */
 export const USDT_BEP20_ADDRESS = "0x62Ad7D55fbc8A8591109D72b67Ec63aa1EE196bC";
 
-/** AgenticCore's own BEP-20 token. BEP-20 accepts any BEP-20 token, so it
- *  arrives at the wallet above -- there is no second address to get wrong. */
-export const AC_TOKEN_CONTRACT = "0xe9568888a0bc317519957047cf736e134B097768";
-
-/** Paying in AC earns this much off. */
-export const AC_TOKEN_DISCOUNT_PCT = 15;
-
 /** Taken before work starts; the remainder falls due on approval. */
 export const UPFRONT_FRACTION = 0.3;
 
@@ -47,11 +40,6 @@ export function roundMoney(amount: number): number {
 /** The deposit due before work starts, from the agreed total. */
 export function upfrontDue(agreedPrice: number): number {
   return roundMoney(agreedPrice * UPFRONT_FRACTION);
-}
-
-/** The same deposit, discounted for paying in AC. */
-export function upfrontDueInAc(agreedPrice: number): number {
-  return roundMoney(upfrontDue(agreedPrice) * (1 - AC_TOKEN_DISCOUNT_PCT / 100));
 }
 
 /** What is left once the deposit is paid. */
