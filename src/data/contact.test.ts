@@ -42,6 +42,7 @@ function test(name: string, fn: () => void): void {
 
 const SRC = new URL("..", import.meta.url).pathname;
 const FUNCTIONS = new URL("../../supabase/functions", import.meta.url).pathname;
+const PUBLIC = new URL("../../public", import.meta.url).pathname;
 const ORDER_BOT = "AgenticcoreClickManagerbot";
 
 function sourceFiles(dir: string, out: string[] = []): string[] {
@@ -59,6 +60,35 @@ function sourceFiles(dir: string, out: string[] = []): string[] {
   return out;
 }
 
+/**
+ * The legacy pages in public/ that Netlify still serves as real files.
+ *
+ * sourceFiles() takes .ts/.tsx under src/ and supabase/functions only, so
+ * these sat outside every scan this repo has -- which is how five live
+ * footers kept t.me/agenticCoreHQ through two renames of the handle, how
+ * the landing page's chat button kept a different brand's account
+ * (t.me/AgenticCoreAgency) entirely, and how its WhatsApp button kept a
+ * number that is not the support number at all.
+ *
+ * netlify.toml redirects login/signup/dashboard/terms/privacy, but not
+ * these, and a matching file beats the SPA catch-all -- so each one is
+ * the page a visitor actually gets.
+ */
+function staticPages(dir: string, out: string[] = []): string[] {
+  let entries: string[];
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return out;
+  }
+  for (const entry of entries) {
+    const full = join(dir, entry);
+    if (statSync(full).isDirectory()) staticPages(full, out);
+    else if (full.endsWith(".html")) out.push(full);
+  }
+  return out;
+}
+
 /** Code with comments and imports stripped -- both name what they ban. */
 function code(text: string): string {
   return text
@@ -69,6 +99,7 @@ function code(text: string): string {
 }
 
 const FILES = [...sourceFiles(SRC), ...sourceFiles(FUNCTIONS)];
+const PAGES = staticPages(PUBLIC);
 
 test("the scan reads this repo", () => {
   assert.ok(FILES.length > 10, `only ${FILES.length} files found — the walk is broken`);
@@ -156,6 +187,31 @@ test("the ordering bot is never used as a support contact", () => {
       `${file.replace(SRC, "src/")} labels the ordering bot as support`,
     );
   }
+});
+
+test("the scan reads the legacy static pages", () => {
+  assert.ok(PAGES.length > 0, `no .html found under public/ — the walk is broken`);
+});
+
+test("no legacy static page links a stale support account", () => {
+  const offenders: string[] = [];
+  const expectedWhatsApp = whatsAppUrl();
+  for (const file of PAGES) {
+    const name = `public/${file.slice(PUBLIC.length + 1)}`;
+    // HTML comments, not JS ones -- code() would leave these intact.
+    const body = readFileSync(file, "utf8").replace(/<!--[\s\S]*?-->/g, " ");
+    for (const match of body.matchAll(/t\.me\/([A-Za-z0-9_]+)/g)) {
+      if (match[1] === TELEGRAM_HANDLE || match[1] === ORDER_BOT) continue;
+      offenders.push(`${name} → t.me/${match[1]}`);
+    }
+    // A wrong number is worse than a wrong handle: it reaches a stranger
+    // who cannot even tell the customer they have the wrong company.
+    for (const match of body.matchAll(/https:\/\/wa\.me\/[A-Za-z0-9._]+/g)) {
+      if (match[0] === expectedWhatsApp) continue;
+      offenders.push(`${name} → ${match[0]}`);
+    }
+  }
+  assert.deepEqual(offenders, []);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);
