@@ -1,12 +1,15 @@
 import { ChatLauncher } from "../components/ChatLauncher";
 import { BillingSection } from "../components/dashboard/BillingSection";
+import { DashboardNav } from "../components/dashboard/DashboardNav";
 import { DashboardShell } from "../components/dashboard/DashboardShell";
 import { RequestsSection } from "../components/dashboard/RequestsSection";
 import { ServicesSection } from "../components/dashboard/ServicesSection";
 import { WelcomeSection } from "../components/dashboard/WelcomeSection";
 import {
   amountOutstanding,
+  unreadCount,
   useBilling,
+  useMessages,
   useProfile,
   useRequests,
   useSubscriptions,
@@ -27,11 +30,13 @@ export function Dashboard() {
   const requests = useRequests();
   const billing = useBilling();
   const subscriptions = useSubscriptions();
+  const messages = useMessages();
 
   const outstanding = amountOutstanding(billing.rows);
 
   return (
     <DashboardShell title="Dashboard">
+      <DashboardNav unreadMessages={unreadCount(messages.rows)} />
       <WelcomeSection profile={profile} outstanding={outstanding} />
       <ServicesSection />
       <RequestsSection

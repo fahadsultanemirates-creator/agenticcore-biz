@@ -17,6 +17,7 @@ export function BillingSection({
   billing,
   subscriptions,
   outstanding,
+  showHeading = true,
 }: {
   billing: {
     rows: BillingRow[];
@@ -31,28 +32,44 @@ export function BillingSection({
     reload: () => Promise<void>;
   };
   outstanding: number;
+  /**
+   * False on /invoices, which is a page rather than one section of the
+   * dashboard and so carries its own h1, lead and outstanding figure.
+   * The table and the monthly-package cards below are the same component
+   * in both places -- the alternative was a second copy of the table on
+   * the new page, which is how two views of the same money start
+   * disagreeing.
+   */
+  showHeading?: boolean;
 }) {
   return (
-    <section id="billing" className="scroll-mt-20 border-t border-border py-8 sm:py-10">
-      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-        <div>
-          <h2 className="font-display text-xl font-semibold text-fg sm:text-2xl">Billing</h2>
-          <p className="mt-1 text-sm text-fg-muted">
-            30% to start, the balance when the work is approved. No credits, no subscriptions you
-            didn't ask for.
-          </p>
-        </div>
-        {outstanding > 0 ? (
-          <div className="rounded-xl border-2 border-orange-400 bg-orange-400/5 px-4 py-2.5 text-right">
-            <p className="text-xs font-semibold tracking-wide text-fg-faint uppercase">
-              Outstanding
-            </p>
-            <p className="font-display text-xl font-semibold text-orange-400 tabular-nums">
-              {money(outstanding)}
+    <section
+      id="billing"
+      className={
+        showHeading ? "scroll-mt-20 border-t border-border py-8 sm:py-10" : "scroll-mt-20"
+      }
+    >
+      {showHeading ? (
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <div>
+            <h2 className="font-display text-xl font-semibold text-fg sm:text-2xl">Billing</h2>
+            <p className="mt-1 text-sm text-fg-muted">
+              30% to start, the balance when the work is approved. No credits, no subscriptions
+              you didn't ask for.
             </p>
           </div>
-        ) : null}
-      </div>
+          {outstanding > 0 ? (
+            <div className="rounded-xl border-2 border-orange-400 bg-orange-400/5 px-4 py-2.5 text-right">
+              <p className="text-xs font-semibold tracking-wide text-fg-faint uppercase">
+                Outstanding
+              </p>
+              <p className="font-display text-xl font-semibold text-orange-400 tabular-nums">
+                {money(outstanding)}
+              </p>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       <Panel
         loading={billing.loading}

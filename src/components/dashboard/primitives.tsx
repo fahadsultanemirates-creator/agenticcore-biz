@@ -24,7 +24,7 @@ export function Panel({
   reload: () => Promise<void>;
   empty: boolean;
   emptyIcon: LucideIcon;
-  emptyText: string;
+  emptyText: ReactNode;
   children: ReactNode;
 }) {
   if (loading) {
@@ -54,7 +54,7 @@ export function Panel({
     return (
       <div className="mt-5 rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
         <EmptyIcon className="mx-auto h-8 w-8 text-fg-faint" />
-        <p className="mt-3 text-sm text-fg-muted">{emptyText}</p>
+        <div className="mt-3 text-sm text-fg-muted">{emptyText}</div>
       </div>
     );
   }
