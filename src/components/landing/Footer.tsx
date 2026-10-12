@@ -1,9 +1,10 @@
 import { Mail } from "lucide-react";
 import type { ComponentType } from "react";
-import { TELEGRAM_URL } from "../../data/contact";
+import { SUPPORT_EMAIL, TELEGRAM_URL, whatsAppUrl } from "../../data/contact";
 import { Logo } from "../Logo";
 import { FacebookIcon, InstagramIcon, XIcon, YouTubeIcon } from "../icons/SocialIcons";
 import { TelegramIcon } from "../icons/TelegramIcon";
+import { WhatsAppIcon } from "../icons/WhatsAppIcon";
 
 // Every link here is one that already existed on the pre-React pages.
 // A footer that invents a channel nobody runs is a dead end with a logo.
@@ -58,7 +59,7 @@ export function Footer() {
           <p className="text-xs font-semibold tracking-wide text-fg-faint uppercase">Need help?</p>
           <div className="flex items-center gap-3">
             <a
-              href="mailto:hello@agenticcore.biz"
+              href={`mailto:${SUPPORT_EMAIL}`}
               aria-label="Email us"
               className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-400 text-void transition-transform hover:-translate-y-0.5"
             >
@@ -73,6 +74,18 @@ export function Footer() {
             >
               <TelegramIcon className="h-5 w-5" />
             </a>
+            {/* Support, not ordering. */}
+            {whatsAppUrl() ? (
+              <a
+                href={whatsAppUrl() as string}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Support on WhatsApp"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-400 text-void transition-transform hover:-translate-y-0.5"
+              >
+                <WhatsAppIcon className="h-5 w-5" />
+              </a>
+            ) : null}
           </div>
         </div>
 

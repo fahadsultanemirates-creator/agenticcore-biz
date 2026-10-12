@@ -9,6 +9,7 @@ import { Contact } from "./pages/Contact";
 import { Login } from "./pages/Login";
 import { Services } from "./pages/Services";
 import { Signup } from "./pages/Signup";
+import { ScrollToHash } from "./components/ScrollToHash";
 
 /**
  * Routes the React app owns.
@@ -97,6 +98,7 @@ export default function App() {
 
   return (
     <Suspense fallback={LOADING}>
+      <ScrollToHash />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/services" element={<Services />} />

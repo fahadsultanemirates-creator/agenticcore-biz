@@ -106,7 +106,7 @@ const GENERIC_ERROR_MESSAGE =
 // (unlike a bot) it has no "/start <token>" to receive -- context
 // reaches the manager via the proactive owner notification below
 // instead of through this link.
-const MANAGER_TELEGRAM_URL = 'https://t.me/AgenticCoreAgency';
+const MANAGER_TELEGRAM_URL = 'https://t.me/AgenticCorebiz';
 
 const TELEGRAM_API_BASE = 'https://api.telegram.org/bot';
 

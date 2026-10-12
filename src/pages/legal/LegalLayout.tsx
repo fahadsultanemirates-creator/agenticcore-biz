@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { PublicShell } from "../../components/PublicShell";
-import { SUPPORT_EMAIL, TELEGRAM_URL } from "../../data/contact";
+import { SUPPORT_EMAIL, TELEGRAM_URL, whatsAppUrl } from "../../data/contact";
 
 /**
  * The frame for the Terms and Privacy pages.
@@ -55,6 +55,20 @@ export function LegalLayout({
           >
             Telegram
           </a>
+          {whatsAppUrl() ? (
+            <>
+              {" "}
+              or{" "}
+              <a
+                href={whatsAppUrl() as string}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-orange-400 hover:underline"
+              >
+                WhatsApp
+              </a>
+            </>
+          ) : null}
           .
         </p>
       </article>

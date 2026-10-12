@@ -1,11 +1,18 @@
 import { AlertTriangle, ArrowRight, Check, Clock, FileInput, RefreshCw, Sparkles, X } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { PublicShell } from "../components/PublicShell";
 import { archivedById, formatPrice, needsQuote, serviceById } from "../data/catalog";
 
 export function ServiceDetail() {
   const { id = "" } = useParams();
   const service = serviceById(id);
+
+  // The lookup accepts any casing so a lowercased link still resolves,
+  // but only one spelling should ever be indexed or shared. Anything
+  // else redirects to it.
+  if (service && service.status !== "archived" && id !== service.id) {
+    return <Navigate to={`/services/${service.id}`} replace />;
+  }
 
   // A retired service gets an answer, not a 404. Somebody following an
   // old link or an old invoice should be told what happened to it and
