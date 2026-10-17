@@ -238,3 +238,138 @@ export async function removeConnection(id: string): Promise<boolean> {
   if (error) console.error("removeConnection failed:", error.message);
   return !error;
 }
+
+export type MessageRow = {
+  id: string;
+  project_id: string;
+  author: "client" | "team" | "system";
+  body: string;
+  read_at: string | null;
+  created_at: string;
+};
+
+const MESSAGE_COLUMNS = "id, project_id, author, body, read_at, created_at";
+
+/**
+ * Every message across the client's projects, oldest first.
+ *
+ * Ascending on purpose, and this is a deliberate difference from
+ * .agency: there the same hook takes the default descending order, so a
+ * thread renders newest-at-the-top above a compose box at the bottom and
+ * a reply appears at the far end from where it was typed. A thread is a
+ * transcript; it reads downwards.
+ *
+ * One query for every project rather than one per project. A client has a
+ * handful of each, and one request the project list can all count from
+ * beats N requests that each render their own spinner.
+ */
+export function useMessages(): OwnRows<MessageRow> {
+  return useOwnRows<MessageRow>("project_messages", MESSAGE_COLUMNS, {
+    column: "created_at",
+    ascending: true,
+  });
+}
+
+/**
+ * Messages the client has not read.
+ *
+ * Only the other side's count. Including your own would light the badge
+ * the moment you sent something, which teaches a client to ignore it.
+ */
+export function unreadCount(rows: MessageRow[]): number {
+  return rows.filter((row) => row.author !== "client" && row.read_at === null).length;
+}
+
+export type DeliverableRow = {
+  id: string;
+  project_id: string;
+  label: string;
+  storage_path: string | null;
+  url: string | null;
+  size_bytes: number | null;
+  content_type: string | null;
+  notes: string | null;
+  created_at: string;
+};
+
+const DELIVERABLE_COLUMNS =
+  "id, project_id, label, storage_path, url, size_bytes, content_type, notes, created_at";
+
+export function useDeliverables(): OwnRows<DeliverableRow> {
+  return useOwnRows<DeliverableRow>("project_deliverables", DELIVERABLE_COLUMNS, {
+    column: "created_at",
+  });
+}
+
+/**
+ * Posts as the client. The insert policy refuses any other author, so
+ * there is no way for this to file something that looks like it came
+ * from us.
+ */
+export async function postMessage(
+  projectId: string,
+  body: string,
+): Promise<{ ok: true } | { error: string }> {
+  const { data: session } = await supabase.auth.getSession();
+  const userId = session.session?.user.id;
+  if (!userId) return { error: "Your session expired. Please sign in again." };
+
+  const { error } = await supabase.from("project_messages").insert({
+    project_id: projectId,
+    user_id: userId,
+    author: "client",
+    body: body.trim(),
+  });
+
+  if (error) {
+    console.error("postMessage failed:", error.message);
+    return { error: "We couldn't send that. Please try again." };
+  }
+  return { ok: true };
+}
+
+/**
+ * Marks the other side's messages read.
+ *
+ * read_at is the only column a client can move on an existing message --
+ * protect_message_content freezes body, author and the rest against the
+ * anon and authenticated roles, so this cannot rewrite history even by
+ * accident.
+ */
+export async function markRead(ids: string[]): Promise<void> {
+  if (ids.length === 0) return;
+  const { error } = await supabase
+    .from("project_messages")
+    .update({ read_at: new Date().toISOString() })
+    .in("id", ids);
+  if (error) console.error("markRead failed:", error.message);
+}
+
+/**
+ * A short-lived link to a private deliverable.
+ *
+ * The bucket is not public and must not become one: these are a client's
+ * own records -- statements, filings, payroll summaries -- and a
+ * guessable URL is not access control. A signed URL expires, which is
+ * the point.
+ */
+export async function signedDeliverableUrl(path: string): Promise<string | null> {
+  const { data, error } = await supabase.storage
+    .from("deliverables")
+    .createSignedUrl(path, SIGNED_URL_TTL_SECONDS);
+  if (error) {
+    console.error("signedDeliverableUrl failed:", error.message);
+    return null;
+  }
+  return data?.signedUrl ?? null;
+}
+
+/** Five minutes: long enough to start a download, short enough to be useless if shared. */
+export const SIGNED_URL_TTL_SECONDS = 300;
+
+export function formatBytes(bytes: number | null): string {
+  if (bytes === null) return "";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}

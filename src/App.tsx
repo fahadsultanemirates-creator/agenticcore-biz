@@ -42,6 +42,11 @@ const RequestService = lazy(() =>
   import("./pages/RequestService").then((m) => ({ default: m.RequestService })),
 );
 const Projects = lazy(() => import("./pages/Projects").then((m) => ({ default: m.Projects })));
+const Orders = lazy(() => import("./pages/Orders").then((m) => ({ default: m.Orders })));
+const Invoices = lazy(() => import("./pages/Invoices").then((m) => ({ default: m.Invoices })));
+const Messages = lazy(() => import("./pages/Messages").then((m) => ({ default: m.Messages })));
+const Files = lazy(() => import("./pages/Files").then((m) => ({ default: m.Files })));
+const Account = lazy(() => import("./pages/Account").then((m) => ({ default: m.Account })));
 const ProjectDetail = lazy(() =>
   import("./pages/ProjectDetail").then((m) => ({ default: m.ProjectDetail })),
 );
@@ -121,6 +126,17 @@ export default function App() {
         />
         <Route path="/projects" element={<Protected><Projects /></Protected>} />
         <Route path="/projects/:id" element={<Protected><ProjectDetail /></Protected>} />
+
+        {/* The five areas the dashboard nav has always implied and the
+            router never had. Each is Protected: they read the client's
+            own rows, and RLS would return nothing to a signed-out
+            caller anyway -- but a login prompt is a better answer than
+            an empty page. */}
+        <Route path="/orders" element={<Protected><Orders /></Protected>} />
+        <Route path="/messages" element={<Protected><Messages /></Protected>} />
+        <Route path="/invoices" element={<Protected><Invoices /></Protected>} />
+        <Route path="/files" element={<Protected><Files /></Protected>} />
+        <Route path="/account" element={<Protected><Account /></Protected>} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
