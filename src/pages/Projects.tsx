@@ -1,6 +1,7 @@
 import { FolderKanban, Link2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ChatLauncher } from "../components/ChatLauncher";
+import { DashboardNav } from "../components/dashboard/DashboardNav";
 import { DashboardShell } from "../components/dashboard/DashboardShell";
 import { Panel, StatusPill } from "../components/dashboard/primitives";
 import { useConnections, useProjects, type ProjectRow } from "../lib/dashboardData";
@@ -24,6 +25,7 @@ export function Projects() {
 
   return (
     <DashboardShell title="Projects" backTo="/dashboard" backLabel="Dashboard">
+      <DashboardNav />
       <section className="py-8">
         <h1 className="font-display text-2xl font-semibold text-fg sm:text-3xl">Your projects</h1>
         <p className="mt-1.5 text-sm text-fg-muted">

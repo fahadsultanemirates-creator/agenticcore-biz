@@ -2,6 +2,7 @@ import { Check, ExternalLink, Link2, Plus, ShieldCheck, Trash2, X } from "lucide
 import { useMemo, useState, type FormEvent } from "react";
 import { useParams } from "react-router-dom";
 import { ChatLauncher } from "../components/ChatLauncher";
+import { DashboardNav } from "../components/dashboard/DashboardNav";
 import { DashboardShell } from "../components/dashboard/DashboardShell";
 import { Panel, StatusPill } from "../components/dashboard/primitives";
 import {
@@ -47,6 +48,7 @@ export function ProjectDetail() {
   if (projects.loading) {
     return (
       <DashboardShell title="Project" backTo="/projects" backLabel="Projects">
+        <DashboardNav />
         <p className="mt-8 rounded-2xl border border-dashed border-border bg-surface p-6 text-sm text-fg-faint">
           Loading…
         </p>
@@ -57,6 +59,7 @@ export function ProjectDetail() {
   if (projects.failed) {
     return (
       <DashboardShell title="Project" backTo="/projects" backLabel="Projects">
+        <DashboardNav />
         <div className="mt-8 rounded-2xl border border-dashed border-border bg-surface p-6">
           <p className="text-sm text-fg-muted">We couldn't load this project just now.</p>
           <button
@@ -83,6 +86,7 @@ export function ProjectDetail() {
       backTo="/projects"
       backLabel="Projects"
     >
+      <DashboardNav />
       <section className="py-8">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
