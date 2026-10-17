@@ -65,7 +65,7 @@ export function WelcomeSection({
               to="/create-project"
               className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-border px-5 py-3 text-sm font-semibold text-fg-muted transition-colors hover:border-orange-400/50 hover:text-fg"
             >
-              <Sparkles className="h-4 w-4" /> Not sure? Ask Forge
+              <Sparkles className="h-4 w-4" /> Not sure? Start a brief
             </Link>
           </div>
 

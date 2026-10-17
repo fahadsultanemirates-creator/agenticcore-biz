@@ -24,7 +24,7 @@ export function ChatLauncher() {
       className="fixed right-4 bottom-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-orange-400 text-void shadow-glow-orange transition-transform hover:-translate-y-0.5 sm:right-6 sm:bottom-6 sm:h-auto sm:w-auto sm:gap-2 sm:px-5 sm:py-3 sm:text-sm sm:font-semibold"
     >
       <Sparkles className="h-5 w-5 sm:h-4 sm:w-4" />
-      <span className="hidden sm:inline">Ask Forge</span>
+      <span className="hidden sm:inline">Start a brief</span>
     </Link>
   );
 }

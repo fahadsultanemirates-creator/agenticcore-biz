@@ -154,11 +154,11 @@ export function ServiceDetail() {
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
-            to={`/create-project?mode=chat&q=${encodeURIComponent(`I have a question about ${service.name}.`)}`}
+            to={`/create-project?q=${encodeURIComponent(`I have a question about ${service.name}.`)}`}
             className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-border px-7 py-3.5 text-base font-semibold text-fg transition-colors hover:border-orange-400/60"
           >
             <Sparkles className="h-4 w-4 text-orange-400" />
-            Ask Forge
+            Start a brief
           </Link>
         </div>
       </section>

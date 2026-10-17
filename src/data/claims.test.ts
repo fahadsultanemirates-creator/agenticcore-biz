@@ -10,7 +10,8 @@
 
 import assert from "node:assert/strict";
 import process from "node:process";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import {
   PRICE_CAVEAT,
   activeServices,
@@ -128,6 +129,48 @@ test("every package price is at or below the sum of what it contains", () => {
       `${bundle.id} costs $${bundle.priceUsd} but its parts total $${sum}`,
     );
   }
+});
+
+// ---------------------------------------------------------------------
+// Forge: what the buttons promise vs what the app can do.
+// ---------------------------------------------------------------------
+
+test("no button offers a chat unless the app actually calls a chat endpoint", () => {
+  // The landing page had a "Chat with Forge" button pointing at
+  // /create-project?mode=chat. CreateProject read that param into a
+  // ternary whose branches were both "describe", so the mode never
+  // existed -- and nothing in src calls forge-chat at all. The button
+  // promised a conversation the site cannot hold.
+  //
+  // This is the invariant, not the wording: a conversational CTA is
+  // allowed the moment something actually invokes the chat endpoint.
+  const src = new URL("..", import.meta.url).pathname;
+  const files: string[] = [];
+  const walk = (dir: string) => {
+    for (const entry of readdirSync(dir)) {
+      const full = join(dir, entry);
+      if (statSync(full).isDirectory()) walk(full);
+      else if (/\.tsx?$/.test(full) && !/\.test\.[cm]?tsx?$/.test(full)) files.push(full);
+    }
+  };
+  walk(src);
+
+  const callsChat = files.some((f) => /invoke\(\s*["'`]forge-chat|functions\/v1\/forge-chat/.test(readFileSync(f, "utf8")));
+
+  const offers: string[] = [];
+  for (const file of files) {
+    const body = readFileSync(file, "utf8")
+      .replace(/\/\*[\s\S]*?\*\//g, " ")
+      .replace(/\{\/\*[\s\S]*?\*\/\}/g, " ")
+      .replace(/^\s*\/\/.*$/gm, " ");
+    // Only user-visible CTA text, not identifiers like ChatLauncher.
+    for (const m of body.matchAll(/>\s*([^<>{}]*\b(?:chat with|ask forge)\b[^<>{}]*?)\s*</gi)) {
+      offers.push(`${file.replace(src, "src/")}: ${m[1].trim()}`);
+    }
+    if (/\bmode=chat\b/.test(body)) offers.push(`${file.replace(src, "src/")}: links to ?mode=chat`);
+  }
+
+  if (!callsChat) assert.deepEqual(offers, []);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);
