@@ -44,7 +44,10 @@ const CROSS_SITE = [
 
 export function CreateProject() {
   const [params] = useSearchParams();
-  const [mode, setMode] = useState<Mode>(params.get("mode") === "chat" ? "describe" : "describe");
+  // Was: params.get("mode") === "chat" ? "describe" : "describe" -- both
+  // branches identical, so ?mode=chat never did anything. Removed rather
+  // than fixed: there is no chat to switch into (see the note above).
+  const [mode, setMode] = useState<Mode>("describe");
   const [brief, setBrief] = useState(params.get("q") ?? "");
   const [budget, setBudget] = useState("");
   const [picked, setPicked] = useState<string[]>([]);

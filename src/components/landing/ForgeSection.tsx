@@ -58,12 +58,16 @@ export function ForgeSection() {
             Create My Project
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
+          {/* Was "Chat with Forge", pointing at ?mode=chat -- a mode
+              CreateProject never had. Both buttons always opened the
+              same brief form, so the label promised a conversation the
+              site cannot hold. */}
           <Link
-            to="/create-project?mode=chat"
+            to="/create-project"
             className="inline-flex items-center gap-2 rounded-full border-2 border-border px-7 py-3.5 text-base font-semibold text-fg transition-colors hover:border-orange-400/60"
           >
             <MessageSquare className="h-4 w-4 text-orange-400" />
-            Chat with Forge
+            Describe it in your own words
           </Link>
         </div>
 
