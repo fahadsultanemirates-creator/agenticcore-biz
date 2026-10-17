@@ -109,7 +109,7 @@ test("the support accounts are the ones the owner gave", () => {
   assert.equal(TELEGRAM_HANDLE, "AgenticCorebiz");
   assert.equal(TELEGRAM_URL, "https://t.me/AgenticCorebiz");
   assert.equal(WHATSAPP_USERNAME, "agenticcore.biz");
-  assert.equal(WHATSAPP_PHONE, "971585227837");
+  assert.equal(WHATSAPP_PHONE, "18089985226");
   assert.match(SUPPORT_EMAIL, /^hello@agenticcore\.(agency|biz|click)$/);
 });
 
@@ -123,12 +123,15 @@ test("the link uses the number, in the only form WhatsApp documents", () => {
   assert.ok(!/\s/.test(whatsAppUrl() as string), "whitespace breaks a wa.me link");
 });
 
-test("the number is a real UAE mobile, not a placeholder", () => {
+test("the number is the one the owner gave, not a placeholder", () => {
+  // Pinned to the exact value, because this has now changed twice and
+  // each time the old one stayed live somewhere. A shape check alone
+  // would have passed both numbers.
   const d = WHATSAPP_PHONE as string;
-  assert.equal(d.length, 12, `expected 971 + 9 digits, got ${d.length}`);
-  assert.ok(d.startsWith("971"), "country code should be 971");
-  assert.equal(d[3], "5", "UAE mobile numbers start 5x");
-  assert.ok(!/^(\d)\1+$/.test(d.slice(3)), "looks like a repeated-digit placeholder");
+  assert.equal(d, "18089985226");
+  assert.equal(d.length, 11, `expected 1 + 10 digits, got ${d.length}`);
+  assert.ok(d.startsWith("1"), "country code should be 1");
+  assert.ok(!/^(\d)\1+$/.test(d.slice(1)), "looks like a repeated-digit placeholder");
 });
 
 test("what is displayed is what the link opens", () => {
@@ -142,7 +145,7 @@ test("what is displayed is what the link opens", () => {
 test("clearing the number falls back to the username, not to nothing", () => {
   const url = (phone: string | null, user: string | null) =>
     phone ? `https://wa.me/${phone}` : user ? `https://wa.me/${user}` : null;
-  assert.equal(url(WHATSAPP_PHONE, WHATSAPP_USERNAME), "https://wa.me/971585227837");
+  assert.equal(url(WHATSAPP_PHONE, WHATSAPP_USERNAME), "https://wa.me/18089985226");
   assert.equal(url(null, "agenticcore.biz"), "https://wa.me/agenticcore.biz");
   assert.equal(url(null, null), null);
 });
@@ -212,6 +215,42 @@ test("no legacy static page links a stale support account", () => {
     }
   }
   assert.deepEqual(offenders, []);
+});
+
+test("the functions' copy of the support details matches this one", () => {
+  // supabase/functions deploys separately and cannot import this file,
+  // so _shared/support.ts restates the three channels as literals. That
+  // is the same arrangement that let t.me/agenticCoreHQ sit in five live
+  // footers through two renames, so the copy is checked rather than
+  // trusted.
+  const support = readFileSync(`${FUNCTIONS}/_shared/support.ts`, "utf8");
+
+  const literal = (name: string): string => {
+    const match = new RegExp(`export const ${name} = '([^']*)'`).exec(support);
+    assert.ok(match, `${name} not found in _shared/support.ts`);
+    return match[1];
+  };
+
+  assert.equal(literal("SUPPORT_TELEGRAM"), TELEGRAM_HANDLE);
+  assert.equal(literal("SUPPORT_EMAIL"), SUPPORT_EMAIL);
+  // Written for reading (+1 808 998 5226); compared by digits, which is
+  // the only part that has to be right.
+  assert.equal(literal("SUPPORT_WHATSAPP").replace(/[^0-9]/g, ""), WHATSAPP_PHONE);
+});
+
+test("the bot tells a stranger where to go instead of answering them", () => {
+  const webhook = readFileSync(`${FUNCTIONS}/telegram-webhook/index.ts`, "utf8");
+  assert.match(
+    webhook,
+    /if \(!owner\) \{[\s\S]{0,400}?NOT_A_SUPPORT_CHANNEL/,
+    "the owner gate is gone -- a non-owner would reach the model again",
+  );
+  // The gate has to come before the conversational call, or it gates
+  // nothing.
+  const gate = webhook.indexOf("if (!owner)");
+  const reply = webhook.indexOf("handleIncomingMessage({");
+  assert.ok(gate > 0 && reply > 0, "could not locate the gate and the reply call");
+  assert.ok(gate < reply, "the owner gate sits after the model call, so it gates nothing");
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);
