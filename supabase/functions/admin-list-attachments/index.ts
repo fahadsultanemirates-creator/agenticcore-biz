@@ -22,6 +22,7 @@
 // server-side before touching the service-role storage client.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { CORS_HEADERS, jsonResponse } from '../_shared/cors.ts';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
@@ -30,20 +31,7 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const BUCKET = 'request-attachments';
 const SIGNED_URL_EXPIRY_SECONDS = 300;
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS'
-};
-
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-
-function jsonResponse(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' }
-  });
-}
 
 async function resolveCaller(authHeader: string): Promise<{ id: string } | null> {
   const callerClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
