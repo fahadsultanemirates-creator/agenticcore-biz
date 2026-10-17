@@ -10,6 +10,7 @@ import { Login } from "./pages/Login";
 import { Services } from "./pages/Services";
 import { Signup } from "./pages/Signup";
 import { ScrollToHash } from "./components/ScrollToHash";
+import { useTrackVisit } from "./lib/useTrackVisit";
 
 /**
  * Routes the React app owns.
@@ -100,6 +101,7 @@ function Protected({ children }: { children: ReactNode }) {
 
 export default function App() {
   useRecoveryRedirect();
+  useTrackVisit();
 
   return (
     <Suspense fallback={LOADING}>
