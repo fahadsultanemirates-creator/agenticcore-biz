@@ -40,7 +40,7 @@ function buildWidgetMarkup() {
   const wrap = document.createElement('div');
   wrap.className = 'chat-widget';
   wrap.innerHTML = `
-    <a href="mailto:hello@agenticcore.biz" class="chat-widget-support-btn" id="chatWidgetSupportBtn" aria-label="Email support">
+    <a href="mailto:hello@agenticcore.group" class="chat-widget-support-btn" id="chatWidgetSupportBtn" aria-label="Email support">
       <svg class="chat-widget-support-icon-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg>
       <svg class="chat-widget-support-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><polyline points="20 6 9 17 4 12"/></svg>
     </a>
@@ -121,7 +121,7 @@ function removeTypingIndicator() {
   // checkmark briefly -- guarantees some feedback either way.
   const supportBtn = document.getElementById('chatWidgetSupportBtn');
   supportBtn.addEventListener('click', () => {
-    const email = 'hello@agenticcore.biz';
+    const email = 'hello@agenticcore.group';
     if (navigator.clipboard) navigator.clipboard.writeText(email).catch(() => {});
 
     const mailIcon = supportBtn.querySelector('.chat-widget-support-icon-mail');

@@ -96,10 +96,10 @@ export function Privacy() {
           You can ask for a copy of what we hold about you, ask us to correct it, or ask for your
           account and data to be deleted, at{" "}
           <a
-            href="mailto:hello@agenticcore.biz"
+            href="mailto:hello@agenticcore.group"
             className="font-semibold text-orange-400 hover:underline"
           >
-            hello@agenticcore.biz
+            hello@agenticcore.group
           </a>
           . You can withdraw our access to any of your systems yourself, at any time, from your own
           account.

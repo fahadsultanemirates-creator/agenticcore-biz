@@ -23,7 +23,7 @@ export const UPFRONT_FRACTION = 0.3;
 /** Lifetime spend that unlocks Business Pool. */
 export const BUSINESS_POOL_THRESHOLD = 5000;
 
-export const BILLING_EMAIL = "hello@agenticcore.biz";
+export const BILLING_EMAIL = "hello@agenticcore.group";
 
 /**
  * Round to cents the way an invoice does.

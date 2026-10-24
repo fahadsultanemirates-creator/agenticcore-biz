@@ -159,7 +159,7 @@ export function CreateProject() {
                 Copy brief
               </button>
               <a
-                href={`mailto:hello@agenticcore.biz?subject=${encodeURIComponent("Project brief")}&body=${encodeURIComponent(composed)}`}
+                href={`mailto:hello@agenticcore.group?subject=${encodeURIComponent("Project brief")}&body=${encodeURIComponent(composed)}`}
                 className="rounded-full bg-orange-400 px-5 py-2.5 text-sm font-semibold text-void transition-transform hover:-translate-y-0.5"
               >
                 Email it to us
