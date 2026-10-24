@@ -37,14 +37,6 @@ const PRICING_CATALOG = [
         "display": "$29"
       },
       {
-        "id": "BIZ-04",
-        "name": "Business Registration Preparation Checklist",
-        "unit": "one-time",
-        "price": 19,
-        "startingFrom": false,
-        "display": "$19"
-      },
-      {
         "id": "BIZ-05",
         "name": "Business Administration Starter System",
         "unit": "one-time",
@@ -82,38 +74,6 @@ const PRICING_CATALOG = [
         "display": "$29"
       },
       {
-        "id": "BIZ-09",
-        "name": "Payroll Administration Tracker",
-        "unit": "one-time",
-        "price": 29,
-        "startingFrom": false,
-        "display": "$29"
-      },
-      {
-        "id": "BIZ-10",
-        "name": "Bookkeeping Setup or Basic Cleanup",
-        "unit": "one-time",
-        "price": 49,
-        "startingFrom": true,
-        "display": "from $49"
-      },
-      {
-        "id": "BIZ-11",
-        "name": "Monthly Basic Bookkeeping Assistance",
-        "unit": "per month",
-        "price": 59,
-        "startingFrom": false,
-        "display": "$59/month"
-      },
-      {
-        "id": "BIZ-12",
-        "name": "Monthly Financial & KPI Reports",
-        "unit": "per month",
-        "price": 29,
-        "startingFrom": false,
-        "display": "$29/month"
-      },
-      {
         "id": "BIZ-13",
         "name": "Business Proposals & Professional Documents",
         "unit": "one-time",
@@ -124,7 +84,7 @@ const PRICING_CATALOG = [
     ]
   },
   {
-    "category": "Business Management & Growth",
+    "category": "Customer Records & Setup",
     "items": [
       {
         "id": "BIZ-14",
@@ -133,46 +93,6 @@ const PRICING_CATALOG = [
         "price": 39,
         "startingFrom": false,
         "display": "$39"
-      },
-      {
-        "id": "BIZ-15",
-        "name": "AI-Assisted Virtual Back-Office Support",
-        "unit": "per month",
-        "price": 99,
-        "startingFrom": false,
-        "display": "$99/month"
-      },
-      {
-        "id": "BIZ-16",
-        "name": "Lead Research & Follow-Up Management",
-        "unit": "per month",
-        "price": 79,
-        "startingFrom": false,
-        "display": "$79/month"
-      },
-      {
-        "id": "BIZ-17",
-        "name": "Managed Social Media Marketing",
-        "unit": "per month",
-        "price": 99,
-        "startingFrom": false,
-        "display": "$99/month"
-      },
-      {
-        "id": "BIZ-18",
-        "name": "Advertising Campaign Management",
-        "unit": "per month",
-        "price": 79,
-        "startingFrom": false,
-        "display": "$79/month"
-      },
-      {
-        "id": "BIZ-19",
-        "name": "Email Campaign Management",
-        "unit": "per month",
-        "price": 49,
-        "startingFrom": false,
-        "display": "$49/month"
       }
     ]
   }
@@ -185,20 +105,6 @@ const BUSINESS_PACKAGES = [
     "price": 69,
     "unit": "one-time",
     "display": "$69"
-  },
-  {
-    "id": "PKG-BACK-OFFICE",
-    "name": "Back-Office Essential",
-    "price": 79,
-    "unit": "per month",
-    "display": "$79/month"
-  },
-  {
-    "id": "PKG-OPS-PLUS",
-    "name": "Business Operations Plus",
-    "price": 149,
-    "unit": "per month",
-    "display": "$149/month"
   }
 ];
 

@@ -16,7 +16,7 @@ const FAQS = [
   },
   {
     q: "Can I order services monthly?",
-    a: "Yes. Selected services are billed per service month with their terms and deliverables shown clearly.",
+    a: "Recurring department services and managed offices are offered through AgenticCore Group. This site focuses on one-time projects.",
   },
   {
     q: "Does AgenticCore.biz register companies or provide legal advice?",
@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: "Can you build my website or custom AI system?",
-    a: "AgenticCore.agency specializes in custom development. AgenticCore.click offers selected quick digital tasks.",
+    a: "AgenticCore.agency handles websites and applications. AgenticCore Group covers office frameworks and managed departments. AgenticCore.click offers quick individual tasks.",
   },
   {
     q: "Can I track my project?",
@@ -35,8 +35,8 @@ const FAQS = [
     a: "Only when explicitly listed in the service scope. External subscriptions, advertising budgets and platform charges are otherwise separate.",
   },
   {
-    q: "What does Forge do?",
-    a: "Forge helps customers understand their requirements, identify relevant services and prepare structured project briefs.",
+    q: "What does Maya do?",
+    a: "Maya is your first contact for service questions and project requirements. Forge leads the brand; direct Forge chat is reserved for active-package clients in the Group workspace.",
   },
   {
     q: "Do I own the completed work?",

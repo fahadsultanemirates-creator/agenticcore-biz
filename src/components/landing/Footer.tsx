@@ -49,7 +49,7 @@ export function Footer() {
           <div className="flex flex-col items-center gap-2 sm:items-start">
             <Logo />
             <p className="text-sm text-fg-faint">
-              Business setup, back-office and managed support.
+              Business plans, documents and practical setup.
             </p>
           </div>
 

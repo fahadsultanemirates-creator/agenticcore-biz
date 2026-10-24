@@ -9,7 +9,7 @@ export function PackagesSection() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-semibold text-fg sm:text-4xl">
-            Start with a service. Or get a complete business support package.
+            Start with one service or the Business Launch Kit.
           </h2>
         </div>
 

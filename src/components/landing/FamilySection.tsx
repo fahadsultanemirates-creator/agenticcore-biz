@@ -27,7 +27,7 @@ const FAMILY = [
     icon: Code2,
     name: "AgenticCore.agency",
     headline: "Need something custom-built?",
-    body: "Professional websites, complex dashboards, web applications, e-commerce systems, AI agents and automation frameworks — designed for larger technical requirements.",
+    body: "Websites, storefronts, dashboards, applications, brand identity and interface design — with an agreed project scope.",
     note: null,
     cta: "Explore AgenticCore.agency",
     href: "https://agenticcore.agency",
@@ -38,7 +38,7 @@ const FAMILY = [
     icon: Briefcase,
     name: "AgenticCore.biz",
     headline: "Need help running your business?",
-    body: "Startup planning, administration, records, operational workflows, business reports and ongoing managed support.",
+    body: "One-time startup plans, research, professional documents, invoice templates and record setup.",
     note: "You are here.",
     cta: "Explore Business Services",
     href: "/services",
@@ -55,8 +55,7 @@ export function FamilySection() {
             Different business needs. One connected AgenticCore family.
           </h2>
           <p className="mt-4 text-fg-muted">
-            Three specialist sites, not three names for the same thing. Picking the right one is the
-            difference between a job that fits and a job that does not.
+            Choose the specialist site that fits your project. For ongoing departments or your own office framework, explore AgenticCore Group.
           </p>
         </div>
 
@@ -100,6 +99,10 @@ export function FamilySection() {
             </Reveal>
           ))}
         </div>
+        <a href="https://agenticcore.group/services.html" className="mt-8 block rounded-2xl border border-border bg-surface p-6 text-fg hover:underline">
+          <strong>AgenticCore Group — your digital office ↗</strong>
+          <p className="mt-2 text-sm text-fg-muted">Managed departments, recurring support and your own office framework. Explore services and pricing with the same AgenticCore team.</p>
+        </a>
       </div>
     </section>
   );

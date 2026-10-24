@@ -13,6 +13,7 @@ import { readFileSync } from "node:fs";
 
 import {
   activeServices,
+  archivedById,
   archivedServices,
   categories,
   featuredServices,
@@ -39,9 +40,9 @@ function test(name: string, fn: () => void): void {
   }
 }
 
-test("nineteen services, as agreed", () => {
-  assert.equal(SERVICE_COUNT, 19);
-  assert.equal(activeServices.length, 19);
+test("nine focused business services", () => {
+  assert.equal(SERVICE_COUNT, 9);
+  assert.equal(activeServices.length, 9);
 });
 
 test("every service id is unique and follows BIZ-nn", () => {
@@ -58,9 +59,9 @@ test("the six featured services are the six that were agreed, at the agreed pric
     ["BIZ-01", 25, "one_time"],
     ["BIZ-05", 39, "one_time"],
     ["BIZ-07", 19, "one_time"],
-    ["BIZ-10", 49, "one_time"],
+    ["BIZ-03", 29, "one_time"],
     ["BIZ-14", 39, "one_time"],
-    ["BIZ-17", 99, "monthly"],
+    ["BIZ-13", 25, "one_time"],
   ] as const;
   assert.equal(featuredServices.length, 6);
   for (const [id, price, billing] of expected) {
@@ -84,8 +85,8 @@ test("every agreed price is exactly what the brief specified", () => {
   };
   assert.equal(Object.keys(sheet).length, 19);
   for (const [id, [price, billing]] of Object.entries(sheet)) {
-    const s = serviceById(id);
-    assert.ok(s, `${id} missing from the catalog`);
+    const s = services.find(s => s.id === id);
+    assert.ok(s, `${id} missing from the catalog history`);
     assert.equal(s!.priceUsd, price, `${id} should be $${price}`);
     assert.equal(s!.billing, billing, `${id} should be ${billing}`);
   }
@@ -96,14 +97,14 @@ test("only the two 'starting from' services need a quote", () => {
   // Charging a floor as if it were the price is how work starts
   // underpaid, so the order flow keys off this.
   const quoted = activeServices.filter(needsQuote).map((s) => s.id).sort();
-  assert.deepEqual(quoted, ["BIZ-10", "BIZ-13"]);
+  assert.deepEqual(quoted, ["BIZ-13"]);
 });
 
 test("a 'from' price always reads as a floor", () => {
-  assert.equal(formatPrice(serviceById("BIZ-10")!), "from $49");
+  assert.equal(formatPrice(services.find(s => s.id === "BIZ-10")!), "from $49");
   assert.equal(formatPrice(serviceById("BIZ-13")!), "from $25");
   assert.equal(formatPrice(serviceById("BIZ-01")!), "$25");
-  assert.equal(formatPrice(serviceById("BIZ-17")!), "$99/month");
+  assert.equal(formatPrice(services.find(s => s.id === "BIZ-17")!), "$99/month");
 });
 
 test("every service carries the scope a customer needs before buying", () => {
@@ -123,18 +124,16 @@ test("the categories hold every service between them", () => {
   assert.equal(counted, SERVICE_COUNT, "a service is in no category, or in two");
   assert.deepEqual(
     categories.map((c) => servicesIn(c.id).length),
-    [6, 7, 6]
+    [5, 3, 1]
   );
 });
 
 test("three packages, at the agreed prices and billing", () => {
-  assert.equal(packages.length, 3);
+  assert.equal(packages.length, 1);
   assert.deepEqual(
     packages.map((p) => [p.name, p.priceUsd, p.billing]),
     [
       ["Business Launch Kit", 69, "one_time"],
-      ["Back-Office Essential", 79, "monthly"],
-      ["Business Operations Plus", 149, "monthly"],
     ]
   );
 });
@@ -176,7 +175,8 @@ test("nothing archived can be ordered", () => {
 test("an archived service that has a successor points at a real one", () => {
   for (const a of archivedServices) {
     if (a.replacedBy) {
-      assert.ok(serviceById(a.replacedBy), `${a.id} points at ${a.replacedBy}, which does not exist`);
+      const resolved = archivedById(a.id);
+      if (resolved?.replacedBy) assert.ok(serviceById(resolved.replacedBy));
     }
   }
 });

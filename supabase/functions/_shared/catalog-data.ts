@@ -1,0 +1,43 @@
+// GENERATED FILE -- DO NOT EDIT.
+//
+// Written by scripts/generate-bot-catalog.mjs from src/data/catalog.ts on
+// every build. Editing it by hand will be silently undone by the next
+// build, and worse, it would let Maya quote prices the website does not
+// charge. Change src/data/catalog.ts instead.
+
+export interface BotCatalogItem {
+  id: string;
+  name: string;
+  /** Already formatted, including the "From " prefix where it applies. */
+  price: string;
+  startingFrom: boolean;
+  summary: string;
+  limits: string[];
+  deliverables: string[];
+  inputs: string[];
+  delivery: string;
+  revisions: number;
+  excludes: string[];
+  externalCosts: string[];
+}
+
+export interface BotCatalogCategory {
+  category: string;
+  items: BotCatalogItem[];
+}
+
+export interface BotPackage {
+  id: string;
+  name: string;
+  price: string;
+  included: string[];
+  excluded: string[];
+  delivery: string;
+  externalCosts: string[];
+}
+
+export const BOT_CATALOG: BotCatalogCategory[] = [{"category":"Business Launch & Planning","items":[{"id":"BIZ-01","name":"Startup Roadmap & Business Action Plan","price":"$25","startingFrom":false,"summary":"A written plan for getting the business off the ground, with the order of work set out.","limits":["One business concept","One defined market","One revision"],"deliverables":["Business concept summary","Target customer profile","Basic business model outline","Launch priorities","Action checklist and suggested milestones","Downloadable PDF"],"inputs":["What the business sells","Who it is for","Any work already done"],"delivery":"2–4 working days","revisions":1,"excludes":["Legal, tax or investment advice","Company registration","Financial projections for investors"],"externalCosts":["External subscriptions or licences, if separately agreed"]},{"id":"BIZ-02","name":"Business Feasibility & Market-Fit Report","price":"$39","startingFrom":false,"summary":"Whether the idea stands up, written down with the reasoning shown.","limits":["One business model","One market"],"deliverables":["Business model assessment","Customer and demand assumptions","Competitor overview","Basic cost and revenue scenario framework","Key business risks","Recommendations and next steps"],"inputs":["The business idea","Target market","Any cost figures you already have"],"delivery":"4–7 working days","revisions":1,"excludes":["This is a research and planning document, not an investment guarantee","Not a professionally certified financial feasibility study","No audited or assured figures"],"externalCosts":["External subscriptions or licences, if separately agreed"]},{"id":"BIZ-03","name":"Market & Competitor Research","price":"$29","startingFrom":false,"summary":"Who else is doing this, what they charge, and where the gap is.","limits":["One market or sector","Up to five competitors"],"deliverables":["One market or sector reviewed","Up to five relevant competitors where reliable information is available","Positioning comparison","Market opportunities","Research limitations and cited sources where appropriate","Downloadable report"],"inputs":["Your market or sector","Competitors you already know of"],"delivery":"3–5 working days","revisions":1,"excludes":["Findings are never invented — where reliable data is not available, the report says so","No paid third-party market data unless separately agreed"],"externalCosts":["External subscriptions or licences, if separately agreed"]},{"id":"BIZ-05","name":"Business Administration Starter System","price":"$39","startingFrom":false,"summary":"The files and trackers a small business needs on day one, set up and explained.","limits":["One business","Standard templates adapted to your details"],"deliverables":["Basic administrative record templates","Task tracker","Customer and supplier register templates","Document organization structure","Simple office workflow checklist","Usage guide","Downloadable, reusable files"],"inputs":["Business name and details","How you currently keep records, if at all"],"delivery":"3–5 working days","revisions":1,"excludes":["Custom software","Ongoing administration — explore AgenticCore Group"],"externalCosts":["External subscriptions or licences, if separately agreed"]},{"id":"BIZ-06","name":"Standard Operating Procedures Pack","price":"$29","startingFrom":false,"summary":"Write down how the work gets done, so somebody else can do it.","limits":["Up to three straightforward workflows"],"deliverables":["Up to three simple SOPs for workflows you define","Responsibilities and process steps","Checklists","Basic review and escalation guidance","Editable documents"],"inputs":["Which workflows to document","Who does what today"],"delivery":"3–5 working days","revisions":1,"excludes":["Complex, regulated or operationally critical processes need additional review and a separate quote","Not a compliance or safety certification"],"externalCosts":["External subscriptions or licences, if separately agreed"]}]},{"category":"Office & Financial Administration","items":[{"id":"BIZ-07","name":"Invoicing, Quotations & Receipts Setup","price":"$19","startingFrom":false,"summary":"Branded paperwork that goes out looking like a real company.","limits":["One brand","Standard templates"],"deliverables":["Branded invoice template","Quotation template","Receipt template","Numbering guidance","Basic payment status tracker"],"inputs":["Logo and business details","Payment terms you use"],"delivery":"2–3 working days","revisions":1,"excludes":["Does not include specialized tax compliance","Does not include accounting-system integration"],"externalCosts":["External subscriptions or licences, if separately agreed"]},{"id":"BIZ-08","name":"Expense & Cash-Flow Tracking System","price":"$29","startingFrom":false,"summary":"Know what went out, what came in, and what is left.","limits":["Spreadsheet or another suitable lightweight format","One business"],"deliverables":["Expense tracker","Income tracker","Cash-flow summary template","Basic category structure","Usage instructions"],"inputs":["Your expense categories, if you have them","Preferred spreadsheet tool"],"delivery":"2–4 working days","revisions":1,"excludes":["Not an accounting system","No bank-feed integration"],"externalCosts":["External subscriptions or licences, if separately agreed"]},{"id":"BIZ-13","name":"Business Proposals & Professional Documents","price":"from $25","startingFrom":true,"summary":"A proposal or company profile that looks like it came from a real business.","limits":["One document","Up to five pages in the base scope"],"deliverables":["One proposal, company profile or professional business document","Up to five pages","Built from facts and references you provide","Professional structure and formatting","One revision"],"inputs":["The content and facts to include","Brand assets"],"delivery":"Scope-dependent — confirmed on quotation","revisions":1,"excludes":["Legal contracts and regulated documents need professional review and a separate scope","Facts are never invented — the document is built from what you supply"],"externalCosts":["External subscriptions or licences, if separately agreed"]}]},{"category":"Customer Records & Setup","items":[{"id":"BIZ-14","name":"CRM Customer Records & Pipeline Setup","price":"$39","startingFrom":false,"summary":"Stop losing enquiries in an inbox.","limits":["An existing supported platform or a standardized template","One pipeline"],"deliverables":["Standard customer information fields","Lead stages and pipeline","Follow-up reminders or a manual workflow","Basic operating guide"],"inputs":["How you handle enquiries today","Your sales stages"],"delivery":"3–5 working days","revisions":1,"excludes":["Custom software development belongs to AgenticCore.agency","Bespoke API integrations belong to AgenticCore.agency"],"externalCosts":["External subscriptions or licences, if separately agreed"]}]}];
+
+export const BOT_PACKAGES: BotPackage[] = [{"id":"PKG-LAUNCH-KIT","name":"Business Launch Kit","price":"$69","included":["Startup roadmap and business action plan","Concise competitor snapshot","Basic invoice, quotation and receipt templates","Administrative workflow starter guide","Business launch checklist","One revision round on the combined package"],"excluded":["Company incorporation","Legal or tax advice","A custom website — a quick one is AgenticCore.click, a professional one is AgenticCore.agency","Complete bookkeeping","Ongoing business management"],"delivery":"Confirmed when the package scope is agreed","externalCosts":["External subscriptions or licences, if separately agreed"]}];
+
+export const BOT_SERVICE_COUNT = 9;

@@ -7,6 +7,7 @@ export function Packages() {
   return (
     <PublicShell title="Business Packages">
       <section className="py-10 sm:py-14">
+        <a href="https://agenticcore.group/services.html" className="mb-6 block rounded-xl border border-border bg-surface p-4 text-sm text-fg-muted">Looking for ongoing departments or an office framework? Explore AgenticCore Group ↗</a>
         <h1 className="font-display text-3xl font-semibold text-fg sm:text-4xl">
           Business packages
         </h1>

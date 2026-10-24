@@ -6,7 +6,7 @@ import { activeServices, categories, formatPrice, packages } from "../data/catal
 import { MONTHLY_BILLING_NOTE, paymentSplitSentence } from "../data/paymentTerms";
 
 /**
- * Create a Project with Forge.
+ * Create a Project with Maya.
  *
  * WHAT THIS DOES TODAY, stated plainly because the brief insists on it
  * and because a CTA that leads nowhere is worse than no CTA.
@@ -32,7 +32,7 @@ const CROSS_SITE = [
     match: /\b(logo|poster|flyer|thumbnail|banner|short video|quick video|single image|business card)\b/i,
     site: "AgenticCore.click",
     href: "https://agenticcore.click",
-    why: "That is a quick standardized creative task. .click does those cheaply and fast — .biz sells ongoing marketing management, not single pieces of artwork.",
+    why: "That is a quick standardized creative task. .click does those cheaply and fast — .biz focuses on business planning and setup.",
   },
   {
     match: /\b(custom website|web app|web application|dashboard|e-?commerce|online shop|api|integration|multi-?agent|ai agent|automation framework|mobile app)\b/i,
@@ -100,7 +100,7 @@ export function CreateProject() {
           </a>
           <span className="ml-auto flex items-center gap-1.5 rounded-full border border-orange-400/40 bg-orange-400/10 px-3 py-1.5 text-xs font-semibold text-orange-400">
             <Sparkles className="h-3.5 w-3.5" />
-            Forge
+            Maya
           </span>
         </div>
       </header>
@@ -120,7 +120,7 @@ export function CreateProject() {
             {([
               ["describe", MessageSquare, "Describe my business need"],
               ["service", Check, "Choose an existing service"],
-              ["package", Package, "Build a support package"],
+              ["package", Package, "Explore the launch kit"],
             ] as const).map(([key, Icon, label]) => (
               <button
                 key={key}

@@ -24,7 +24,7 @@ import {
  * THE catalog. One source of truth for every service and package.
  *
  * The homepage, the public directory, the dashboard, the order forms and
- * Forge all read from here. Nothing re-states a price anywhere else --
+ * Maya all read from here. Nothing re-states a price anywhere else --
  * the legacy site kept its prices in public/pricing-catalog.js AND in the
  * copy of three different pages, which is how a site ends up advertising
  * a number its checkout does not charge.
@@ -112,7 +112,6 @@ const LAUNCH: Service[] = [
     summary: "A written plan for getting the business off the ground, with the order of work set out.",
     priceUsd: 25,
     billing: "one_time",
-    featured: true,
     deliverables: [
       "Business concept summary",
       "Target customer profile",
@@ -126,6 +125,7 @@ const LAUNCH: Service[] = [
     customerInputs: ["What the business sells", "Who it is for", "Any work already done"],
     deliveryEstimate: "2–4 working days",
     revisions: 1,
+    featured: true,
     status: "active",
   },
   {
@@ -179,6 +179,7 @@ const LAUNCH: Service[] = [
     customerInputs: ["Your market or sector", "Competitors you already know of"],
     deliveryEstimate: "3–5 working days",
     revisions: 1,
+    featured: true,
     status: "active",
   },
   {
@@ -205,7 +206,7 @@ const LAUNCH: Service[] = [
     customerInputs: ["Country and, where relevant, state or emirate", "Intended business activity"],
     deliveryEstimate: "2–4 working days",
     revisions: 1,
-    status: "active",
+    status: "archived",
   },
   {
     id: "BIZ-05",
@@ -215,7 +216,6 @@ const LAUNCH: Service[] = [
     summary: "The files and trackers a small business needs on day one, set up and explained.",
     priceUsd: 39,
     billing: "one_time",
-    featured: true,
     deliverables: [
       "Basic administrative record templates",
       "Task tracker",
@@ -226,10 +226,11 @@ const LAUNCH: Service[] = [
       "Downloadable, reusable files",
     ],
     scopeLimits: ["One business", "Standard templates adapted to your details"],
-    exclusions: ["Custom software", "Ongoing administration — see BIZ-15"],
+    exclusions: ["Custom software", "Ongoing administration — explore AgenticCore Group"],
     customerInputs: ["Business name and details", "How you currently keep records, if at all"],
     deliveryEstimate: "3–5 working days",
     revisions: 1,
+    featured: true,
     status: "active",
   },
   {
@@ -272,7 +273,6 @@ const ADMIN: Service[] = [
     summary: "Branded paperwork that goes out looking like a real company.",
     priceUsd: 19,
     billing: "one_time",
-    featured: true,
     deliverables: [
       "Branded invoice template",
       "Quotation template",
@@ -288,6 +288,7 @@ const ADMIN: Service[] = [
     customerInputs: ["Logo and business details", "Payment terms you use"],
     deliveryEstimate: "2–3 working days",
     revisions: 1,
+    featured: true,
     status: "active",
   },
   {
@@ -335,7 +336,7 @@ const ADMIN: Service[] = [
     customerInputs: ["Number of employees", "Pay cycle"],
     deliveryEstimate: "2–4 working days",
     revisions: 1,
-    status: "active",
+    status: "archived",
   },
   {
     id: "BIZ-10",
@@ -346,7 +347,6 @@ const ADMIN: Service[] = [
     priceUsd: 49,
     billing: "one_time",
     startingFrom: true,
-    featured: true,
     deliverables: [
       "Basic transaction categorization",
       "Up to 30 straightforward transactions",
@@ -362,7 +362,7 @@ const ADMIN: Service[] = [
     customerInputs: ["Your existing records, in whatever state they are in"],
     deliveryEstimate: "Scope-dependent — confirmed on quotation",
     revisions: 1,
-    status: "active",
+    status: "archived",
   },
   {
     id: "BIZ-11",
@@ -388,7 +388,7 @@ const ADMIN: Service[] = [
     customerInputs: ["Monthly records, receipts and statements"],
     deliveryEstimate: "Within the service month",
     revisions: 1,
-    status: "active",
+    status: "archived",
   },
   {
     id: "BIZ-12",
@@ -410,7 +410,7 @@ const ADMIN: Service[] = [
     customerInputs: ["Monthly figures", "Which KPIs matter to you"],
     deliveryEstimate: "Within the service month",
     revisions: 1,
-    status: "active",
+    status: "archived",
   },
   {
     id: "BIZ-13",
@@ -436,6 +436,7 @@ const ADMIN: Service[] = [
     customerInputs: ["The content and facts to include", "Brand assets"],
     deliveryEstimate: "Scope-dependent — confirmed on quotation",
     revisions: 1,
+    featured: true,
     status: "active",
   },
 ];
@@ -453,7 +454,6 @@ const GROWTH: Service[] = [
     summary: "Stop losing enquiries in an inbox.",
     priceUsd: 39,
     billing: "one_time",
-    featured: true,
     deliverables: [
       "Standard customer information fields",
       "Lead stages and pipeline",
@@ -468,6 +468,7 @@ const GROWTH: Service[] = [
     customerInputs: ["How you handle enquiries today", "Your sales stages"],
     deliveryEstimate: "3–5 working days",
     revisions: 1,
+    featured: true,
     status: "active",
   },
   {
@@ -495,7 +496,7 @@ const GROWTH: Service[] = [
     customerInputs: ["Which tasks to cover", "Access to the systems involved, where appropriate"],
     deliveryEstimate: "Ongoing, within the service month",
     revisions: 0,
-    status: "active",
+    status: "archived",
   },
   {
     id: "BIZ-16",
@@ -521,7 +522,7 @@ const GROWTH: Service[] = [
     customerInputs: ["Who your customer is", "What you want the follow-up to say"],
     deliveryEstimate: "Ongoing, within the service month",
     revisions: 0,
-    status: "active",
+    status: "archived",
   },
   {
     id: "BIZ-17",
@@ -531,7 +532,6 @@ const GROWTH: Service[] = [
     summary: "One channel planned, posted and reported on, month after month.",
     priceUsd: 99,
     billing: "monthly",
-    featured: true,
     deliverables: [
       "One business brand",
       "One social channel",
@@ -550,7 +550,7 @@ const GROWTH: Service[] = [
     customerInputs: ["Brand assets", "Channel access", "What you want said"],
     deliveryEstimate: "Ongoing, within the service month",
     revisions: 0,
-    status: "active",
+    status: "archived",
   },
   {
     id: "BIZ-18",
@@ -576,7 +576,7 @@ const GROWTH: Service[] = [
     customerInputs: ["Ad account access", "Budget", "What you are advertising"],
     deliveryEstimate: "Ongoing, within the service month",
     revisions: 0,
-    status: "active",
+    status: "archived",
   },
   {
     id: "BIZ-19",
@@ -602,7 +602,7 @@ const GROWTH: Service[] = [
     customerInputs: ["Your opt-in list", "Platform access", "What you want to send"],
     deliveryEstimate: "Ongoing, within the service month",
     revisions: 0,
-    status: "active",
+    status: "archived",
   },
 ];
 
@@ -618,13 +618,13 @@ export const categories: { id: ServiceCategoryId; label: string; blurb: string; 
   {
     id: "admin",
     label: "Office & Financial Administration",
-    blurb: "Invoicing, records, payroll trackers, bookkeeping and reports.",
+    blurb: "Invoice templates, expense trackers and professional documents.",
     icon: Building2,
   },
   {
     id: "growth",
-    label: "Business Management & Growth",
-    blurb: "Customer pipelines, back-office support and managed marketing.",
+    label: "Customer Records & Setup",
+    blurb: "One-time customer record and pipeline setup.",
     icon: Target,
   },
 ];
@@ -658,50 +658,6 @@ export const packages: Package[] = [
     ],
     terms: null,
   },
-  {
-    id: "PKG-BACK-OFFICE",
-    name: "Back-Office Essential",
-    priceUsd: 79,
-    billing: "monthly",
-    audience: "Running businesses that need the books and paperwork kept straight.",
-    serviceIds: ["BIZ-11", "BIZ-12"],
-    included: [
-      "Monthly basic bookkeeping assistance, up to 30 routine transactions",
-      "One monthly financial/activity summary",
-      "Invoice-record organization",
-      "Missing-document checklist",
-      "Dashboard task tracking",
-    ],
-    excluded: [
-      "No unlimited transaction volume",
-      "No professional accounting certification",
-      "No tax filing",
-    ],
-    terms:
-      "Billed per service month. The month begins when the package is activated. Cancel before the next service month begins and nothing further is charged.",
-  },
-  {
-    id: "PKG-OPS-PLUS",
-    name: "Business Operations Plus",
-    priceUsd: 149,
-    billing: "monthly",
-    audience: "Businesses that want the admin handled as well as the books.",
-    serviceIds: ["BIZ-11", "BIZ-12", "BIZ-15"],
-    included: [
-      "Everything in Back-Office Essential",
-      "Up to three hours of defined administrative assistance per month",
-      "Limited customer follow-up support within approved workflows",
-      "Monthly operations summary",
-      "Dashboard status tracking",
-    ],
-    excluded: [
-      "No unlimited office staffing",
-      "No unlimited calls",
-      "No unlimited customer communication",
-    ],
-    terms:
-      "Billed per service month. The month begins when the package is activated. Cancel before the next service month begins and nothing further is charged.",
-  },
 ];
 
 // ---------------------------------------------------------------------
@@ -720,7 +676,7 @@ export const packages: Package[] = [
  *
  * Nothing here is orderable. `activeServices` is what the site offers,
  * and it filters on status, so an archived entry cannot reach a card, a
- * dropdown, a checkout or Forge by accident.
+ * dropdown, a checkout or Maya by accident.
  *
  * Several of these have a successor in the new catalog and say so, since
  * the common case is a customer asking what happened to the thing they
@@ -769,7 +725,7 @@ export function servicesIn(category: ServiceCategoryId): Service[] {
  */
 export function serviceById(id: string): Service | undefined {
   const wanted = id.trim().toLowerCase();
-  return services.find((s) => s.id.toLowerCase() === wanted);
+  return activeServices.find((s) => s.id.toLowerCase() === wanted);
 }
 
 export function packageById(id: string): Package | undefined {
@@ -779,7 +735,12 @@ export function packageById(id: string): Package | undefined {
 
 /** Retired, so a stale link can say so rather than 404. */
 export function archivedById(id: string) {
-  return archivedServices.find((s) => s.id === id);
+  const wanted = id.trim().toLowerCase();
+  const retired = services.find((s) => s.status === "archived" && s.id.toLowerCase() === wanted);
+  if (retired) return { id: retired.id, name: retired.name, note: "This service is no longer sold here. Explore managed offices and framework options at https://agenticcore.group/services.html.", replacedBy: undefined };
+  const legacy = archivedServices.find((s) => s.id.toLowerCase() === wanted);
+  if (legacy?.replacedBy && !serviceById(legacy.replacedBy)) return { ...legacy, replacedBy: undefined, note: "This service is no longer sold here. Explore https://agenticcore.group/services.html for office and framework options." };
+  return legacy;
 }
 
 export const SERVICE_COUNT = activeServices.length;

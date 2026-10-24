@@ -8,4 +8,5 @@ import { defineConfig } from 'vite'
 // the URLs they always had while the React rebuild happens page by page.
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: { allowedHosts: ['terminal.local'] },
 })
