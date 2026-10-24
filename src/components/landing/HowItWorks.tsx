@@ -4,8 +4,8 @@ import { Reveal } from "../Reveal";
 /**
  * The real process, not an aspirational one.
  *
- * Step 2 says Forge "helps organize" and "prepares a proposed scope",
- * which is what it does. It deliberately does not say Forge prices the
+ * Step 2 says Maya "helps organize" and "prepares a proposed scope",
+ * which is what it does. It deliberately does not say Maya prices the
  * job or issues the quote: a proposal becomes a price when a person
  * approves it, and claiming otherwise would be selling a capability that
  * is not built.
@@ -18,7 +18,7 @@ const STEPS = [
   },
   {
     icon: FileSearch,
-    title: "Forge helps organize your requirements",
+    title: "Maya helps organize your requirements",
     body: "It asks the missing questions and turns your description into a structured brief with a proposed scope.",
   },
   {

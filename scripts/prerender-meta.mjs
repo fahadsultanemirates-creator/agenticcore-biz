@@ -39,10 +39,11 @@ function price(item) {
 }
 
 const pages = [
+  { path: "maya", title: "Talk to Maya", description: "Ask about business planning, documents and setup, then prepare a clear project brief." },
   {
     path: "services",
     title: `All ${activeServices.length} services`,
-    description: `Every service AgenticCore.biz provides — business setup, administration, bookkeeping, back-office and growth — with the price and delivery estimate for each.`,
+    description: `Every service AgenticCore.biz provides — business planning, research, documents and record setup — with the price and delivery estimate for each.`,
   },
   {
     path: "packages",

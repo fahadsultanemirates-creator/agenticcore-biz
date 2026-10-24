@@ -106,7 +106,7 @@ test("the packages page renders every package in the data", () => {
   // The owner reported /packages not rendering. It renders -- but nothing
   // tied the page to the data, so a package added to the catalogue and
   // missing from the page would have looked identical to a working page.
-  assert.equal(packages.length, 3, "expected three packages");
+  assert.equal(packages.length, 1, "expected the one-time launch kit");
   assert.ok(
     PACKAGES.includes("packages.map") || PACKAGES.includes("packages .map"),
     "Packages.tsx does not map over the catalogue, so the two can drift",

@@ -5,25 +5,25 @@ const CARDS = [
   {
     icon: Briefcase,
     title: "Plan & Launch",
-    body: "Startup roadmaps, business feasibility, market research and setup preparation.",
+    body: "Startup roadmaps, feasibility reports and focused market research.",
     href: "#services",
   },
   {
     icon: Workflow,
     title: "Organize Your Office",
-    body: "Invoicing, SOPs, records, payroll trackers and administrative workflows.",
+    body: "Invoice templates, SOPs and administrative starter files.",
     href: "#services",
   },
   {
     icon: BarChart3,
     title: "Manage Your Numbers",
-    body: "Bookkeeping assistance, expense tracking, cash-flow summaries and reports.",
+    body: "Reusable expense and cash-flow trackers with a usage guide.",
     href: "#services",
   },
   {
     icon: TrendingUp,
     title: "Support Your Growth",
-    body: "Customer pipelines, follow-ups, email marketing, social media and advertising management.",
+    body: "One-time customer pipeline setup and professional business proposals.",
     href: "#services",
   },
 ];
@@ -37,8 +37,8 @@ export function WhatWeDo() {
             Your business needs more than a website.
           </h2>
           <p className="mt-4 text-fg-muted">
-            Running a business means planning, paperwork, records, customer follow-ups and everyday
-            operations. We help you get those systems organized and keep the work moving.
+            Start with the plans, documents and templates your business needs.
+            For ongoing department support, explore a managed office at AgenticCore Group.
           </p>
         </div>
 

@@ -11,21 +11,20 @@ export function Hero() {
       />
       <div className="relative mx-auto max-w-5xl px-6 pt-16 pb-20 text-center md:pt-24 md:pb-28">
         <span className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs font-semibold tracking-wide text-fg-muted uppercase">
-          Your AI-powered business operations partner
+          Business planning, documents and setup
         </span>
 
         <h1 className="animate-fade-up mt-8 font-display text-5xl leading-[1.05] font-semibold tracking-tight text-fg sm:text-6xl md:text-7xl">
-          Start your business.
+          Plan your business.
           <br />
-          <span className="text-orange-400">Organize it.</span>
+          <span className="text-orange-400">Organize your records.</span>
           <br />
-          Keep it running.
+          Launch with clarity.
         </h1>
 
         <p className="animate-fade-up mx-auto mt-6 max-w-2xl text-lg text-fg-muted sm:text-xl">
-          From startup planning and invoicing to bookkeeping assistance, customer management and
-          ongoing business support — AgenticCore.biz helps you handle the work behind your business
-          without building a large team.
+          Get a launch plan, research, professional documents and practical record templates.
+          Choose a defined one-time project here, or explore a managed digital office at AgenticCore Group.
         </p>
 
         <div className="animate-fade-up mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -37,11 +36,11 @@ export function Hero() {
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </a>
           <Link
-            to="/create-project"
+            to="/maya"
             className="inline-flex items-center gap-2 rounded-full border-2 border-border px-7 py-3.5 text-base font-semibold text-fg transition-colors hover:border-orange-400/60"
           >
             <Sparkles className="h-4 w-4 text-orange-400" />
-            Create a Project with Forge
+            Talk to Maya
           </Link>
         </div>
 

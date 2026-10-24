@@ -1,8 +1,7 @@
-import { Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 /**
- * The floating way into Forge.
+ * The floating way into Maya.
  *
  * Icon-only below `sm`, with the label appearing once there is room.
  * The labelled pill is about 130px wide, and at 390px that is a third
@@ -19,12 +18,12 @@ import { Link } from "react-router-dom";
 export function ChatLauncher() {
   return (
     <Link
-      to="/create-project"
-      aria-label="Create a project with Forge"
+      to="/maya"
+      aria-label="Create a project with Maya"
       className="fixed right-4 bottom-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-orange-400 text-void shadow-glow-orange transition-transform hover:-translate-y-0.5 sm:right-6 sm:bottom-6 sm:h-auto sm:w-auto sm:gap-2 sm:px-5 sm:py-3 sm:text-sm sm:font-semibold"
     >
-      <Sparkles className="h-5 w-5 sm:h-4 sm:w-4" />
-      <span className="hidden sm:inline">Start a brief</span>
+      <img src="/team/maya.webp" alt="" width={32} height={32} className="h-8 w-8 shrink-0 rounded-full object-cover" />
+      <span className="hidden sm:inline">Ask Maya</span>
     </Link>
   );
 }

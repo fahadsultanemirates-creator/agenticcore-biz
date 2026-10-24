@@ -28,6 +28,7 @@ export function ServiceDetail() {
           </h1>
           <p className="mt-2 max-w-xl text-fg-muted">{retired?.note ?? "It may have been renamed or retired."}</p>
           <div className="mt-6 flex flex-wrap gap-3">
+            <a href="https://agenticcore.group/services.html" className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-fg">Explore office services at Group ↗</a>
             {retired && "replacedBy" in retired && retired.replacedBy && (
               <Link
                 to={`/services/${retired.replacedBy}`}
@@ -40,7 +41,7 @@ export function ServiceDetail() {
               to="/services"
               className="rounded-full border-2 border-border px-5 py-2.5 text-sm font-semibold text-fg transition-colors hover:border-orange-400/60"
             >
-              Browse all services
+              Browse current services
             </Link>
           </div>
         </section>

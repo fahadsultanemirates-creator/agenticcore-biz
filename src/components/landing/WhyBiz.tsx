@@ -6,7 +6,7 @@ const BENEFITS = [
   "AI-assisted workflows",
   "Clear tasks and deliverables",
   "One place for projects and business records",
-  "Optional ongoing monthly support",
+  "One-time projects with agreed limits",
   "Visibility into work status",
 ];
 

@@ -32,6 +32,7 @@ const ServiceDetail = lazy(() =>
   import("./pages/ServiceDetail").then((m) => ({ default: m.ServiceDetail })),
 );
 const Packages = lazy(() => import("./pages/Packages").then((m) => ({ default: m.Packages })));
+const Maya = lazy(() => import("./pages/Maya").then((m) => ({ default: m.Maya })));
 const CreateProject = lazy(() =>
   import("./pages/CreateProject").then((m) => ({ default: m.CreateProject })),
 );
@@ -112,6 +113,8 @@ export default function App() {
         <Route path="/services/:id" element={<ServiceDetail />} />
         <Route path="/packages" element={<Packages />} />
         <Route path="/create-project" element={<CreateProject />} />
+        <Route path="/maya" element={<Maya />} />
+        <Route path="/forge" element={<Maya />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

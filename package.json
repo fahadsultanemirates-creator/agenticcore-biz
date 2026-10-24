@@ -9,8 +9,9 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "generate:catalog": "node --experimental-strip-types scripts/generate-legacy-catalog.mjs",
-    "prebuild": "npm run generate:catalog",
-    "test": "node --experimental-strip-types src/data/catalog.test.ts && node --experimental-strip-types src/data/connections.test.ts && node --experimental-strip-types src/lib/payment.test.ts && node --experimental-strip-types src/pages/legal/legal.test.ts && node --experimental-strip-types src/lib/acToken.test.ts && node --experimental-strip-types src/data/claims.test.ts && node --experimental-strip-types src/data/contact.test.ts && node --experimental-strip-types supabase/functions/_shared/alert-core.test.ts && node --experimental-strip-types src/lib/dashboardData.test.ts && node --experimental-strip-types src/components/dashboard/dashboardNav.test.ts && node --experimental-strip-types src/testSuite.test.ts && node --experimental-strip-types supabase/functions/_shared/cors.test.ts"
+    "prebuild": "npm run generate:catalog && npm run generate:bot-catalog",
+    "test": "node --experimental-strip-types src/data/catalog.test.ts && node --experimental-strip-types src/data/connections.test.ts && node --experimental-strip-types src/lib/payment.test.ts && node --experimental-strip-types src/pages/legal/legal.test.ts && node --experimental-strip-types src/lib/acToken.test.ts && node --experimental-strip-types src/data/claims.test.ts && node --experimental-strip-types src/data/contact.test.ts && node --experimental-strip-types supabase/functions/_shared/alert-core.test.ts && node --experimental-strip-types src/lib/dashboardData.test.ts && node --experimental-strip-types src/components/dashboard/dashboardNav.test.ts && node --experimental-strip-types src/testSuite.test.ts && node --experimental-strip-types supabase/functions/_shared/cors.test.ts && node --experimental-strip-types src/data/assistant-catalog.test.ts",
+    "generate:bot-catalog": "node --experimental-strip-types scripts/generate-bot-catalog.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

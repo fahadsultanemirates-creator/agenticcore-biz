@@ -33,7 +33,7 @@ import { NavLink } from "react-router-dom";
  * phone, where wrapping ten items would push the page content off screen
  * instead.
  *
- * Three of these are public pages -- services, packages and Forge. They
+ * Three of these are public pages -- services, packages and Maya. They
  * are listed because a client looking for "where do I start something"
  * should find it here rather than leaving the dashboard and coming back,
  * and they work signed out anyway.
@@ -46,7 +46,7 @@ export function DashboardNav({ unreadMessages = 0 }: { unreadMessages?: number }
     { to: "/services", label: "Browse Services", icon: ShoppingBag },
     { to: "/packages", label: "Packages", icon: Package },
     { to: "/projects", label: "My Projects", icon: FolderKanban },
-    { to: "/create-project", label: "Scope with Forge", icon: Sparkles },
+    { to: "/maya", label: "Talk to Maya", icon: Sparkles },
     { to: "/orders", label: "Orders", icon: FileText },
     { to: "/messages", label: "Messages", icon: MessageSquare, badge: unreadMessages },
     { to: "/invoices", label: "Invoices & Payments", icon: Receipt },

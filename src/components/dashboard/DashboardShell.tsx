@@ -19,7 +19,7 @@ type Props = {
  * of every page, which ate most of a phone screen before any content was
  * drawn. Navigation lives in the dashboard's own grid instead.
  *
- * The bottom padding clears the floating Forge button, so the last row of any
+ * The bottom padding clears the floating Maya button, so the last row of any
  * list is still reachable.
  */
 export function DashboardShell({ title, children, backTo, backLabel }: Props) {

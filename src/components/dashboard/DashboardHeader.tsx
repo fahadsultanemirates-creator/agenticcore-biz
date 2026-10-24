@@ -37,12 +37,12 @@ export function DashboardHeader({ crumb, backTo, backLabel }: Props) {
 
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <Link
-            to="/create-project"
+            to="/maya"
             title="Scope a new project"
             className="flex h-9 items-center gap-1.5 rounded-full border border-orange-400/40 bg-orange-400/10 px-2.5 text-sm font-semibold text-orange-400 transition-colors hover:bg-orange-400/20 sm:px-3.5"
           >
             <Sparkles className="h-4 w-4" />
-            <span className="hidden sm:inline">Forge</span>
+            <span className="hidden sm:inline">Maya</span>
           </Link>
           <AccountMenu />
         </div>
