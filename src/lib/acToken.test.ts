@@ -1,20 +1,34 @@
 // Run with: node --experimental-strip-types <this file>
 //
-// AC token payment was removed from every site. This keeps it removed.
+// AC token as a second payment option -- kept correct, and kept safe.
 //
-// It was not one switch: a contract address, a 15% discount constant, a
-// discounted-deposit function, a panel in the dashboard and a block on the
-// payment screen, each in a different file. Anything that reintroduces one
-// of those pieces fails here.
+// HISTORY, because it matters for how this file reads. AC token payment
+// was offered once at 15%, removed across every site in the
+// campaign-readiness pass, and this file existed to keep it removed. The
+// owner has reinstated it at 10%, so the ban is gone -- but the checks it
+// replaced are not. A payment method is the worst place in a codebase for
+// a number or an address to drift quietly, so every claim the UI makes
+// about AC is pinned here instead.
 //
-// USDT is untouched and must stay: a test that just banned the word
-// "token" would also ban "raw token units", which is how the USDT chain
-// watcher describes an ERC-20 amount.
+// The property that actually protects money is that there is NO SECOND
+// ADDRESS: BEP-20 accepts any BEP-20 token, so AC arrives at the same
+// wallet as USDT. If someone ever introduces a separate AC receiving
+// address, that is a new way for a client to lose funds permanently, and
+// the test below fails rather than letting it ship quietly.
 
 import assert from "node:assert/strict";
 import process from "node:process";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import {
+  AC_TOKEN_CONTRACT,
+  AC_TOKEN_DISCOUNT_PCT,
+  AC_TOKEN_SITE,
+  upfrontDue,
+  upfrontDueInAc,
+  totalInAc,
+  USDT_BEP20_ADDRESS,
+} from "./payment.ts";
 
 let passed = 0;
 let failed = 0;
@@ -44,59 +58,89 @@ function sourceFiles(dir: string, out: string[] = []): string[] {
   return out;
 }
 
-/** Code with comments removed -- this repo's own notes record the removal. */
-function code(text: string): string {
-  return text
-    .replace(/\/\*[\s\S]*?\*\//g, " ")
-    .replace(/^\s*\/\/.*$/gm, " ")
-    .replace(/^\s*--.*$/gm, " ");
-}
-
 const FILES = sourceFiles(ROOT);
 
 test("the scan actually reads this repo", () => {
   assert.ok(FILES.length > 20, `only found ${FILES.length} source files — the walk is broken`);
 });
 
-test("the AC token contract address appears nowhere", () => {
-  // Unambiguous: this string has no innocent use, so it is checked in
-  // comments too.
-  const CONTRACT = "0xe9568888a0bc317519957047cf736e134B097768".toLowerCase();
-  const hits = FILES.filter((f) => readFileSync(f, "utf8").toLowerCase().includes(CONTRACT));
-  assert.deepEqual(hits.map((f) => f.replace(ROOT, "")), []);
+test("the discount is the 10% the owner asked for, not the old 15%", () => {
+  // Pinned to the exact number. This has now changed once, and a shape
+  // check would have accepted the stale 15% just as happily.
+  assert.equal(AC_TOKEN_DISCOUNT_PCT, 10);
 });
 
-test("no AC token identifiers survive in code", () => {
-  const banned = [/AC_TOKEN/, /AcToken/, /upfrontDueInAc/, /dueInAc/, /actoken\.org/i];
-  const hits: string[] = [];
-  for (const file of FILES) {
-    const body = code(readFileSync(file, "utf8"));
-    for (const pattern of banned) {
-      if (pattern.test(body)) hits.push(`${file.replace(ROOT, "")} → ${pattern}`);
-    }
+test("AC is paid to the SAME wallet as USDT — there is no second address", () => {
+  // The safety property. A second receiving address is a second way to
+  // send funds somewhere unrecoverable, for no benefit: BEP-20 accepts
+  // any BEP-20 token.
+  const evm = /0x[a-fA-F0-9]{40}/g;
+  const panel = readFileSync(join(ROOT, "src/components/dashboard/UsdtPanel.tsx"), "utf8");
+  const addresses = new Set((panel.match(evm) ?? []).map((a) => a.toLowerCase()));
+  addresses.delete(AC_TOKEN_CONTRACT.toLowerCase()); // a token id, not a destination
+
+  assert.deepEqual(
+    [...addresses],
+    [],
+    "the payment panel hard-codes an address; it must use USDT_BEP20_ADDRESS only",
+  );
+  assert.notEqual(
+    AC_TOKEN_CONTRACT.toLowerCase(),
+    USDT_BEP20_ADDRESS.toLowerCase(),
+    "the token contract is being used as the receiving wallet",
+  );
+});
+
+test("the discounted deposit is the undiscounted one minus the discount", () => {
+  for (const price of [25, 39, 69, 100, 333.33, 1000]) {
+    const full = upfrontDue(price);
+    const discounted = upfrontDueInAc(price);
+    assert.ok(discounted < full, `${price}: AC deposit is not cheaper`);
+    // Within a cent of the stated percentage -- the figure on screen must
+    // match the percentage the same screen advertises.
+    const impliedPct = (1 - discounted / full) * 100;
+    assert.ok(
+      Math.abs(impliedPct - AC_TOKEN_DISCOUNT_PCT) < 0.5,
+      `${price}: screen says ${AC_TOKEN_DISCOUNT_PCT}% but the maths gives ${impliedPct.toFixed(2)}%`,
+    );
   }
-  assert.deepEqual(hits, []);
 });
 
-test("no customer-facing text offers payment in AC", () => {
-  const banned = [/pay (?:in|with) AC\b/i, /AC token/i, /token discount/i];
-  const hits: string[] = [];
-  // Test files are excluded from THIS check only. Another guard in this
-  // repo lists "ac token" as a phrase its own pages must not contain, and
-  // a scan that flags one guard for containing the string the other guard
-  // bans is checking itself, not the product. The identifier and contract
-  // checks above still cover every file.
-  for (const file of FILES.filter((f) => !/\.test\.[cm]?tsx?$/.test(f))) {
-    const body = code(readFileSync(file, "utf8"));
-    for (const pattern of banned) {
-      if (pattern.test(body)) hits.push(`${file.replace(ROOT, "")} → ${pattern}`);
-    }
+test("the discount applies to the whole job too, not just the deposit", () => {
+  assert.equal(totalInAc(100), 90);
+  assert.equal(totalInAc(69), 62.1);
+});
+
+test("every AC amount is rounded to real cents", () => {
+  // 0.3 * 3 is 0.8999999999999999 in binary floating point. An amount a
+  // client is asked to send must not render one value and compare as
+  // another.
+  for (const price of [3, 7, 19, 29, 39, 333.33]) {
+    const v = upfrontDueInAc(price);
+    assert.equal(v, Math.round(v * 100) / 100, `${price} produced an un-rounded amount`);
   }
-  assert.deepEqual(hits, []);
 });
 
-test("USDT is still here, so this is not passing by deleting payment", () => {
-  const usdt = FILES.filter((f) => /0x62Ad7D55fbc8A8591109D72b67Ec63aa1EE196bC/i.test(readFileSync(f, "utf8")));
+test("wherever AC is offered, the token site is linked", () => {
+  // The owner's requirement: a client being offered a discount for a
+  // token must be able to read about that token before buying any.
+  const panel = readFileSync(join(ROOT, "src/components/dashboard/UsdtPanel.tsx"), "utf8");
+  assert.ok(/AC_TOKEN_DISCOUNT_PCT/.test(panel), "the panel no longer offers AC at all");
+  assert.ok(/AC_TOKEN_SITE/.test(panel), "AC is offered without linking the token site");
+  assert.equal(AC_TOKEN_SITE, "https://actoken.org");
+});
+
+test("the contract is a well-formed address, shown as a contract not a wallet", () => {
+  assert.match(AC_TOKEN_CONTRACT, /^0x[a-fA-F0-9]{40}$/);
+  const panel = readFileSync(join(ROOT, "src/components/dashboard/UsdtPanel.tsx"), "utf8");
+  assert.ok(
+    /bscscan\.com\/token\//.test(panel),
+    "the contract should link to BscScan's token view so a client can verify it",
+  );
+});
+
+test("USDT is still here, so this is not passing by replacing one with the other", () => {
+  const usdt = FILES.filter((f) => new RegExp(USDT_BEP20_ADDRESS, "i").test(readFileSync(f, "utf8")));
   assert.ok(usdt.length > 0, "the USDT receiving address is gone — that is not what was asked for");
 });
 

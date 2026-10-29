@@ -1,5 +1,6 @@
 import { Bullets, Clause, LegalLayout } from "./LegalLayout";
 import { MONTHLY_BILLING_NOTE, PAYMENT_SPLIT } from "../../data/paymentTerms";
+import { AC_TOKEN_DISCOUNT_PCT, AC_TOKEN_SITE } from "../../lib/payment";
 
 /**
  * Replaces public/terms.html.
@@ -28,7 +29,8 @@ import { MONTHLY_BILLING_NOTE, PAYMENT_SPLIT } from "../../data/paymentTerms";
  *
  * What was removed as untrue: references to chatbots, voice agents, real
  * estate developers, AI agent builds (that is .agency's catalogue, not this
- * one) and AC token as a payment method.
+ * one). AC token was removed here too, and has since been reinstated as a
+ * second payment option at the owner's instruction -- see lib/payment.ts.
  */
 export function Terms() {
   const { upfrontPercent, onCompletionPercent } = PAYMENT_SPLIT;
@@ -102,6 +104,20 @@ export function Terms() {
         <p>{MONTHLY_BILLING_NOTE}</p>
         <p>
           Payment is in USDT on BNB Smart Chain (BEP-20). We do not process or store card numbers.
+        </p>
+        <p>
+          You may instead pay in{" "}
+          <a
+            href={AC_TOKEN_SITE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-orange-400 hover:underline"
+          >
+            AC token
+          </a>
+          , which carries a <strong className="text-fg">{AC_TOKEN_DISCOUNT_PCT}% discount on
+          everything</strong>. AC is itself a BEP-20 token, so it goes to the same address as
+          USDT — there is no second address. The discount applies when the payment arrives in AC.
         </p>
         <p>
           Unlike our sister sites, a .biz payment is <strong className="text-fg">checked by a

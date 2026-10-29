@@ -1,9 +1,13 @@
 import { AlertTriangle, Check, Copy, Mail } from "lucide-react";
 import { useState } from "react";
 import {
+  AC_TOKEN_CONTRACT,
+  AC_TOKEN_DISCOUNT_PCT,
+  AC_TOKEN_SITE,
   BILLING_EMAIL,
   money,
   upfrontDue,
+  upfrontDueInAc,
   USDT_BEP20_ADDRESS,
 } from "../../lib/payment";
 
@@ -21,13 +25,14 @@ import {
  * bottom: USDT sent on Ethereum or Tron to a BEP-20 address is gone.
  */
 export function UsdtPanel({ agreedPrice }: { agreedPrice: number }) {
-  // Only one address now that the AC token option is gone, but the keyed
-  // state is kept: it is what makes "Copied" clear itself correctly.
-  const [copied, setCopied] = useState<"usdt" | null>(null);
+  // Two payment options, one address. The keyed state is what makes
+  // "Copied" clear itself against the right button.
+  const [copied, setCopied] = useState<"usdt" | "ac" | null>(null);
 
   const due = upfrontDue(agreedPrice);
+  const dueInAc = upfrontDueInAc(agreedPrice);
 
-  const copy = async (which: "usdt") => {
+  const copy = async (which: "usdt" | "ac") => {
     try {
       await navigator.clipboard.writeText(USDT_BEP20_ADDRESS);
       setCopied(which);
@@ -69,6 +74,50 @@ export function UsdtPanel({ agreedPrice }: { agreedPrice: number }) {
           <span>
             Only USDT on <span className="font-semibold">BEP-20</span>. USDT on Ethereum or Tron,
             or any other coin, sent to this address cannot be recovered.
+          </span>
+        </div>
+      </div>
+
+      {/* The second option. Same wallet, deliberately: BEP-20 accepts any
+          BEP-20 token, so AC lands where USDT does. Offering a separate
+          address would add a way to lose money for no benefit. */}
+      <div className="mt-5 border-t border-border pt-4">
+        <p className="text-sm font-semibold text-fg">
+          Or pay in AC token and save {AC_TOKEN_DISCOUNT_PCT}%
+        </p>
+        <p className="mt-1 text-xs text-fg-muted">
+          <span className="font-semibold text-fg">{money(dueInAc)}</span> worth of AC token
+          instead of {money(due)}. BEP-20 accepts any BEP-20 token, so it goes to the same
+          address — there is no second one to get wrong.
+        </p>
+        <AddressRow copied={copied === "ac"} onCopy={() => void copy("ac")} />
+
+        <p className="mt-2 text-xs text-fg-faint">
+          Token contract{" "}
+          <a
+            href={`https://bscscan.com/token/${AC_TOKEN_CONTRACT}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-fg-muted hover:underline"
+          >
+            {AC_TOKEN_CONTRACT.slice(0, 10)}…{AC_TOKEN_CONTRACT.slice(-8)}
+          </a>
+          , verifiable on BscScan. About the token:{" "}
+          <a
+            href={AC_TOKEN_SITE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-orange-400 hover:underline"
+          >
+            actoken.org
+          </a>
+        </p>
+
+        <div className="mt-3 flex items-start gap-2 rounded-xl border border-orange-400/40 bg-orange-400/10 px-3 py-2.5 text-xs text-fg">
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-orange-400" />
+          <span>
+            The {AC_TOKEN_DISCOUNT_PCT}% applies only when the payment actually arrives in AC.
+            Send AC on <span className="font-semibold">BEP-20</span> only.
           </span>
         </div>
       </div>

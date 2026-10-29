@@ -17,6 +17,25 @@
  *  dashboard has always shown, and the same one .click settles to. */
 export const USDT_BEP20_ADDRESS = "0x62Ad7D55fbc8A8591109D72b67Ec63aa1EE196bC";
 
+/**
+ * AgenticCore's own BEP-20 token, offered as a second way to pay.
+ *
+ * There is no second receiving address, and that is the whole reason this
+ * is safe to offer: BEP-20 accepts any BEP-20 token, so AC arrives at the
+ * same wallet as USDT. A separate address would be one more thing a client
+ * could get wrong, with the same unrecoverable ending as the wrong chain.
+ *
+ * This was offered once before at 15% and removed in the campaign-readiness
+ * pass. It is back at the owner's instruction, at 10%.
+ */
+export const AC_TOKEN_CONTRACT = "0xe9568888a0bc317519957047cf736e134B097768";
+
+/** Where a client reads about the token before deciding to hold any. */
+export const AC_TOKEN_SITE = "https://actoken.org";
+
+/** Paying in AC earns this much off. */
+export const AC_TOKEN_DISCOUNT_PCT = 10;
+
 /** Taken before work starts; the remainder falls due on approval. */
 export const UPFRONT_FRACTION = 0.3;
 
@@ -40,6 +59,23 @@ export function roundMoney(amount: number): number {
 /** The deposit due before work starts, from the agreed total. */
 export function upfrontDue(agreedPrice: number): number {
   return roundMoney(agreedPrice * UPFRONT_FRACTION);
+}
+
+/**
+ * The same deposit, discounted for paying in AC.
+ *
+ * Discount applied to the deposit, not to the agreed total, because the
+ * deposit is the only figure this screen asks anyone to send. The
+ * remainder is quoted and settled separately, and the same discount
+ * applies to it when it is.
+ */
+export function upfrontDueInAc(agreedPrice: number): number {
+  return roundMoney(upfrontDue(agreedPrice) * (1 - AC_TOKEN_DISCOUNT_PCT / 100));
+}
+
+/** The whole job's price when paid in AC, for quoting the saving. */
+export function totalInAc(agreedPrice: number): number {
+  return roundMoney(agreedPrice * (1 - AC_TOKEN_DISCOUNT_PCT / 100));
 }
 
 /** What is left once the deposit is paid. */
