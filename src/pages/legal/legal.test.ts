@@ -11,6 +11,7 @@
 // split the rest of the site never mentioned.
 
 import assert from "node:assert/strict";
+import { AC_TOKEN_DISCOUNT_PCT } from "../../lib/payment.ts";
 import process from "node:process";
 import { readFileSync } from "node:fs";
 import { activeServices } from "../../data/catalog.ts";
@@ -62,7 +63,12 @@ test("the comment stripper works, or every test below is vacuous", () => {
 
 test("no legal page describes a business AgenticCore.biz is not", () => {
   // Every one of these was in the live documents until this commit.
-  const gone = ["chatbot", "voice agent", "real estate", "ac token", "seo & content"];
+  // "ac token" was on this list because the page offered a payment method
+  // the site did not take. It is now a real, accepted method at a 10%
+  // discount, so banning the phrase would make the Terms inaccurate in the
+  // opposite direction. The replacement check below holds it to being
+  // described correctly instead of simply absent.
+  const gone = ["chatbot", "voice agent", "real estate", "seo & content"];
   for (const page of [
     ["Terms", TERMS],
     ["Privacy", PRIVACY],
@@ -158,6 +164,38 @@ test("neither page promises to hold a credential, and both say so", () => {
   assert.ok(
     PRIVACY.toLowerCase().includes("never ask for"),
     "Privacy does not state what we never ask for",
+  );
+});
+
+test("the Terms describe AC token accurately, or not at all", () => {
+  // A discount quoted in the Terms is a commitment. If the page names AC
+  // at all it must carry the real percentage, and that percentage must
+  // come from the shared constant rather than a number typed into prose
+  // -- which is exactly how the old 15% outlived the decision to drop it.
+  if (!TERMS.toLowerCase().includes("ac token")) return;
+
+  // Asserted as the interpolated constant, not the rendered number. A
+  // literal "10%" typed into the prose would pass a text check and then
+  // silently disagree with lib/payment.ts the day the figure moves --
+  // which is how the old 15% outlived the decision to drop it.
+  assert.ok(
+    /\{AC_TOKEN_DISCOUNT_PCT\}%\s*discount/.test(TERMS),
+    "Terms names AC token without interpolating AC_TOKEN_DISCOUNT_PCT — the figure can drift",
+  );
+  assert.ok(
+    !/\b(10|15|20)\s*%\s*discount/.test(TERMS),
+    "Terms hard-codes a discount percentage instead of using the shared constant",
+  );
+  assert.ok(
+    /same address as\s+USDT|same address/i.test(TERMS),
+    "Terms offers AC without saying it goes to the same address — the one fact that stops a lost payment",
+  );
+  assert.ok(
+    !/\b(invest|investment|return|profit|guaranteed)\b/i.test(
+      TERMS.slice(Math.max(0, TERMS.toLowerCase().indexOf("ac token") - 300),
+                 TERMS.toLowerCase().indexOf("ac token") + 500),
+    ),
+    "the Terms discuss AC token in investment terms — it is a payment method, not an offer of return",
   );
 });
 
