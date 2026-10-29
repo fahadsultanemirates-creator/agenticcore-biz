@@ -1,3 +1,4 @@
+import {AcInvoicePayment} from "./AcInvoicePayment";
 import { Receipt, Repeat } from "lucide-react";
 import { packageById } from "../../data/catalog";
 import { statusLabel, type BillingRow, type SubscriptionRow } from "../../lib/dashboardData";
@@ -71,6 +72,7 @@ export function BillingSection({
         </div>
       ) : null}
 
+      <AcInvoicePayment />
       <Panel
         loading={billing.loading}
         failed={billing.failed}
