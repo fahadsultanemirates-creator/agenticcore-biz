@@ -2,12 +2,12 @@ import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ARRIVED_FOR_RECOVERY, supabase } from "./lib/supabase";
 import { RequireAuth } from "./components/auth/RequireAuth";
-import { Landing } from "./pages/Landing";
+import { BotLanding } from "./pages/BotLanding";
 import { Terms } from "./pages/legal/Terms";
 import { Privacy } from "./pages/legal/Privacy";
 import { Contact } from "./pages/Contact";
 import { Login } from "./pages/Login";
-import { Services } from "./pages/Services";
+
 import { Signup } from "./pages/Signup";
 import { ScrollToHash } from "./components/ScrollToHash";
 import { useTrackVisit } from "./lib/useTrackVisit";
@@ -28,21 +28,11 @@ import { useTrackVisit } from "./lib/useTrackVisit";
  * The auth pages and the client dashboard that used to live there are gone,
  * and netlify.toml redirects their old addresses here.
  */
-const ServiceDetail = lazy(() =>
-  import("./pages/ServiceDetail").then((m) => ({ default: m.ServiceDetail })),
-);
-const Packages = lazy(() => import("./pages/Packages").then((m) => ({ default: m.Packages })));
 const Maya = lazy(() => import("./pages/Maya").then((m) => ({ default: m.Maya })));
-const CreateProject = lazy(() =>
-  import("./pages/CreateProject").then((m) => ({ default: m.CreateProject })),
-);
 const ResetPassword = lazy(() =>
   import("./pages/ResetPassword").then((m) => ({ default: m.ResetPassword })),
 );
 const Dashboard = lazy(() => import("./pages/Dashboard").then((m) => ({ default: m.Dashboard })));
-const RequestService = lazy(() =>
-  import("./pages/RequestService").then((m) => ({ default: m.RequestService })),
-);
 const Projects = lazy(() => import("./pages/Projects").then((m) => ({ default: m.Projects })));
 const Orders = lazy(() => import("./pages/Orders").then((m) => ({ default: m.Orders })));
 const Invoices = lazy(() => import("./pages/Invoices").then((m) => ({ default: m.Invoices })));
@@ -100,6 +90,8 @@ function Protected({ children }: { children: ReactNode }) {
   return <RequireAuth>{children}</RequireAuth>;
 }
 
+function MovedService(){ const location=useLocation(); useEffect(()=>{const target=location.pathname.startsWith("/services")?location.pathname:location.pathname.startsWith("/packages")?"/packages":"/request"; window.location.replace("https://agenticcore.agency"+target+location.search+location.hash);},[location]);return <p>Services have moved to <a href="https://agenticcore.agency/services">AgenticCore Agency</a>.</p>;}
+
 export default function App() {
   useRecoveryRedirect();
   useTrackVisit();
@@ -108,11 +100,11 @@ export default function App() {
     <Suspense fallback={LOADING}>
       <ScrollToHash />
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/services/:id" element={<ServiceDetail />} />
-        <Route path="/packages" element={<Packages />} />
-        <Route path="/create-project" element={<CreateProject />} />
+        <Route path="/" element={<BotLanding />} />
+        <Route path="/services" element={<MovedService />} />
+        <Route path="/services/:id" element={<MovedService />} />
+        <Route path="/packages" element={<MovedService />} />
+        <Route path="/create-project" element={<MovedService />} />
         <Route path="/maya" element={<Maya />} />
         <Route path="/forge" element={<Maya />} />
 
@@ -127,7 +119,7 @@ export default function App() {
         <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
         <Route
           path="/dashboard/request/:id"
-          element={<Protected><RequestService /></Protected>}
+          element={<Protected><MovedService /></Protected>}
         />
         <Route path="/projects" element={<Protected><Projects /></Protected>} />
         <Route path="/projects/:id" element={<Protected><ProjectDetail /></Protected>} />

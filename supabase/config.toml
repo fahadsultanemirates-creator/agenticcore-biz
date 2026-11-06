@@ -27,3 +27,6 @@ verify_jwt = false
 # first run.
 [functions.owner-alert]
 verify_jwt = false
+
+[functions.bot-waitlist]
+verify_jwt = false
