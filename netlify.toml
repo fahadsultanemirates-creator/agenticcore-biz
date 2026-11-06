@@ -16,6 +16,78 @@
 # Order matters: Netlify applies redirects top to bottom, so these have to
 # sit above the catch-all below or it would swallow them.
 [[redirects]]
+  from = "/business-pool.html"
+  to = "https://agenticcore.agency/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/real-estate.html"
+  to = "https://agenticcore.agency/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/how-it-works.html"
+  to = "https://agenticcore.agency/#how-it-works"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services"
+  to = "https://agenticcore.agency/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/:id"
+  to = "https://agenticcore.agency/services/:id"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services.html"
+  to = "https://agenticcore.agency/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/packages"
+  to = "https://agenticcore.agency/packages"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/packages.html"
+  to = "https://agenticcore.agency/packages"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/create-project"
+  to = "https://agenticcore.agency/request"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/create-project.html"
+  to = "https://agenticcore.agency/request"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/request/:id"
+  to = "https://agenticcore.agency/request?service=:id"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/legacy-landing.html"
+  to = "https://agenticcore.agency/services"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/login.html"
   to = "/login"
   status = 301

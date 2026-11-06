@@ -1,0 +1,5 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+let html=readFileSync('dist/index.html','utf8');
+html=html.replace(/<title>[\s\S]*?<\/title>/,'<title>AgenticCore Bot — Your AI team in one app</title>').replace(/<meta[^>]+name="description"[^>]*>/g,'<meta name="description" content="AgenticCore Bot: your AI team in one app. Smart, Pro and Max. In private testing, coming soon. Register interest; existing Biz orders remain accessible.">').replace(/<meta[^>]+property="og:title"[^>]*>/g,'<meta property="og:title" content="AgenticCore Bot — Your AI team in one app">').replace(/<meta[^>]+property="og:description"[^>]*>/g,'<meta property="og:description" content="In private testing, coming soon. Discover bots that work alone or as a team.">');
+writeFileSync('dist/index.html',html);
+writeFileSync('dist/sitemap.xml','<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://agenticcore.biz/</loc></url><url><loc>https://agenticcore.biz/privacy</loc></url><url><loc>https://agenticcore.biz/terms</loc></url></urlset>');

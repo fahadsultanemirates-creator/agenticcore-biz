@@ -25,6 +25,7 @@ export function Privacy() {
       updated="October 2026"
       intro="What we collect, why we collect it, who else touches it, and what we will never ask you for."
     >
+      <Clause heading="AgenticCore Bot early access"><p>When you register interest, we collect your name, email, business and description of what you need, together with your consent time. A salted one-way network identifier helps limit abuse. These records are kept separately from existing client orders. Your submitted details are stored in Supabase and sent to our private Telegram operations channel so the team can respond. Contact hello@agenticcore.biz to request correction or removal. Registering interest does not create an app account or a subscription.</p></Clause>
       <Clause heading="What we collect">
         <Bullets
           items={[
