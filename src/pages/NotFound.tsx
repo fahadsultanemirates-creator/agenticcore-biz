@@ -1,3 +1,4 @@
+import { SERVICE_COUNT } from "../data/catalog";
 import { ArrowLeft } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -21,7 +22,7 @@ export function NotFound() {
       </p>
       <div className="mt-6 flex flex-col gap-3">
         <Link to="/services" className={BUTTON}>
-          Browse all 19 services
+          Browse all {SERVICE_COUNT} services
         </Link>
         <Link
           to="/"

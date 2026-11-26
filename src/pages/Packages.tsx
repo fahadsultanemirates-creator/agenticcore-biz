@@ -7,12 +7,14 @@ export function Packages() {
   return (
     <PublicShell title="Business Packages">
       <section className="py-10 sm:py-14">
-        <a href="https://agenticcore.group/services.html" className="mb-6 block rounded-xl border border-border bg-surface p-4 text-sm text-fg-muted">Looking for ongoing departments or an office framework? Explore AgenticCore Group ↗</a>
+        <a href="https://agenticcore.group/services" className="mb-6 block rounded-xl border border-border bg-surface p-4 text-sm text-fg-muted">Looking for ongoing departments or an office framework? Explore AgenticCore Group ↗</a>
         <h1 className="font-display text-3xl font-semibold text-fg sm:text-4xl">
           Business packages
         </h1>
         <p className="mt-3 max-w-2xl text-fg-muted">
-          Three bundles for the common cases. Everything in them is also available individually —
+          {packages.length === 1
+            ? "One bundle for the common case. Everything in it is also available individually —"
+            : `${packages.length} bundles for the common cases. Everything in them is also available individually —`}{" "}
           a package is a convenience, not a requirement.
         </p>
 

@@ -20,6 +20,8 @@ import { CORS_HEADERS, jsonResponse } from '../_shared/cors.ts';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY') || undefined;
+const ANTHROPIC_MODEL = Deno.env.get('ANTHROPIC_MODEL') || undefined;
 const XAI_API_KEY = Deno.env.get('XAI_API_KEY')!;
 const XAI_MODEL = Deno.env.get('XAI_MODEL') || undefined;
 const TELEGRAM_BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') || undefined;
@@ -96,6 +98,8 @@ export async function handleRequest(req: Request): Promise<Response> {
         channel: 'forge',
         externalId: caller.id,
         userMessage: message,
+        anthropicApiKey: ANTHROPIC_API_KEY,
+        claudeModel: ANTHROPIC_MODEL,
         xaiApiKey: XAI_API_KEY,
         model: XAI_MODEL,
         telegramBotToken: TELEGRAM_BOT_TOKEN,

@@ -9,10 +9,5 @@ Disallow: /login
 Disallow: /signup
 Disallow: /reset
 Disallow: /admin.html
-Disallow: /business-pool.html
-Disallow: /how-it-works.html
-Disallow: /real-estate.html
-Disallow: /referral.html
-Disallow: /legacy-landing.html
 
 Sitemap: https://agenticcore.biz/sitemap.xml

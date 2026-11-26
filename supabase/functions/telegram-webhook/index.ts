@@ -17,6 +17,8 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const TELEGRAM_BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN')!;
 const TELEGRAM_WEBHOOK_SECRET = Deno.env.get('TELEGRAM_WEBHOOK_SECRET')!;
+const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY') || undefined;
+const ANTHROPIC_MODEL = Deno.env.get('ANTHROPIC_MODEL') || undefined;
 const XAI_API_KEY = Deno.env.get('XAI_API_KEY')!;
 const XAI_MODEL = Deno.env.get('XAI_MODEL') || undefined;
 // Telegram's numeric user id for the account owner, as a string (compared
@@ -75,6 +77,23 @@ function isOwner(fromId: number | undefined): boolean {
 }
 
 async function callXaiPlainText(prompt: string): Promise<string> {
+  // Claude is the primary provider; xAI is kept only as a fallback while
+  // ANTHROPIC_API_KEY is missing on the project.
+  if (ANTHROPIC_API_KEY) {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({ model: ANTHROPIC_MODEL || 'claude-opus-5-5', max_tokens: 4096, messages: [{ role: 'user', content: prompt }] })
+    });
+    if (!r.ok) {
+      const t = await r.text().catch(() => '');
+      throw new Error(`Claude request failed (${r.status}): ${t.slice(0, 500)}`);
+    }
+    const d = await r.json();
+    const out = (d?.content || []).filter((b: { type: string }) => b.type === 'text').map((b: { text: string }) => b.text).join('');
+    if (!out) throw new Error('Claude response missing text content');
+    return out;
+  }
   const resp = await fetch(XAI_URL, {
     method: 'POST',
     headers: {
@@ -555,6 +574,8 @@ export async function handleRequest(req: Request): Promise<Response> {
       channel: 'telegram',
       externalId: String(chatId),
       userMessage: text,
+      anthropicApiKey: ANTHROPIC_API_KEY,
+      claudeModel: ANTHROPIC_MODEL,
       xaiApiKey: XAI_API_KEY,
       model: XAI_MODEL,
       languageHint,

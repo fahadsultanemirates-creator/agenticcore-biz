@@ -1,8 +1,8 @@
 // AgenticCore Biz — homepage chat widget backend. Thin wrapper around
-// the same handleIncomingMessage() core the Telegram bot uses. Unlike
-// AgenticCore Agency, .biz has no standing OpenRouter/OpenAI secret --
-// this picks OpenRouter if OPENROUTER_API_KEY happens to be set on this
-// project, otherwise falls back to XAI_API_KEY. Either way, bot-core's
+// the same handleIncomingMessage() core the Telegram bot uses. Claude
+// (ANTHROPIC_API_KEY) is the primary provider, matching AgenticCore Agency;
+// OpenRouter and then XAI_API_KEY remain only as fallbacks if the Claude key
+// is missing. Whichever answers, bot-core's
 // widget channel always uses the plain reply schema with no task-filing
 // capability: the landing assistant must never create a manager_tasks
 // row or run /approve.
@@ -21,6 +21,8 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY') || undefined;
 const OPENROUTER_MODEL = Deno.env.get('OPENROUTER_MODEL') || undefined;
+const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY') || undefined;
+const ANTHROPIC_MODEL = Deno.env.get('ANTHROPIC_MODEL') || undefined;
 const XAI_API_KEY = Deno.env.get('XAI_API_KEY') || undefined;
 const XAI_MODEL = Deno.env.get('XAI_MODEL') || undefined;
 const TELEGRAM_BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') || undefined;
@@ -77,6 +79,8 @@ export async function handleRequest(req: Request): Promise<Response> {
       channel: 'widget',
       externalId: visitorId,
       userMessage: message,
+      anthropicApiKey: ANTHROPIC_API_KEY,
+      claudeModel: ANTHROPIC_MODEL,
       openRouterApiKey: OPENROUTER_API_KEY,
       xaiApiKey: XAI_API_KEY,
       model: OPENROUTER_API_KEY ? OPENROUTER_MODEL : XAI_MODEL,

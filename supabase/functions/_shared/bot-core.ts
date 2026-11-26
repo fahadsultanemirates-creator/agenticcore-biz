@@ -42,6 +42,12 @@ export interface HandleMessageParams {
   channel: Channel;
   externalId: string;
   userMessage: string;
+  // Primary provider for every channel: the Claude API directly. When set,
+  // OpenRouter/xAI are not called at all; they remain only as a fallback
+  // while ANTHROPIC_API_KEY is missing on the project.
+  anthropicApiKey?: string;
+  // Claude model override (e.g. from ANTHROPIC_MODEL). Never the xAI model id.
+  claudeModel?: string;
   // Widget only: used if present. Absent means the widget falls back to xaiApiKey instead.
   openRouterApiKey?: string;
   // Required for 'telegram'/'forge'; used as the widget's fallback provider when openRouterApiKey is absent.
@@ -76,6 +82,10 @@ export interface HandleMessageResult {
   // telegramBotToken/ownerTelegramId above), not through the link.
   handoffUrl?: string;
 }
+
+const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+// Same default as AgenticCore Agency and Estate, which already run on Claude.
+const DEFAULT_CLAUDE_MODEL = 'claude-opus-5-5';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const DEFAULT_OPENROUTER_MODEL = 'anthropic/claude-sonnet-5';
@@ -279,6 +289,53 @@ interface ManagerParsedReply extends ParsedReply {
   create_task: boolean;
   task_title: string;
   task_type: string;
+}
+
+// Direct Claude Messages API call. The system prompt is cached; the reply is
+// constrained to the given JSON schema (plain widget shape or the manager shape).
+async function callClaude<T>(
+  apiKey: string,
+  model: string,
+  messages: { role: string; content: string }[],
+  jsonSchema: { schema: Record<string, unknown> }
+): Promise<T> {
+  const system = messages.filter((m) => m.role === 'system').map((m) => m.content).join('\n\n');
+  // Claude needs alternating user/assistant turns starting with the user.
+  const turns: { role: 'user' | 'assistant'; content: string }[] = [];
+  for (const m of messages) {
+    if (m.role === 'system') continue;
+    const role = m.role === 'assistant' ? 'assistant' : 'user';
+    const last = turns[turns.length - 1];
+    if (last && last.role === role) last.content += '\n\n' + m.content;
+    else turns.push({ role, content: m.content });
+  }
+  if (turns.length && turns[0].role !== 'user') turns.unshift({ role: 'user', content: '(Earlier conversation follows.)' });
+
+  const resp = await fetch(ANTHROPIC_URL, {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 4096,
+      system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
+      output_config: { effort: 'low', format: { type: 'json_schema', schema: jsonSchema.schema } },
+      messages: turns
+    })
+  });
+
+  if (!resp.ok) {
+    const text = await resp.text().catch(() => '');
+    throw new Error(`Claude request failed (${resp.status}): ${text.slice(0, 500)}`);
+  }
+  const data = await resp.json();
+  if (data?.stop_reason !== 'end_turn') throw new Error(`Claude reply did not complete (${data?.stop_reason})`);
+  const text = (data?.content || []).filter((b: { type: string }) => b.type === 'text').map((b: { text: string }) => b.text).join('');
+  if (!text) throw new Error('Claude response missing text content');
+  return JSON.parse(text) as T;
 }
 
 async function callOpenRouter(
@@ -501,7 +558,7 @@ async function notifyOwnerOfHandoff(
 }
 
 export async function handleIncomingMessage(params: HandleMessageParams): Promise<HandleMessageResult> {
-  const { supabaseAdmin, channel, externalId, userMessage, openRouterApiKey, xaiApiKey, model, languageHint, telegramBotToken, ownerTelegramId } = params;
+  const { supabaseAdmin, channel, externalId, userMessage, anthropicApiKey, claudeModel, openRouterApiKey, xaiApiKey, model, languageHint, telegramBotToken, ownerTelegramId } = params;
 
   const conversation = await findOrCreateConversation(supabaseAdmin, channel, externalId);
 
@@ -532,13 +589,20 @@ export async function handleIncomingMessage(params: HandleMessageParams): Promis
   let discoverySummary: string;
 
   if (channel === 'telegram' || channel === 'forge') {
-    if (!xaiApiKey) throw new Error(`xaiApiKey is required for the ${channel} channel`);
+    if (!anthropicApiKey && !xaiApiKey) throw new Error(`anthropicApiKey or xaiApiKey is required for the ${channel} channel`);
 
     let parsed: ManagerParsedReply;
     try {
-      parsed = await callXaiManager(xaiApiKey, model || DEFAULT_XAI_MODEL, messages);
+      parsed = anthropicApiKey
+        ? await callClaude<ManagerParsedReply>(anthropicApiKey, claudeModel || DEFAULT_CLAUDE_MODEL, messages, MANAGER_REPLY_JSON_SCHEMA).catch((err) => {
+            // Keep the client answered if Claude is briefly unavailable.
+            if (!xaiApiKey) throw err;
+            console.error('Claude call failed, using xAI fallback:', err);
+            return callXaiManager(xaiApiKey, model || DEFAULT_XAI_MODEL, messages);
+          })
+        : await callXaiManager(xaiApiKey!, model || DEFAULT_XAI_MODEL, messages);
     } catch (err) {
-      console.error('xAI call failed:', err);
+      console.error('Chat provider call failed:', err);
       return { reply: GENERIC_ERROR_MESSAGE, needsHuman: false };
     }
 
@@ -587,7 +651,14 @@ export async function handleIncomingMessage(params: HandleMessageParams): Promis
     // always the plain schema with no task-filing capability.
     let parsed: ParsedReply;
     try {
-      if (openRouterApiKey) {
+      if (anthropicApiKey) {
+        parsed = await callClaude<ParsedReply>(anthropicApiKey, claudeModel || DEFAULT_CLAUDE_MODEL, messages, REPLY_JSON_SCHEMA).catch((err) => {
+          // Keep the visitor answered if Claude is briefly unavailable.
+          if (!xaiApiKey) throw err;
+          console.error('Claude call failed, using xAI fallback:', err);
+          return callXaiPlain(xaiApiKey, model || DEFAULT_XAI_MODEL, messages);
+        });
+      } else if (openRouterApiKey) {
         parsed = await callOpenRouter(openRouterApiKey, model || DEFAULT_OPENROUTER_MODEL, messages);
       } else if (xaiApiKey) {
         parsed = await callXaiPlain(xaiApiKey, model || DEFAULT_XAI_MODEL, messages);
